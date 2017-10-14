@@ -1,7 +1,7 @@
 # AixinwuApp
 
 ### about
-Aixinwu App
+Aixinwu App  ❤️ 
 
 ### supported platforms
 
