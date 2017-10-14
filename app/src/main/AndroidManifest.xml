@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.aixinwu.axw" >
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <!-- 申明权限 操作SD卡 -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <!-- 申请拍照权限 -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+
+    <!-- 设置悬浮控件 -->
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+
+    <application
+        android:name=".tools.GlobalParameterApplication"
+        android:allowBackup="true"
+        android:icon="@drawable/applogo"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme.NoActionBar" >
+        <activity
+            android:name=".activity.WelcomeActivity"
+            android:label="爱心屋" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".activity.MainActivity"
+            android:label="@string/app_name"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity
+            android:name=".activity.HelloWorld"
+            android:label="@string/hello_world" />
+        <activity android:name=".activity.LoginActivity" />
+        <activity
+            android:name=".activity.Buy"
+            android:label="@string/app_name" />
+        <activity android:name=".activity.SignupActivity" />
+        <activity android:name=".activity.ProductListActivity" />
+        <activity android:name=".activity.ShoppingCartActivity" />
+        <activity android:name=".activity.ProductDetailActivity" />
+        <activity android:name=".activity.Chattoother" />
+        <activity android:name=".activity.SendToPeople" />
+        <activity android:name=".activity.SendToAXw" />
+        <activity android:name=".activity.PersonalDetailActivity" />
+        <activity android:name=".activity.ChatList" />
+        <activity android:name=".activity.ItemList" />
+        <activity android:name=".activity.DealFinished" />
+        <!--
+ ATTENTION: This was auto-generated to add Google Play services to your project for
+     App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
+        -->
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+
+        <activity android:name=".activity.AXWInfo" />
+        <activity
+            android:name=".activity.CommonReceiver"
+            android:label="@string/title_activity_common_receiver" />
+        <activity
+            android:name=".activity.ConfirmOrder"
+            android:label="@string/title_activity_confirm_order" />
+        <activity
+            android:name=".activity.MyCollection"
+            android:label="@string/title_activity_my_collection" />
+        <activity
+            android:name=".activity.SettingActivity"
+            android:label="@string/title_activity_setting" />
+        <activity
+            android:name=".activity.ItemRecord"
+            android:label="ItemRecord" />
+        <activity android:name=".activity.VolunteerApply" />
+        <activity android:name=".activity.VolActivityList" />
+        <activity
+            android:name=".activity.MyDonation"
+            android:label="@string/title_activity_my_donation" >
+        </activity>
+        <activity
+            android:name=".activity.ResetPWD"
+            android:label="@string/title_activity_reset_pwd" >
+        </activity>
+        <activity
+            android:name=".activity.RawPictureActivity"
+            android:label="@string/title_activity_raw_picture" >
+        </activity>
+        <activity android:name=".activity.CashTransfer" >
+        </activity>
+    </application>
+
+</manifest>

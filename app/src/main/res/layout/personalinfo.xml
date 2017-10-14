@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layout_personal"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <!--
+        <ImageView
+            android:id="@+id/personal_background_image"
+            android:layout_width="match_parent"
+            android:layout_height="320dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="-100dp"
+            android:background="@drawable/splash_bg"/>
+        -->
+        <ScrollView
+            android:id="@+id/personal_scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" >
+
+
+            <LinearLayout
+
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+
+                >
+                <!--  登录前 -->
+                <RelativeLayout
+                    android:id="@+id/login"
+                    android:layout_width="match_parent"
+                    android:layout_height="100dp"
+                    android:background="#eeefef"
+                    android:visibility="visible"
+                    >
+
+                    <View
+                        android:id="@+id/personal_login_circle"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="20dp"
+                        android:background="@drawable/personal_cicle"
+                        />
+
+                    <TextView
+                        android:id="@+id/personal_login_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_toRightOf="@id/personal_login_circle"
+                        android:layout_toEndOf="@id/personal_login_circle"
+                        android:gravity="center"
+                        android:text="登录"
+                        android:textColor="#3e3a39"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/signup"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_toRightOf="@id/personal_login_button"
+                        android:layout_toEndOf="@id/personal_login_button"
+                        android:gravity="center"
+                        android:text="注册"
+                        android:textColor="#3e3a39"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+<!--
+                    <TextView
+                        android:id="@+id/changePWD"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_toRightOf="@id/signup"
+                        android:layout_toEndOf="@id/signup"
+                        android:gravity="center"
+                        android:text="密码重置"
+                        android:textColor="#3e3a39"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
+                        -->
+                </RelativeLayout>
+                <!-- 登录后 -->
+                <RelativeLayout
+                    android:id="@+id/personal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="100dp"
+                    android:gravity="center_vertical"
+                    android:background="#eeefef"
+                    android:visibility="gone"
+
+                    >
+
+
+
+                    <RelativeLayout
+                        android:id="@+id/main_persionIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true">
+                    <ImageView
+                        android:id="@+id/headImage"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginStart="20dp"
+                        android:layout_centerVertical="true"
+                        android:scaleType="fitXY"
+                        android:src="@drawable/scrollview_header" />
+
+                    <View
+                        android:layout_width="98dp"
+                        android:layout_height="98dp"
+                        android:layout_marginLeft="6dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_centerVertical="true"
+                        android:background="@drawable/head_portrait_circle"
+                        />
+
+                        <View
+                            android:layout_width="70dp"
+                            android:layout_height="70dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_marginStart="20dp"
+                            android:layout_centerVertical="true"
+                            android:background="@drawable/luency_circle"
+                            />
+
+                    </RelativeLayout>
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:layout_toRightOf="@id/main_persionIcon"
+                        android:layout_toEndOf="@id/main_persionIcon"
+                        android:layout_marginLeft="-20dp"
+                        android:layout_marginStart="-20dp" >
+
+                        <LinearLayout
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="20dip"
+                            android:gravity="center_vertical"
+                            android:orientation="vertical"
+
+                            >
+
+                            <TextView
+                                android:id="@+id/username"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:ellipsize="end"
+                                android:text="用户名"
+                                android:textColor="#3e3a39"
+                                />
+
+                            <TextView
+                                android:id="@+id/jobtitle"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="社区用户"
+                                android:textColor="#3e3a39" />
+
+                            <TextView
+                                android:id="@+id/coins"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="爱心币   100"
+                                android:textColor="#3e3a39" />
+                        </LinearLayout>
+                    </RelativeLayout>
+                </RelativeLayout>
+
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:orientation="vertical" >
+
+
+                    <TextView
+
+                        style="@style/PersonalCenterText"
+                        android:layout_marginStart="25dp"
+                        android:layout_marginLeft="25dp"
+                        android:textColor="#ea5404"
+                        android:textSize="16sp"
+                        android:text="个人中心" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="#eeefef"
+                            android:layout_marginTop="5dp"
+                            />
+
+                    <RelativeLayout style="@style/PersonalNormalStyle"
+                        android:id="@+id/transfer">
+
+                        <ImageView
+                            android:id="@+id/cash_transfer_pic"
+                            style="@style/PersonalIconStyle"
+                            android:layout_width="20dp"
+                            android:layout_height="18dp"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:src="@drawable/coin_2" />
+
+                        <TextView
+                            style="@style/PersonalTextStyle"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_toRightOf="@id/cash_transfer_pic"
+                            android:text="爱心币转移" />
+
+                        <ImageView
+                            style="@style/PersonalRightIconStyle"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginEnd="20dp"
+                            android:src="@drawable/android_list_idex" />
+                    </RelativeLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#eeefef"
+                        />
+                    
+                        <RelativeLayout style="@style/PersonalNormalStyle"
+                            android:id="@+id/myitem">
+
+                            <ImageView
+                                android:id="@+id/personal_icon_01"
+                                style="@style/PersonalIconStyle"
+                                android:layout_width="20dp"
+                                android:layout_height="18dp"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginLeft="10dp"
+                                android:src="@drawable/personal1" />
+
+                            <TextView
+                                style="@style/PersonalTextStyle"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginLeft="20dp"
+                                android:layout_toRightOf="@id/personal_icon_01"
+                                android:text="我发布的" />
+
+                            <ImageView
+                                style="@style/PersonalRightIconStyle"
+                                android:layout_marginRight="20dp"
+                                android:layout_marginEnd="20dp"
+                                android:src="@drawable/android_list_idex" />
+                        </RelativeLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#eeefef"
+                        />
+
+                    <RelativeLayout
+                        android:id="@+id/myBought"
+                        style="@style/PersonalTopStyle">
+
+                        <ImageView
+                            android:id="@+id/personal_icon_09"
+                            style="@style/PersonalIconStyle"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_width="20dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/personal2" />
+
+                        <TextView
+                            style="@style/PersonalTextStyle"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_toRightOf="@id/personal_icon_09"
+                            android:text="我购买的" />
+
+                        <ImageView
+                            style="@style/PersonalRightIconStyle"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginEnd="20dp"
+                            android:src="@drawable/android_list_idex" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#eeefef"
+                        />
+
+                        <RelativeLayout style="@style/PersonalBottomStyle"
+                            android:id="@+id/myCollection">
+
+                            <ImageView
+                                android:id="@+id/personal_icon_03"
+                                style="@style/PersonalIconStyle"
+                                android:layout_marginStart="10dp"
+                                android:layout_marginLeft="10dp"
+                                android:layout_width="20dp"
+                                android:layout_height="18dp"
+                                android:src="@drawable/personal4" />
+
+                            <TextView
+                                style="@style/PersonalTextStyle"
+                                android:layout_marginStart="20dp"
+                                android:layout_marginLeft="20dp"
+                                android:layout_toRightOf="@id/personal_icon_03"
+                                android:layout_toEndOf="@id/personal_icon_03"
+                                android:text="我收藏的" />
+
+                            <ImageView
+                                style="@style/PersonalRightIconStyle"
+                                android:layout_marginRight="20dp"
+                                android:layout_marginEnd="20dp"
+                                android:src="@drawable/android_list_idex" />
+                        </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#eeefef"
+                        />
+
+                    <RelativeLayout style="@style/PersonalBottomStyle"
+                        android:id="@+id/myDonation">
+
+                        <ImageView
+                            android:id="@+id/donation_icon"
+                            style="@style/PersonalIconStyle"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_width="20dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/donate" />
+
+                        <TextView
+                            style="@style/PersonalTextStyle"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_toRightOf="@id/donation_icon"
+                            android:layout_toEndOf="@id/donation_icon"
+                            android:text="我捐赠的" />
+
+                        <ImageView
+                            style="@style/PersonalRightIconStyle"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginEnd="20dp"
+                            android:src="@drawable/android_list_idex" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#eeefef"
+                        />
+
+                    <RelativeLayout style="@style/PersonalNormalStyle"
+                        android:id="@+id/userSetting">
+
+                        <ImageView
+                            android:id="@+id/personal_icon_05"
+                            style="@style/PersonalIconStyle"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_width="20dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/personal5" />
+
+                        <TextView
+                            android:id="@+id/mySet"
+                            style="@style/PersonalTextStyle"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_toRightOf="@id/personal_icon_05"
+                            android:text="设置" />
+
+                        <View
+                            android:id="@+id/redDot"
+                            android:layout_width="10dp"
+                            android:layout_height="10dp"
+                            android:layout_toEndOf="@id/mySet"
+                            android:layout_toRightOf="@id/mySet"
+                            android:layout_alignParentTop="true"
+                            android:background="@drawable/a_red_dot"/>
+
+                        <ImageView
+                            style="@style/PersonalRightIconStyle"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginEnd="20dp"
+                            android:src="@drawable/android_list_idex" />
+                    </RelativeLayout>
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#eeefef"
+                        />
+
+                    <RelativeLayout style="@style/PersonalNormalStyle"
+                        android:id="@+id/message">
+
+                        <ImageView
+                            android:id="@+id/personal_icon_04"
+                            style="@style/PersonalIconStyle"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_width="20dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/personal6" />
+
+                        <TextView
+                            style="@style/PersonalTextStyle"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_toRightOf="@id/personal_icon_04"
+                            android:text="消息" />
+
+                        <ImageView
+                            style="@style/PersonalRightIconStyle"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginEnd="20dp"
+                            android:src="@drawable/android_list_idex" />
+                    </RelativeLayout>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#eeefef"
+                        />
+
+
+                    <RelativeLayout style="@style/PersonalNormalStyle"
+                        android:id="@+id/shopCart">
+
+                        <ImageView
+                            android:id="@+id/personal_icon_02"
+                            style="@style/PersonalIconStyle"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_width="20dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/shop_cart" />
+
+                        <TextView
+                            style="@style/PersonalTextStyle"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_toRightOf="@id/personal_icon_02"
+                            android:text="购物车" />
+
+                        <ImageView
+                            style="@style/PersonalRightIconStyle"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginEnd="20dp"
+                            android:src="@drawable/android_list_idex" />
+                    </RelativeLayout>
+
+
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="1dp"
+                        android:background="#eeefef"
+                        />
+
+                    <RelativeLayout
+                        android:id="@+id/about_aixinwu"
+                        style="@style/PersonalBottomStyle"
+                        android:layout_marginBottom="10dp" >
+
+                        <ImageView
+                            android:id="@+id/personal_icon_10"
+                            style="@style/PersonalIconStyle"
+                            android:layout_marginStart="10dp"
+                            android:layout_marginLeft="10dp"
+                            android:layout_width="20dp"
+                            android:layout_height="18dp"
+                            android:src="@drawable/personal7" />
+
+                        <TextView
+                            android:id="@+id/personal_service"
+                            style="@style/PersonalTextStyle"
+                            android:layout_marginStart="20dp"
+                            android:layout_marginLeft="20dp"
+                            android:layout_toRightOf="@id/personal_icon_10"
+                            android:text="关于爱心屋" />
+
+
+                        <ImageView
+                            style="@style/PersonalRightIconStyle"
+                            android:layout_marginRight="20dp"
+                            android:layout_marginEnd="20dp"
+                            android:src="@drawable/android_list_idex" />
+                    </RelativeLayout>
+
+                </LinearLayout>
+
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"/>
+
+                    <Button
+                        android:id="@+id/personal_exit"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:background="#eeefef"
+                        android:layout_margin="15dp"
+                        android:gravity="center"
+                        android:text="注销"
+                        android:textColor="#ea5404"
+                        android:textSize="18sp"
+                        style="?android:attr/borderlessButtonStyle"/>
+
+            </LinearLayout>
+
+
+        </ScrollView>
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white"
+    >
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="480dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+
+            <RelativeLayout
+                android:id="@+id/main_picture"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp">
+
+                <ImageView
+                    android:id="@+id/img_activity_product"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_centerVertical="true"
+                    android:scaleType="fitXY"
+                    />
+                <View
+                    android:layout_width="98dp"
+                    android:layout_height="98dp"
+                    android:layout_marginLeft="6dp"
+                    android:layout_marginStart="6dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/product_circle"
+                    />
+
+                <View
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginStart="20dp"
+                    android:layout_centerVertical="true"
+                    android:background="@drawable/luency_circle_product"
+                    />
+
+            </RelativeLayout>
+
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toRightOf="@id/main_picture"
+                android:layout_toEndOf="@id/main_picture">
+
+                <RelativeLayout
+                    android:id="@+id/past_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="34dp">
+
+                    <TextView
+                        android:id="@+id/tv_activity_product_details_past_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:layout_marginBottom="5dp"
+                        android:text="爱心币：0"
+                        android:paddingEnd="5dp"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:textColor="#b5b5b6"
+                        android:foreground="@drawable/delete_line"/>
+
+                    <TextView
+                        android:id="@+id/tv_activity_product_details_price"
+                        android:layout_below="@id/tv_activity_product_details_past_price"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:paddingEnd="5dp"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:text="爱心币：0"
+                        android:textColor="#ea5404"/>
+
+                </RelativeLayout>
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="35dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginRight="20dp">
+
+                <TextView
+                    android:id="@+id/limit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="限购："
+                    android:textColor="#ea5404"/>
+
+                <TextView
+                    android:id="@+id/tv_activity_product_details_stock"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/limit"
+                    android:layout_marginTop="10dp"
+                    android:text="库存："
+                    android:textColor="#ea5404"/>
+
+            </RelativeLayout>
+
+
+
+<TextView
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_below="@id/main_picture"
+    android:id="@+id/detail_product_name"
+    android:textSize="16sp"
+    android:layout_marginTop="10dp"
+    android:layout_marginLeft="25dp"
+    android:layout_marginStart="25dp"
+    />
+
+            <View
+                android:id="@+id/product_detail_line"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_below="@id/detail_product_name"
+                android:background="#eeefef"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="15dp"/>
+    <WebView
+        android:id="@+id/tv_activity_product_details_details"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/product_detail_line"
+
+        android:ellipsize="end"
+        android:padding="7dp"
+        />
+        </RelativeLayout>
+</ScrollView>
+
+
+    <Button
+        android:id="@+id/btn_activity_product_details_add_to_cart"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="#eeefef"
+        android:gravity="center"
+        android:text="加入购物车"
+        android:textColor="#ea5404"
+        android:layout_margin="10dp"
+        style="?android:attr/borderlessButtonStyle"/>
+
+
+    <Button
+        android:id="@+id/btn_activity_product_details_buy_now"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:background="#eeefef"
+        android:gravity="center"
+        android:text="查看购物车"
+        android:layout_margin="10dp"
+        android:textColor="#ea5404"
+        style="?android:attr/borderlessButtonStyle"/>
+
+
+</LinearLayout>
+

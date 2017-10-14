@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:com.aixinwu.axw.view.RefreshableViewandroid="http://schemas.android.com/tools"
+    xmlns:com.aixinwu.axw.view.RefreshableView="http://schemas.android.com/apk/res-auto">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:id="@+id/homepage_search2"
+            android:layout_gravity="center_vertical"
+            android:drawableLeft="@drawable/main_bottom_tab_search_normal"
+            android:drawableStart="@drawable/main_bottom_tab_search_normal"
+            android:drawablePadding="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/search_edittext_shape"
+            android:textSize="14sp"
+            android:textColor="#b4b5b5"
+            android:imeOptions="actionSearch"
+            android:inputType="text"
+            android:focusable="false"
+            android:layout_marginLeft="13dp"
+            android:layout_marginStart="13dp"
+            android:layout_marginEnd="13dp"
+            android:layout_marginRight="13dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="10dp"
+            android:text="@string/homepageSearch"/>
+
+        <com.handmark.pulltorefresh.library.PullToRefreshScrollView
+            android:id="@+id/homepageScroll2"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="180dp"
+                    android:visibility="gone"
+                    android:background="@color/white" >
+
+                    <com.aixinwu.axw.view.BaseViewPager
+                        android:id="@+id/viewPager2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        >
+                    </com.aixinwu.axw.view.BaseViewPager>
+
+                    <LinearLayout
+                        android:id="@+id/layout_viewpager_indicator2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_margin="@dimen/view_small_padding"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingBottom="@dimen/view_padding"
+                        android:paddingRight="@dimen/view_padding" >
+                    </LinearLayout>
+                </RelativeLayout>
+
+                <GridView
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"
+                    android:id="@+id/homepage_guide2"
+                    android:numColumns="4"
+                    android:visibility="gone"
+                    android:background="@color/white">
+                </GridView>
+
+
+                <GridView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:numColumns="2"
+                    android:stretchMode="columnWidth"
+                    android:verticalSpacing="5dp"
+                    android:horizontalSpacing="5dp"
+                    android:background="#eeeeef"
+                    android:paddingTop="10dp"
+                    android:paddingLeft="5dp"
+                    android:paddingStart="5dp"
+                    android:paddingRight="5dp"
+                    android:paddingEnd="5dp"
+                    android:id="@+id/main_lv_search_results">
+                </GridView>
+
+                <View
+                    android:layout_marginTop="-15dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="50dp"
+                    android:background="@color/white"/>
+
+
+            </LinearLayout>
+
+        </com.handmark.pulltorefresh.library.PullToRefreshScrollView>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp"
+        android:id="@+id/searchHomePage2">
+        <View
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:background="@drawable/homepage_search_icon"/>
+        <View
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/whitecircle"
+            android:layout_marginLeft="1dp"
+            android:layout_marginStart="1dp"
+            android:layout_marginTop="1dp"/>
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:id="@+id/aaa2"
+            android:src="@drawable/search_icon"
+            android:layout_marginLeft="6dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginTop="6dp"/>
+    </FrameLayout>
+
+</RelativeLayout>

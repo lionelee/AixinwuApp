@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#eeefef"
+    tools:context="com.aixinwu.axw.activity.ItemList"
+    >
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:textSize="20sp"
+        android:text="我发布的"
+        android:textColor="#3e3a39"
+        android:background="#eeefef"
+        android:layout_alignParentTop="true"/>
+
+    <ListView
+        android:layout_below="@+id/title"
+        android:id="@+id/itemlistviewup"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:dividerHeight="20dp"
+        android:divider="#eeeeef"
+        android:layout_marginBottom="15dp"/>
+
+    <!--
+    <TextView
+        android:textSize="40sp"
+        android:layout_below="@id/itemlistviewup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/te2"
+        android:background="#eeeeef"
+        android:text="下架商品"/>
+    <ListView
+        android:layout_below="@+id/te2"
+        android:paddingBottom="15dp"
+        android:paddingTop="15dp"
+        android:id="@+id/itemlistviewdown"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    </ListView>
+    -->
+
+</RelativeLayout>

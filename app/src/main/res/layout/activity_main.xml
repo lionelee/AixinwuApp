@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFFFFF" >
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/head_layout">
+
+    </RelativeLayout>
+
+
+    <!-- 下面的线性布局是三个tab放置的区域 -->
+    <LinearLayout
+        android:id="@+id/tabs_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="5dp"
+        android:baselineAligned="true"
+        android:layout_alignParentBottom="true"
+        android:background="#eeefef">
+        <!-- 使用include标签，可以直接重用xml -->
+        <include
+            android:id="@+id/tab_home"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginTop="8dp"
+            layout="@layout/tab_home"/>
+        <include
+            android:id="@+id/tab_love_coin"
+            android:layout_weight="1"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            layout="@layout/tab_love_coin"/>
+        <include
+            android:id="@+id/tab_submit"
+            android:layout_weight="1"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            layout="@layout/tab_submit"/>
+        <include
+            android:id="@+id/tab_deal"
+            android:layout_weight="1"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            layout="@layout/tab_deal"/>
+
+        <include
+            android:id="@+id/tab_userinfo"
+            android:layout_weight="1"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            layout="@layout/tab_userinfo"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/fragment_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/head_layout"
+        android:layout_above="@id/tabs_layout">
+        <fragment
+            android:id="@+id/homePage"
+            android:name="com.aixinwu.axw.fragment.HomePage"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="10" />
+
+        <fragment
+            android:id="@+id/LoveCoin"
+            android:name="com.aixinwu.axw.fragment.LoveCoin"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="10" />
+
+        <fragment
+            android:id="@+id/SubmitThings"
+            android:name="com.aixinwu.axw.fragment.SubmitThings"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="10" />
+
+        <fragment
+            android:id="@+id/UsedDeal"
+            android:name="com.aixinwu.axw.fragment.UsedDeal"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="10" />
+
+        <fragment
+            android:id="@+id/UserInfo"
+            android:name="com.aixinwu.axw.fragment.UserInfo"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_weight="10" />
+
+    </LinearLayout>
+
+</RelativeLayout>

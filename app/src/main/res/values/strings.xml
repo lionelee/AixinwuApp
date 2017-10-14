@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">爱心屋</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="menu_settings">Settings</string>
+    <string name="action_settings">actionSetting</string>
+
+    <string name="pull_to_refresh">下拉可以刷新</string>
+    <string name="release_to_refresh">释放立即刷新</string>
+    <string name="refreshing">正在刷新…</string>
+    <string name="not_updated_yet">暂未更新过</string>
+    <string name="updated_at">上次更新于%1$s前</string>
+    <string name="updated_just_now">刚刚更新</string>
+    <string name="time_error">时间有问题</string>
+    <string name="title_activity_buy">Buy</string>
+
+    <string name="more">更多</string>
+
+    <string name="home">首页</string>
+
+    <string name="home_pic">爱心屋logo</string>
+    <string name="home_info">----  最新通知  ----</string>
+    <string name="home_commodity">----  新品上架  ----</string>
+    <string name="home_deal">----  人气物品  ----</string>
+    <string name="title_activity_singup">SingupActivity</string>
+
+    <string name="pressAgain">再按一次退出程序</string>
+
+    <string name="homepageSearch">商品搜索</string>
+
+
+    <string name="submit_head">发布</string>
+
+    <string name="axw_info">
+        上海交通大学“绿色爱心屋”是一个全新的慈善公益捐赠平台。以“服务交大师生，创建和谐校园”
+        为宗旨。以“爱心、公益、透明、环保、低碳、绿色”为理念。积极开展慈善捐赠、公益服务等爱心活动。
+    </string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+
+    <string name="add_attention">加关注</string>
+    <string name="user_post">用户组：学生</string>
+    <string name="user_book">交易单数：13</string>
+    <string name="user_name">梁玉鼎</string>
+    <string name="user_des">书山有路勤为径，学海无涯诺亚舟</string>
+    <string name="user_recommend_tip">消息中心</string>
+    <string name="title_activity_my_main">MyMainActivity</string>
+    <string name="title_activity_common_used_address">CommonUsedAddress</string>
+    <string name="title_activity_common_receiver">CommonReceiver</string>
+    <string name="title_activity_confirm_order">ConfirmOrder</string>
+    <string name="title_activity_my_collection">MyCollection</string>
+    <string name="title_activity_setting">SettingActivity</string>
+    <string name="title_activity_my_donation">MyDonation</string>
+    <string name="title_activity_reset_pwd">ResetPWD</string>
+    <string name="title_activity_raw_picture">RawPictureActivity</string>
+
+</resources>

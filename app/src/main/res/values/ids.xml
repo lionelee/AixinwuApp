@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="img1" type="id"/>
+    <item name="img2" type="id"/>
+    <item name="img3" type="id"/>
+
+    <item name="text1" type="id"/>
+
+    <item name="popular1" type="id"/>
+    <item name="popular2" type="id"/>
+    <item name="popular3" type="id"/>
+
+    <item name="userinfo" type="id"/>
+    <item name="linear1" type="id"/>
+
+    <item name="pop1" type="id"/>
+    <item name="pop2" type="id"/>
+    <item name="pop3" type="id"/>
+
+    <item name="firstCommodity" type="id"/>
+    <item name="secondCommodity" type="id"/>
+    <item name="thirdCommodity" type="id"/>
+    <item name="forthCommodity" type="id"/>
+    <item name="fifthCommodity" type="id"/>
+    <item name="sixthCommodity" type="id"/>
+
+</resources>
