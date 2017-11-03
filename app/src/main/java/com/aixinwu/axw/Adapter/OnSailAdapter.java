@@ -7,30 +7,35 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.RecyclerView;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.AdapterView;
+import android.view.ViewGroup;
 
 import com.aixinwu.axw.R;
 import com.aixinwu.axw.activity.Buy;
-import com.aixinwu.axw.activity.ItemList;
 import com.aixinwu.axw.tools.Bean;
 import com.aixinwu.axw.tools.CommonAdapter;
 import com.aixinwu.axw.tools.ViewHolder;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by liangyuding on 2016/10/14.
+ * Modified by lionel on 2017/10/31
  */
-public class OnSailAdapter extends CommonAdapter<Bean> {
+public class OnSailAdapter extends RecyclerView.Adapter<OnSailAdapter.ViewHolder>{
 
     private Context context;
     private Handler nHandler;
+    LayoutInflater inflater;
+    private List<Bean> beans = new ArrayList<>();
 
-    public OnSailAdapter(Context context, List<Bean> data, int layoutId, Handler handler) {
-        super(context, data, layoutId);
-        this.context = context;
-        this.nHandler = handler;
+    public OnSailAdapter(Context context, List<Bean> data) {
+        this.inflater = LayoutInflater.from(context);
+        this.beans = data;
     }
 
     @Override
@@ -124,6 +129,40 @@ public class OnSailAdapter extends CommonAdapter<Bean> {
                         .show();
             }
         });
+    }
+
+    @Override
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        return null;
+    }
+
+    @Override
+    public void onBindViewHolder(ViewHolder holder, int position) {
+
+    }
+
+    @Override
+    public int getItemCount() {
+        return beans.size();
+    }
+
+
+    public class ViewHolder extends RecyclerView.ViewHolder{
+
+
+
+        public ViewHolder(View view){
+            super(view);
+        }
+
+        public void bindData(Bean bean){
+        }
+
+        public Bean getData(){
+            int pos = this.getAdapterPosition();
+            return beanList.get(pos);
+        }
+
     }
 }
 

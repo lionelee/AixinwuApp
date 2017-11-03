@@ -7,12 +7,11 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.Window;
 import android.os.Handler;
 import android.util.Log;
 import android.os.CountDownTimer;
-import android.view.View;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.aixinwu.axw.database.Sqlite;
 
@@ -20,10 +19,8 @@ import com.aixinwu.axw.R;
 import com.aixinwu.axw.tools.GlobalParameterApplication;
 
 import org.apache.commons.io.IOUtils;
-import org.json.JSONException;
 import org.json.simple.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -48,8 +45,8 @@ public class WelcomeActivity extends Activity {
     private myRunnable my = new myRunnable();
 
     public void onCreate(Bundle savedInstanceState) {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.welcome);
 
 
         try {
@@ -76,22 +73,6 @@ public class WelcomeActivity extends Activity {
             }
         }).start();
 
-       /* time = (TextView)findViewById(R.id.time);
-        time.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                judge = false;
-                //Toast.makeText(getApplicationContext(), "跳过", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-       mc = new MyCountDownTimer(5000, 1000);
-       mc.start();*/
-
         final SQLiteDatabase db = userDbHelper.getReadableDatabase();
         final Cursor cursor = db.rawQuery("select phoneNumber,pwd from AXWuser where userId = 1",null);
         while (cursor.moveToNext()) {
@@ -109,16 +90,6 @@ public class WelcomeActivity extends Activity {
         db.close();
 
         handler.postDelayed(my, SPLASH_LENGTH);
-    /*    handler.postDelayed(new Runnable() {  //使用handler的postDelayed实现延时跳转
-
-            public void run() {
-                Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        }, SPLASH_LENGTH);//2秒后跳转至应用主界面MainActivity
-
-*/
 
     }
 
@@ -128,6 +99,7 @@ public class WelcomeActivity extends Activity {
             if (judge) {
                 Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.fade_in,R.anim.scale_out);
                 finish();
             }
         }

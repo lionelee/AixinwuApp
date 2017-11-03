@@ -2,7 +2,6 @@ package com.aixinwu.axw.fragment;
 
 //import org.json.JSONObject;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.app.Fragment;
@@ -17,29 +16,22 @@ import android.widget.GridView;
 import com.aixinwu.axw.Adapter.ProductAdapter;
 import com.aixinwu.axw.Adapter.VolunteerAdapter;
 import com.aixinwu.axw.R;
-import com.aixinwu.axw.activity.HelloWorld;
 import com.aixinwu.axw.activity.ProductDetailActivity;
 import com.aixinwu.axw.activity.ProductListActivity;
 import com.aixinwu.axw.activity.VolActivityList;
 import com.aixinwu.axw.activity.VolunteerApply;
-import com.aixinwu.axw.activity.VolActivityList;
 import com.aixinwu.axw.model.Product;
 import com.aixinwu.axw.model.VolunteerActivity;
-import com.aixinwu.axw.tools.Bean;
 import com.aixinwu.axw.tools.GlobalParameterApplication;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;

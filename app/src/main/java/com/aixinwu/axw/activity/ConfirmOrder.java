@@ -9,7 +9,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -22,20 +21,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.aixinwu.axw.Adapter.ConfirmOrderAdapter;
-import com.aixinwu.axw.Adapter.ReceiverAdapter;
 import com.aixinwu.axw.R;
 import com.aixinwu.axw.database.ProductReadDbHelper;
 import com.aixinwu.axw.database.ProductReaderContract;
-import com.aixinwu.axw.model.Product;
+import com.aixinwu.axw.fragment.ShoppingCart;
 import com.aixinwu.axw.model.ShoppingCartEntity;
 import com.aixinwu.axw.tools.GlobalParameterApplication;
 import com.aixinwu.axw.model.Consignee;
 
 import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.simple.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -386,32 +382,6 @@ public class ConfirmOrder extends Activity {
                         dialogContent = "商品购买数量已达到限购上限，无法购买";
                     else
                         dialogContent = "商品购买失败";
-                    new  AlertDialog.Builder(ConfirmOrder.this)
-                            .setTitle("消息")
-                            .setMessage(dialogContent)
-                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialogInterface, int ii) {
-                                    new Thread() {
-                                        @Override
-                                        public void run() {
-                                            super.run();
-
-                                            /*Intent intent = new Intent(getApplication(), MainActivity.class);
-                                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                            startActivity(intent);*/
-
-                                            if (ShoppingCartActivity.shoppingCartActivity != null)
-                                                ShoppingCartActivity.shoppingCartActivity.finish();
-                                            if (ProductDetailActivity.productDetailActivity != null)
-                                                ProductDetailActivity.productDetailActivity.finish();
-                                            finish();
-
-                                        }
-                                    }.start();
-                                }
-                            }).setCancelable(false)
-                            .show();
             }
         }
     };

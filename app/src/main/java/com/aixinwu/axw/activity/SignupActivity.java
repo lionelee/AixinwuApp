@@ -6,7 +6,10 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -31,7 +34,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 
 
-public class SignupActivity extends Activity {
+public class SignupActivity extends AppCompatActivity{
     private static final String TAG = "SignupActivity";
 
     @Bind(R.id.input_name)
@@ -41,13 +44,11 @@ public class SignupActivity extends Activity {
     @Bind(R.id.input_password)
     EditText _passwordText;
     @Bind(R.id.btn_signup)
-    Button _signupButton;
-    @Bind(R.id.link_login)
-    TextView _loginLink;
+    AppCompatButton _signupButton;
     @Bind(R.id.catchVerificationCode)
     Button _catchVerificationCode;
     @Bind(R.id.confirm_password)
-    TextView _confirm_password;
+    EditText _confirm_password;
 
     private int signUpStatus = -1;
 
@@ -64,10 +65,16 @@ public class SignupActivity extends Activity {
     };
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
+
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.signup_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("注册");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -76,13 +83,6 @@ public class SignupActivity extends Activity {
             }
         });
 
-        _loginLink.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // Finish the registration screen and return to the Login activity
-                finish();
-            }
-        });
 
         _catchVerificationCode.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,6 +111,23 @@ public class SignupActivity extends Activity {
         });
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                onBackPressed();
+            default:break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.scale_fade_in,R.anim.slide_out_right);
+        super.onBackPressed();
+    }
+
     public void signup() {
         Log.d(TAG, "Signup");
 
@@ -131,7 +148,6 @@ public class SignupActivity extends Activity {
         String phoneNumber = _nameText.getText().toString();
         String password = _passwordText.getText().toString();
         String verifyCode = _emailText.getText().toString();
-        // TODO: Implement your own signup logic here.
 
         RegisterThread registerThread = new RegisterThread(phoneNumber, verifyCode, password);
 
@@ -144,17 +160,11 @@ public class SignupActivity extends Activity {
         }
 
 
-
         if (signUpStatus == 0){
             new android.os.Handler().postDelayed(
                     new Runnable() {
                         public void run() {
-                            // On complete call either onSignupSuccess or onSignupFailed
-                            // depending on success
-
-
                             onSignupSuccess();
-                            // onSignupFailed();
                             progressDialog.dismiss();
                         }
                     }, 3000);
@@ -177,7 +187,7 @@ public class SignupActivity extends Activity {
     public void onSignupSuccess() {
         _signupButton.setEnabled(true);
         Toast.makeText(getBaseContext(), "注册成功", Toast.LENGTH_LONG).show();
-        setResult(RESULT_OK, null);
+        setResult(RESULT_OK, null);/*here is gona to be changed.*/
         finish();
     }
 

@@ -8,6 +8,12 @@ import android.app.Application;
 import android.content.SharedPreferences;
 
 import com.aixinwu.axw.Adapter.NotifyMessage;
+import com.aixinwu.axw.R;
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import org.json.JSONException;
 
@@ -55,6 +61,28 @@ public class GlobalParameterApplication extends Application{
         newOldStringToInt.put("七成新",Integer.valueOf(3));
         newOldStringToInt.put("六成新及以下",Integer.valueOf(4));
     }
+
+    private void configImageLoader() {
+        @SuppressWarnings("deprecation")
+        DisplayImageOptions options = new DisplayImageOptions.Builder().showStubImage(R.drawable.icon_stub)
+                .showImageForEmptyUri(R.drawable.icon_empty)
+                .showImageOnFail(R.drawable.icon_error)
+                .cacheInMemory(true)
+                .cacheOnDisc(true)
+                .build();
+
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext()).defaultDisplayImageOptions(options)
+                .threadPriority(Thread.NORM_PRIORITY - 2).denyCacheImageMultipleSizesInMemory()
+                .discCacheFileNameGenerator(new Md5FileNameGenerator()).tasksProcessingOrder(QueueProcessingType.LIFO).build();
+        ImageLoader.getInstance().init(config);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+        configImageLoader();
+    }
+
     public static void start(String _token){
         chat = new Chat(_token, ConnectionFactory.DEFAULT_URL);
         chat.addRecvCallBack(new Chat.ChatCallback() {

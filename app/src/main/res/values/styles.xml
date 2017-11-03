@@ -1,15 +1,19 @@
 <resources>
 
-    <!--
-        Base application theme, dependent on API level. This theme is replaced
-        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
-    -->
-    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <!--
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-        -->
+    <style name="AppBaseTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary</item>
+        <item name="colorAccent">@color/accent</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:colorBackground">@color/background</item>
+    </style>
+
+    <style name="AppStartTheme" parent="AppBaseTheme">
+        <item name="android:windowBackground">@drawable/startbg</item>
+    </style>
+
+    <style name="AppTransTheme" parent="AppBaseTheme">
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <!-- Application theme. -->
@@ -17,14 +21,30 @@
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 
+    <style name="BtnTheme" parent="Base.Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/button</item>
+        <item name="android:textColor">@color/btn_textcolor</item>
+    </style>
+
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
     </style>
 
+
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+
+    <style name="PrimaryButton" parent="Base.Widget.AppCompat.Button.Colored">
+        <item name="android:background">@color/primary</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="BorderlessButton" parent="Base.Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/borderless_btn</item>
+    </style>
 
 
     //Login background
@@ -34,12 +54,6 @@
         <item name="android:textColorPrimary">@color/black</item>
         <item name="android:background">@color/forestgreen</item>
     </style>
-
-
-<!-- jd -->
-
-
-
 
 
     <style name="PersonalCenterText">

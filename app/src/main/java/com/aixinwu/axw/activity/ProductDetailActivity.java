@@ -6,18 +6,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutCompat;
 import android.text.Editable;
-import android.text.Html;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
@@ -25,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -41,26 +32,22 @@ import android.widget.Toast;
 import com.aixinwu.axw.R;
 import com.aixinwu.axw.database.ProductReadDbHelper;
 import com.aixinwu.axw.database.ProductReaderContract;
+import com.aixinwu.axw.fragment.ShoppingCart;
 import com.aixinwu.axw.model.Product;
 import com.aixinwu.axw.tools.GlobalParameterApplication;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.commons.io.IOUtils;
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.simple.JSONObject;
-import org.w3c.dom.Text;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 public class ProductDetailActivity extends Activity {
 
@@ -182,7 +169,7 @@ public class ProductDetailActivity extends Activity {
         cartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(ProductDetailActivity.this, ShoppingCartActivity.class);
+                Intent intent = new Intent(ProductDetailActivity.this, ShoppingCart.class);
                 startActivity(intent);
             }
         });
@@ -766,7 +753,7 @@ public class ProductDetailActivity extends Activity {
         if (id == R.id.action_settings) {
             return true;
         } else if (id == R.id.action_shopping) {
-            Intent intent = new Intent(getApplication(), ShoppingCartActivity.class);
+            Intent intent = new Intent(getApplication(), ShoppingCart.class);
             startActivity(intent);
         }
 

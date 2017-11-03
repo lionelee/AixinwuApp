@@ -5,9 +5,12 @@ import android.app.ProgressDialog;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
 import android.content.Intent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -33,28 +36,29 @@ import java.net.ProtocolException;
 import java.net.URL;
 
 
-public class LoginActivity extends Activity {
+public class LoginActivity extends AppCompatActivity{
     private static final String TAG = "LoginActivity";
     private static final int REQUEST_SIGNUP = 0;
-
-
-
 
     private Sqlite userDbHelper = new Sqlite(this);
 
     @Bind(R.id.input_email) EditText _emailText;
     @Bind(R.id.input_password) EditText _passwordText;
-    @Bind(R.id.btn_login) Button _loginButton;
-    @Bind(R.id.link_signup) TextView _signupLink;
-    @Bind(R.id.forgetPWD) TextView forgetPWD;
+    @Bind(R.id.btn_login) AppCompatButton _loginButton;
+    @Bind(R.id.forgetPWD) Button _forgetPWD;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
-        forgetPWD.setOnClickListener(new View.OnClickListener() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.login_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("登录");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        _forgetPWD.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), ResetPWD.class);
@@ -70,17 +74,25 @@ public class LoginActivity extends Activity {
                 login();
             }
         });
-
-        _signupLink.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                // Start the Signup activity
-                Intent intent = new Intent(getApplicationContext(), SignupActivity.class);
-                startActivityForResult(intent, REQUEST_SIGNUP);
-            }
-        });
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                onBackPressed();
+            default:break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.scale_fade_in,R.anim.slide_out_right);
+        super.onBackPressed();
+    }
+
 
     public void login() {
         Log.d(TAG, "Login");
@@ -100,8 +112,6 @@ public class LoginActivity extends Activity {
 
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
-
-        // TODO: Implement your own authentication logic here.
 
         LoginThread loginThread = new LoginThread(email,password);
 
@@ -145,18 +155,11 @@ public class LoginActivity extends Activity {
         }
     }
 
-    @Override
-    public void onBackPressed() {
-        // Disable going back to the MainActivity
-        //moveTaskToBack(true);
-        super.onBackPressed();
-    }
-
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
         Intent intent = new Intent(getApplication(), MainActivity.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         startActivity(intent);
+        overridePendingTransition(R.anim.scale_fade_in,R.anim.slide_out_right);
         finish();
     }
 

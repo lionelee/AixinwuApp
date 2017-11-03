@@ -1,434 +1,193 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <android.support.v4.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <com.aixinwu.axw.view.MyScrollView
-            android:id="@+id/homepageScroll"
-            android:orientation="vertical"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:id="@+id/rollPicture"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <com.aixinwu.axw.view.BaseViewPager
+                    android:id="@+id/viewPager"
+                    android:layout_width="match_parent"
+                    android:layout_height="150dp"/>
+                <LinearLayout
+                    android:id="@+id/layout_viewpager_indicator"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="@dimen/view_small_padding"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal"
+                    android:paddingBottom="@dimen/view_padding"
+                    android:paddingRight="@dimen/view_padding"/>
+            </RelativeLayout>
 
             <LinearLayout
-                android:layout_width="fill_parent"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <EditText
-                    android:id="@+id/homepage_search"
-                    android:layout_gravity="center_vertical"
-                    android:drawableLeft="@drawable/main_bottom_tab_search_normal"
-                    android:drawableStart="@drawable/main_bottom_tab_search_normal"
-                    android:drawablePadding="20dp"
+                android:orientation="vertical"
+                android:elevation="3dp"
+                android:background="@color/white">
+                <RelativeLayout
+                    android:id="@+id/exchange_more"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@drawable/search_edittext_shape"
-                    android:textSize="14sp"
-                    android:textColor="#b4b5b5"
-                    android:imeOptions="actionSearch"
-                    android:inputType="text"
-                    android:focusable="false"
-                    android:layout_marginLeft="13dp"
-                    android:layout_marginStart="13dp"
-                    android:layout_marginEnd="13dp"
-                    android:layout_marginRight="13dp"
-                    android:layout_marginBottom="5dp"
-                    android:layout_marginTop="10dp"
-                    android:text="@string/homepageSearch"/>
-
-                <RelativeLayout
-                    android:id="@+id/rollPicture"
-                    android:layout_width="match_parent"
-                    android:layout_height="180dp"
-                    android:background="@color/white" >
-
-                    <com.aixinwu.axw.view.BaseViewPager
-                        android:id="@+id/viewPager"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="5dp" >
-                    </com.aixinwu.axw.view.BaseViewPager>
-
+                    android:paddingBottom="10dp"
+                    android:paddingRight="16dp"
+                    android:paddingTop="16dp"
+                    android:background="?android:attr/selectableItemBackground" >
                     <LinearLayout
-                        android:id="@+id/layout_viewpager_indicator"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_margin="@dimen/view_small_padding"
-                        android:gravity="center_vertical"
-                        android:orientation="horizontal"
-                        android:paddingBottom="@dimen/view_padding"
-                        android:paddingRight="@dimen/view_padding" >
-                    </LinearLayout>
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:layout_marginTop="-2dp"
-                    android:background="#F0F0F0"></RelativeLayout>
-
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="35dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp">
-
+                        android:layout_width="5dp"
+                        android:layout_height="18dp"
+                        android:layout_marginTop="3dp"
+                        android:background="@color/primary" />
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="重要商品推荐"
-                        android:textSize="18dp"
-                        android:textColor="#3e3a39"
-                        android:layout_centerHorizontal="true"/>
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="更多 ＞ "
-                        android:textSize="13dp"
-                        android:textColor="#888889"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentBottom="true"
-                        android:visibility="gone"
-                        />
-
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="340dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginBottom="10dp">
-
-                    <View
-                        android:id="@+id/topLine"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#F0F0F0"
-                        android:layout_alignParentTop="true"/>
-
-                    <View
-                        android:id="@+id/leftLine"
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="#F0F0F0"
                         android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"/>
-
-                    <View
-                        android:id="@+id/rightLine"
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="#F0F0F0"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#F0F0F0"
-                        android:layout_alignParentBottom="true"/>
-
-                    <GridView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:id="@+id/homepage_guide"
-                        android:numColumns="3"
-                        android:layout_below="@id/topLine"
-                        android:layout_toRightOf="@id/leftLine"
-                        android:layout_toEndOf="@id/leftLine"
-                        android:layout_toLeftOf="@id/rightLine"
-                        android:layout_toStartOf="@id/rightLine">
-                    </GridView>
-
-
-                    <!--
-                    <GridView
-                        android:layout_width="match_parent"
-                        android:layout_height="300dp"
-                        android:numColumns="3"
-                        android:background="@color/white">
-                    </GridView>
--->
-                </RelativeLayout>
-
-
-<!--
-                <RelativeLayout
-                    android:id="@+id/show_commodity"
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:layout_below="@id/topLine"
-                    android:layout_alignLeft="@id/leftLine"
-                    android:layout_alignStart="@id/leftLine">
-
-                </RelativeLayout>
--->
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="3dp"
-                    android:background="#F0F0F0"></View>
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="35dp"
-                    android:layout_marginBottom="10dp"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp">
-
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:layout_centerHorizontal="true"
-                        android:layout_alignParentTop="true">
-
-                        <ImageView
-                            android:layout_width="15dp"
-                            android:layout_height="15dp"
-                            android:layout_marginTop="5dp"
-                            android:layout_marginRight="2dp"
-                            android:layout_marginEnd="6dp"
-                            android:src="@drawable/heart"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text=" 爱心屋数据"
-                            android:textSize="18dp"
-                            android:textColor="#3e3a39"/>
-
-                    </LinearLayout>
-
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="更多 ＞ "
-                        android:textSize="13dp"
-                        android:textColor="#888889"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentBottom="true"
-                        android:visibility="gone"
-                        />
-
-                </RelativeLayout>
-
-
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="300dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp"
-                    android:layout_marginBottom="50dp">
-
-                    <View
-                        android:id="@+id/topLine2"
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#F0F0F0"
-                        android:layout_alignParentTop="true"/>
-
-                    <View
-                        android:id="@+id/leftLine2"
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="#F0F0F0"
-                        android:layout_alignParentLeft="true"
-                        android:layout_alignParentStart="true"/>
-
-                    <View
-                        android:layout_width="1dp"
-                        android:layout_height="match_parent"
-                        android:background="#F0F0F0"
-                        android:layout_alignParentRight="true"
-                        android:layout_alignParentEnd="true"/>
-
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:background="#F0F0F0"
-                        android:layout_alignParentBottom="true"/>
-
-                    <RelativeLayout
-                        android:layout_width="150dp"
-                        android:layout_height="100dp"
-                        android:layout_alignParentTop="true"
                         android:layout_alignParentStart="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_margin="10dp">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="物品总流转量"
-                            android:textSize="18dp"
-                            android:textColor="#3e3a39"
-                            android:layout_centerHorizontal="true"/>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/number4"
-                            android:gravity="center"
-                            android:text="36000"
-                            android:textColor="#ea5404"
-                            android:textSize="25sp"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="40dp"/>
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="150dp"
-                        android:layout_height="100dp"
-                        android:layout_alignParentTop="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_margin="10dp">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="用户注册量"
-                            android:textSize="18dp"
-                            android:textColor="#3e3a39"
-                            android:layout_centerHorizontal="true"/>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/number3"
-                            android:gravity="center"
-                            android:text="94562"
-                            android:textColor="#ea5404"
-                            android:textSize="25sp"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="40dp"/>
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="150dp"
-                        android:layout_height="100dp"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentStart="true"
-                        android:layout_alignParentLeft="true"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginStart="10dp"
-                        android:layout_marginBottom="50dp">
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/donation1"
-                            android:gravity="center"
-                            android:text="用户访问量"
-                            android:textSize="18dp"
-                            android:textColor="#3e3a39"
-                            android:layout_centerHorizontal="true"/>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/number1"
-                            android:gravity="center"
-                            android:text="776697"
-                            android:textColor="#ea5404"
-                            android:textSize="25sp"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="40dp"/>
-
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:layout_width="150dp"
-                        android:layout_height="100dp"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentEnd="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginBottom="50dp">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="center"
-                            android:text="爱心币置换总量"
-                            android:textSize="18dp"
-                            android:textColor="#3e3a39"
-                            android:layout_centerHorizontal="true"/>
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:id="@+id/number2"
-                            android:gravity="center"
-                            android:text="25386"
-                            android:textColor="#ea5404"
-                            android:textSize="25sp"
-                            android:layout_centerHorizontal="true"
-                            android:layout_marginTop="40dp"/>
-
-                    </RelativeLayout>
-
-                    <ImageView
-                        android:layout_width="250dp"
+                        android:paddingLeft="16dp"
+                        android:text="置换专区"
+                        android:textSize="18dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:src="@drawable/line"
-                        android:layout_marginTop="20dp"
-                        android:layout_marginLeft="80dp"
-                        android:layout_marginStart="80dp"/>
-
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:text="更多 ＞ "
+                        android:textColor="#888889"
+                        android:textSize="18dp" />
                 </RelativeLayout>
+                <com.aixinwu.axw.view.MyGridView
+                    android:id="@+id/grid1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:horizontalSpacing="5dp"
+                    android:numColumns="3"
+                    android:stretchMode="columnWidth"
+                    android:verticalSpacing="5dp" />
             </LinearLayout>
 
-        </com.aixinwu.axw.view.MyScrollView>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:layout_alignParentBottom="true"/>
 
-    </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:elevation="3dp"
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:id="@+id/lend_more_more"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="10dp"
+                    android:paddingRight="16dp"
+                    android:paddingTop="16dp"
+                    android:background="?android:attr/selectableItemBackground" >
+                    <LinearLayout
+                        android:layout_width="5dp"
+                        android:layout_height="18dp"
+                        android:layout_marginTop="3dp"
+                        android:background="@color/primary" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:paddingLeft="16dp"
+                        android:text="租赁专区"
+                        android:textSize="18dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:text="更多 ＞ "
+                        android:textColor="#888889"
+                        android:textSize="18dp" />
+                </RelativeLayout>
+                <com.aixinwu.axw.view.MyGridView
+                    android:id="@+id/grid2"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:horizontalSpacing="5dp"
+                    android:numColumns="3"
+                    android:stretchMode="columnWidth"
+                    android:verticalSpacing="5dp" />
+            </LinearLayout>
 
-    <FrameLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:id="@+id/searchHomePage">
-        <View
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:background="@drawable/homepage_search_icon"/>
-        <View
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="@drawable/whitecircle"
-            android:layout_marginLeft="1dp"
-            android:layout_marginStart="1dp"
-            android:layout_marginTop="1dp"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:layout_alignParentBottom="true"/>
 
-        <ImageView
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:id="@+id/aaa"
-            android:src="@drawable/search_icon"
-            android:layout_marginLeft="6dp"
-            android:layout_marginStart="6dp"
-            android:layout_marginTop="6dp"/>
-    </FrameLayout>
-
-</RelativeLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:elevation="3dp"
+                android:orientation="vertical">
+                <RelativeLayout
+                    android:id="@+id/vol_more_more"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingBottom="10dp"
+                    android:paddingRight="16dp"
+                    android:paddingTop="16dp"
+                    android:background="?android:attr/selectableItemBackground" >
+                    <LinearLayout
+                        android:layout_width="5dp"
+                        android:layout_height="18dp"
+                        android:layout_marginTop="3dp"
+                        android:background="@color/primary" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:paddingLeft="16dp"
+                        android:text="公益专区"
+                        android:textSize="18dp" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:text="更多 ＞ "
+                        android:textColor="#888889"
+                        android:textSize="18dp" />
+                </RelativeLayout>
+                <com.aixinwu.axw.view.MyGridView
+                    android:id="@+id/grid3"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:horizontalSpacing="5dp"
+                    android:numColumns="2"
+                    android:stretchMode="columnWidth"
+                    android:verticalSpacing="5dp" />
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="16dp"/>
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+</LinearLayout>

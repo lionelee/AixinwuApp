@@ -1,66 +1,79 @@
 package com.aixinwu.axw.Adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.os.Handler;
-import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-//import android.widget.BaseAdapter;
 
 import com.aixinwu.axw.R;
 import com.aixinwu.axw.model.Product;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
-import java.net.URL;
 /**
  * Created by dell1 on 2016/4/24.
  */
-public class ProductAdapter extends ArrayAdapter<Product> {
+public class ProductAdapter extends BaseAdapter {
     private int resourceId;
     public Product product;
-    public Bitmap bitmap;
+    private List<Product> products;
+    private Context mContext;
 
-
-
-
-
-
-    public ProductAdapter (Context context,
-                           int textViewResourseId,
-                           List<Product> objects) {
-        super(context, textViewResourseId, objects);
+    public ProductAdapter (Context context, int textViewResourseId, List<Product> objects) {
+        mContext = context;
         resourceId = textViewResourseId;
-
+        int size = objects.size();
+        if(size>6) size = 6;
+        products = new ArrayList<>();
+        for(int i = 0; i < size; ++i){
+            products.add(objects.get(i));
+        }
     }
 
+    @Override
+    public int getCount() {
+        return products.size();
+    }
 
+    @Override
+    public Product getItem(int position) {
+        return products.get(position);
+    }
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
 
     @Override
     public View getView(int position, View concertView, ViewGroup parent) {
         product = getItem(position);
+        VHolder holder;
+        if(concertView == null) {
+            concertView = LayoutInflater.from(mContext).inflate(resourceId, null);
+            holder = new VHolder();
+            holder.imageView = (ImageView)concertView.findViewById(R.id.product_image);
+            holder.name = (TextView)concertView.findViewById(R.id.product_name);
+            holder.price = (TextView)concertView.findViewById(R.id.product_price);
+            concertView.setTag(holder);
+        } else {
+            holder = (VHolder) concertView.getTag();
+        }
+        ImageLoader.getInstance().displayImage(product.getImage_url(), holder.imageView);
+        holder.name.setText(product.getProduct_name());
+        holder.price.setText(String.valueOf(product.getPrice()));
+        return concertView;
 
+    }
 
-         View view = LayoutInflater.from(getContext()).inflate(resourceId, null);
-
-         ImageView productImage = (ImageView) view.findViewById(R.id.product_image);
-         TextView productName = (TextView) view.findViewById(R.id.product_name);
-         TextView productPrice = (TextView) view.findViewById(R.id.product_price);
-
-        ImageLoader.getInstance().displayImage(product.getImage_url(), productImage);
-
-        productName.setText(product.getProduct_name());
-        productPrice.setText(String.valueOf(product.getPrice()));
-        return view;
-
+    private class VHolder{
+        ImageView imageView;
+        TextView name;
+        TextView price;
     }
 
 }

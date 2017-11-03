@@ -58,4 +58,12 @@
     <string name="title_activity_reset_pwd">ResetPWD</string>
     <string name="title_activity_raw_picture">RawPictureActivity</string>
 
+    <string name="navigation_drawer_open">navigation drawer open</string>
+    <string name="navigation_drawer_close">navigation drawer close</string>
+    <string name="tab0">我的购买</string>
+    <string name="tab1">我的捐赠</string>
+    <string name="tab2">我的发布</string>
+    <string name="shareApp">下载使用爱心屋App\nhttp://salary.aixinwu.info/apk/axw.apk</string>
+    <string name="shareApp_choser_label">分享到</string>
+
 </resources>

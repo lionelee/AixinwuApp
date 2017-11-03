@@ -4,28 +4,6 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/love_coin_search"
-        android:layout_gravity="center_vertical"
-        android:drawableLeft="@drawable/main_bottom_tab_search_normal"
-        android:drawableStart="@drawable/main_bottom_tab_search_normal"
-        android:drawablePadding="20dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/search_edittext_shape"
-        android:textSize="14sp"
-        android:textColor="#b4b5b5"
-        android:imeOptions="actionSearch"
-        android:inputType="text"
-        android:focusable="false"
-        android:layout_marginLeft="13dp"
-        android:layout_marginStart="13dp"
-        android:layout_marginEnd="13dp"
-        android:layout_marginRight="13dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="10dp"
-        android:text="@string/homepageSearch"/>
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -97,7 +75,6 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginLeft="5dp"
                 android:layout_marginRight="5dp">
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -108,7 +85,6 @@
                     android:layout_marginStart="10dp"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"/>
-
                 <TextView
                     android:id="@+id/lend_more_more"
                     android:layout_width="wrap_content"
@@ -120,9 +96,7 @@
                     android:layout_marginEnd="20dp"
                     android:layout_marginTop="10dp"
                     android:layout_alignParentRight="true"
-                    android:layout_alignParentEnd="true"
-                    />
-
+                    android:layout_alignParentEnd="true" />
             </RelativeLayout>
 
 

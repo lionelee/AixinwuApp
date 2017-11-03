@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
@@ -12,6 +13,7 @@ import android.os.Message;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -34,15 +36,14 @@ import com.aixinwu.axw.R;
 /**
  * 实现可循环，可轮播的viewpager
  */
-@SuppressLint("NewApi")
+
 public class CycleViewPager extends Fragment implements OnPageChangeListener {
 
     private List<ImageView> imageViews = new ArrayList<ImageView>();
     private ImageView[] indicators;
-    protected FrameLayout viewPagerFragmentLayout;
+    protected RelativeLayout rollPictureLayout;
     protected LinearLayout indicatorLayout; // 指示器
     protected BaseViewPager viewPager;
-    private BaseViewPager parentViewPager;
     private ViewPagerAdapter adapter;
     private CycleViewPagerHandler handler;
     private int time = 5000; // 默认轮播时间
@@ -55,29 +56,10 @@ public class CycleViewPager extends Fragment implements OnPageChangeListener {
     private int WHEEL_WAIT = 101; // 等待
     private ImageCycleViewListener mImageCycleViewListener;
     private List<ADInfo> infos;
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View view = LayoutInflater.from(getActivity()).inflate(
-                R.layout.view_cycle_viewpager_content,null);
-
-       // viewPager = (BaseViewPager) view.findViewById(R.id.viewPager);
-       // indicatorLayout = (LinearLayout) view
-     //           .findViewById(R.id.layout_viewpager_indicator);
-
-     //   viewPagerFragmentLayout = (FrameLayout) view
-     //           .findViewById(R.id.layout_viewager_content);
-
-
-
-        return view;
-    }
+    static protected Activity mActivity;
 
     public void init(){
-
         handler = new CycleViewPagerHandler(getActivity()) {
-
             @Override
             public void handleMessage(Message msg) {
                 super.handleMessage(msg);
@@ -108,6 +90,16 @@ public class CycleViewPager extends Fragment implements OnPageChangeListener {
         setData(views, list, listener, 0);
     }
 
+    public void setData(List<ImageView> views, List<ADInfo> list, ImageCycleViewListener listener,
+                        RelativeLayout rollPictureLayout,
+                        LinearLayout indicatorLayout,
+                        BaseViewPager viewPager){
+        this.rollPictureLayout = rollPictureLayout;
+        this.indicatorLayout = indicatorLayout;
+        this.viewPager = viewPager;
+        setData(views, list, listener, 0);
+    }
+
     /**
      * 初始化viewpager
      *
@@ -122,7 +114,7 @@ public class CycleViewPager extends Fragment implements OnPageChangeListener {
         this.imageViews.clear();
 
         if (views.size() == 0) {
-            viewPagerFragmentLayout.setVisibility(View.GONE);
+            rollPictureLayout.setVisibility(View.GONE);
             return;
         }
 
@@ -136,9 +128,9 @@ public class CycleViewPager extends Fragment implements OnPageChangeListener {
         indicators = new ImageView[ivSize];
         if (isCycle)
             indicators = new ImageView[ivSize - 2];
-        indicatorLayout.removeAllViews();
+        this.indicatorLayout.removeAllViews();
         for (int i = 0; i < indicators.length; i++) {
-            View view = LayoutInflater.from(getActivity()).inflate(
+            View view = LayoutInflater.from(mActivity).inflate(
                     R.layout.view_cycle_viewpager_indicator, null);
             indicators[i] = (ImageView) view.findViewById(R.id.image_indicator);
             indicatorLayout.addView(view);
@@ -150,7 +142,7 @@ public class CycleViewPager extends Fragment implements OnPageChangeListener {
         setIndicator(0);
 
         viewPager.setOffscreenPageLimit(3);
-        viewPager.setOnPageChangeListener(this);
+        viewPager.addOnPageChangeListener(this);
         viewPager.setAdapter(adapter);
         if (showPosition < 0 || showPosition >= views.size())
             showPosition = 0;
@@ -261,7 +253,7 @@ public class CycleViewPager extends Fragment implements OnPageChangeListener {
      * 隐藏CycleViewPager
      */
     public void hide() {
-        viewPagerFragmentLayout.setVisibility(View.GONE);
+        rollPictureLayout.setVisibility(View.GONE);
     }
 
     /**
@@ -324,8 +316,6 @@ public class CycleViewPager extends Fragment implements OnPageChangeListener {
             isScrolling = true;
             return;
         } else if (arg0 == 0) { // viewPager滚动结束
-            if (parentViewPager != null)
-                parentViewPager.setScrollable(true);
 
             releaseTime = System.currentTimeMillis();
 
