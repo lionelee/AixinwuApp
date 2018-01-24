@@ -7,7 +7,7 @@
         android:id="@+id/product_image"
         android:layout_width="match_parent"
         android:layout_height="110dp"
-        android:scaleType="fitXY"
+        android:scaleType="centerCrop"
         android:layout_centerHorizontal="true" />
 
     <LinearLayout

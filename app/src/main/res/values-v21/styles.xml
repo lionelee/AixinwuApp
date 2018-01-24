@@ -11,9 +11,19 @@
         <item name="android:colorControlHighlight">@color/white</item>
     </style>
 
+    <style name="AppTransTheme" parent="AppBaseTheme">
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="BtnTheme" parent="Base.Widget.AppCompat.Button.Borderless">
+        <item name="android:background">@drawable/button</item>
+        <item name="android:textColor">@color/btn_textcolor</item>
+    </style>
+
     <style name="PrimaryButton" parent="AppBaseTheme">
         <item name="android:textColor">@color/white</item>
         <item name="android:textSize">18sp</item>
+        <item name="colorControlHighlight">@color/white</item>
     </style>
 
 </resources>

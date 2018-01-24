@@ -19,6 +19,10 @@
 
     <string name="home">首页</string>
 
+    <string name="homepage">主页</string>
+    <string name="usedDeal">交易</string>
+    <string name="shopCart">购物车</string>
+
     <string name="home_pic">爱心屋logo</string>
     <string name="home_info">----  最新通知  ----</string>
     <string name="home_commodity">----  新品上架  ----</string>
@@ -37,11 +41,11 @@
         为宗旨。以“爱心、公益、透明、环保、低碳、绿色”为理念。积极开展慈善捐赠、公益服务等爱心活动。
     </string>
 
-    <!-- TODO: Remove or change this placeholder text -->
+    <string name="net_err_info">网络不给力，请检查网络设置</string>
 
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-
+    <string name="welcome_reserve">&#169;2018 All rights reserved</string>
     <string name="add_attention">加关注</string>
     <string name="user_post">用户组：学生</string>
     <string name="user_book">交易单数：13</string>
@@ -63,7 +67,50 @@
     <string name="tab0">我的购买</string>
     <string name="tab1">我的捐赠</string>
     <string name="tab2">我的发布</string>
+    <string name="tab3">我的收藏</string>
     <string name="shareApp">下载使用爱心屋App\nhttp://salary.aixinwu.info/apk/axw.apk</string>
     <string name="shareApp_choser_label">分享到</string>
+    <string name="permission_denied_info">这样无法将app下载到本机存储空间╮(╯﹏╰）╭</string>
 
+    <string name="activity_settings">设置</string>
+    <!-- Preference -->
+    <string name="pref_show_slider_key" translatable="false">showSlider</string>
+    <string name="pref_show_slider_title">显示主页滑动推荐</string>
+    <string name="pref_show_slider_on">已开启</string>
+    <string name="pref_show_slider_off">已关闭</string>
+
+    <string name="pref_size_key" translatable="false">size</string>
+    <string name="pref_size_title">主页专区显示最多商品数</string>
+    <string name="pref_size_default">6</string>
+    <string name="pref_size_label_3" translatable="false">3</string>
+    <string name="pref_size_label_6" translatable="false">6</string>
+    <string name="pref_size_label_9" translatable="false">9</string>
+    <string name="pref_size_label_12" translatable="false">12</string>
+    <string name="pref_size_3_value">3</string>
+    <string name="pref_size_6_value">6</string>
+    <string name="pref_size_9_value">9</string>
+    <string name="pref_size_12_value">12</string>
+
+    <string name="pref_color_key" translatable="false">color</string>
+    <string name="pref_color_title">主题颜色</string>
+    <string name="pref_color_default">green</string>
+    <string name="pref_color_label_red">Red</string>
+    <string name="pref_color_label_blue">Blue</string>
+    <string name="pref_color_label_green">Green</string>
+    <string name="pref_color_red_value" translatable="false">red</string>
+    <string name="pref_color_blue_value" translatable="false">blue</string>
+    <string name="pref_color_green_value" translatable="false">green</string>
+
+    <string name="pref_bind_JAccount_key">bindJA</string>
+    <string name="pref_bind_JAccount_title">绑定JAccount</string>
+    <string name="pref_check_update_key">checkUP</string>
+    <string name="pref_check_update_title">检查更新</string>
+
+    <string name="pref_feedback_key">feedback</string>
+    <string name="pref_feedback_title">意见反馈</string>
+    <string name="pref_rabj_key">registreAndBindJA</string>
+    <string name="pref_rabj_title">注册与JAccount绑定</string>
+
+    <string name="minhang">上海交通大学闵行校区</string>
+    <string name="xuhui">上海交通大学徐汇校区</string>
 </resources>

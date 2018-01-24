@@ -32,6 +32,7 @@ import org.json.simple.JSONObject;
 import com.aixinwu.axw.tools.GlobalParameterApplication;
 import com.aixinwu.axw.tools.talkmessage;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.nats.client.ConnectionFactory;
 import schoolapp.chat.Chat;
 import schoolapp.chat.Messages;
@@ -54,20 +55,13 @@ public class Chattoother extends Activity{
     String[] from={"name","text"};
     int[] to={R.id.chatlist_image_me,R.id.chatlist_text_me,R.id.chatlist_image_other,R.id.chatlist_text_other};
     int[] layout={R.layout.chat_listitem_me,R.layout.chat_listitem_other};
-    String userQQ=null;
+    String[] avatar={"",""};
     public String myWord;
-    /**
-     * 这里两个布局文件使用了同一个id，测试一下是否管用
-     * TT事实证明这回产生id的匹配异常！所以还是要分开。。
-     *
-     * userQQ用于接收Intent传递的qq号，进而用来调用数据库中的相关的联系人信息，这里先不讲
-     * 先暂时使用一个头像
-     */
 
     public final static int OTHER=1;
     public final static int ME=0;
 
-    private String otherName = "数据的佛";
+    private String otherName = "";
 
     protected ListView chatListView=null;
     protected TextView chatSendButton=null;
@@ -83,26 +77,15 @@ public class Chattoother extends Activity{
     private boolean uploadSuccessful = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // TODO Auto-generated method stub
         super.onCreate(savedInstanceState);
         Intent intent=getIntent();
         Bundle out = intent.getExtras();
-        //  GlobalParameterApplication.setPause(true);
         GlobalParameterApplication.setAllowChatThread(false);
         ItemID=out.getInt("itemID");
         From=out.getInt("To");
         otherName = out.getString("ToName");
 
         To = GlobalParameterApplication.getUserID();
-/*        FileName = To+"$"+From+"$"+ItemID+".txt";
-        String[] sss = fileList();
-        boolean exist=false;
-        for (int i = 0; i < sss.length;i++){
-            if (FileName.equals(sss[i])){
-                exist=true;
-                break;
-            }
-        }*/
         pause = true;
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.activity_chat);
@@ -308,6 +291,14 @@ public class Chattoother extends Activity{
         chatListView.setSelection(chatList.size()-1);
 
     }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.scale_fade_in,R.anim.slide_out_right);
+        super.onBackPressed();
+    }
+
     @Override
     public void onDestroy(){
         // GlobalParameterApplication.setEnd(true);
@@ -415,68 +406,51 @@ public class Chattoother extends Activity{
 
     private class MyChatAdapter extends BaseAdapter {
 
-        Context context=null;
-        ArrayList<HashMap<String,Object>> chatList=null;
-        int[] layout;
-        String[] from;
-        int[] to;
-
-
-
         public MyChatAdapter(Context context,
                              ArrayList<HashMap<String, Object>> chatList, int[] layout,
                              String[] from, int[] to) {
             super();
-            this.context = context;
-            this.chatList = chatList;
-            this.layout = layout;
-            this.from = from;
-            this.to = to;
         }
 
         @Override
         public int getCount() {
-            // TODO Auto-generated method stub
             return chatList.size();
         }
 
         @Override
         public Object getItem(int arg0) {
-            // TODO Auto-generated method stub
             return null;
         }
 
         @Override
         public long getItemId(int position) {
-            // TODO Auto-generated method stub
             return position;
         }
 
         class ViewHolder{
+            public CircleImageView imgView;
             public TextView nameView=null;
             public TextView textView=null;
-
         }
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            // TODO Auto-generated method stub
-            ViewHolder holder=null;
+            ViewHolder holder;
             int who=(Integer)chatList.get(position).get("person");
-
-            convertView= LayoutInflater.from(context).inflate(
-                    layout[who==ME?0:1], null);
-            holder=new ViewHolder();
-            holder.nameView=(TextView)convertView.findViewById(to[who*2+0]);
-            holder.textView=(TextView)convertView.findViewById(to[who*2+1]);
-
-
-            System.out.println(holder);
-            System.out.println("WHYWHYWHYWHYW");
-            System.out.println(holder.nameView);
-            //holder.nameView.setBackgroundResource((Integer)chatList.get(position).get(from[0]));
+            if(convertView == null){
+                convertView= LayoutInflater.from(Chattoother.this).inflate(
+                        layout[who==ME?0:1], null);
+                holder=new ViewHolder();
+                holder.nameView=(TextView)convertView.findViewById(to[who*2+0]);
+                holder.textView=(TextView)convertView.findViewById(to[who*2+1]);
+                holder.imgView =(CircleImageView)convertView.findViewById(R.id.img_activity_product);
+                convertView.setTag(holder);
+            }else{
+                holder = (ViewHolder) convertView.getTag();
+            }
             holder.nameView.setText(chatList.get(position).get(from[0]).toString());
             holder.textView.setText(chatList.get(position).get(from[1]).toString());
+
             return convertView;
         }
 

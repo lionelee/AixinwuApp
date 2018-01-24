@@ -35,23 +35,30 @@
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
             android:launchMode="singleInstance"
-            android:windowSoftInputMode="adjustPan|stateHidden"
-            android:theme="@style/AppTransTheme"/>
+            android:theme="@style/AppTransTheme"
+            android:windowSoftInputMode="adjustPan|stateHidden" />
+        <activity android:name=".activity.Search" />
         <activity android:name=".activity.LoginActivity" />
         <activity android:name=".activity.SignupActivity" />
-        <activity android:name=".activity.PersonalCenter"
-            android:theme="@style/AppTransTheme"/>
+        <activity
+            android:name=".activity.PersonalCenter"
+            android:theme="@style/AppTransTheme" />
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/AppTheme" />
+        <activity android:name=".activity.Settings" />
         <activity
             android:name=".activity.Buy"
             android:label="@string/app_name" />
         <activity android:name=".activity.ProductListActivity" />
-        <activity android:name=".activity.ProductDetailActivity" />
+        <activity
+            android:name=".activity.ProductDetailActivity"
+            android:theme="@style/AppTransTheme" />
         <activity android:name=".activity.Chattoother" />
         <activity android:name=".activity.SendToPeople" />
-        <activity android:name=".activity.SendToAXw" />
-        <activity android:name=".activity.PersonalDetailActivity" />
+        <activity android:name=".activity.SendToAXW" />
         <activity android:name=".activity.ChatList" />
-        <activity android:name=".activity.DealFinished" />
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -62,28 +69,24 @@
 
         <activity android:name=".activity.AXWInfo" />
         <activity
-            android:name=".activity.CommonReceiver"
-            android:label="@string/title_activity_common_receiver" />
-        <activity
             android:name=".activity.ConfirmOrder"
             android:label="@string/title_activity_confirm_order" />
-        <activity
-            android:name=".activity.MyCollection"
-            android:label="@string/title_activity_my_collection" />
-        <activity
-            android:name=".activity.SettingActivity"
-            android:label="@string/title_activity_setting" />
-        <activity android:name=".activity.VolunteerApply" />
+        <activity android:name=".activity.VolunteerApply"
+            android:theme="@style/AppTransTheme" />
         <activity android:name=".activity.VolActivityList" />
         <activity
             android:name=".activity.ResetPWD"
             android:label="@string/title_activity_reset_pwd" />
         <activity
             android:name=".activity.RawPictureActivity"
-            android:label="@string/title_activity_raw_picture" />
+            android:label="@string/title_activity_raw_picture"
+            android:theme="@style/AppTransTheme" />
         <activity android:name=".activity.CashTransfer" />
-        <activity android:name=".activity.ConfirmPhone" />
-        <activity android:name=".activity.Help"></activity>
+        <activity android:name=".activity.HelpFeed" />
+        <activity android:name=".activity.HelpBind" />
+        <activity android:name=".activity.ModifyProfile" />
+        <activity android:name=".activity.PhotoPicker" />
+        <activity android:name=".activity.ModifyUname"/>
     </application>
 
 </manifest>

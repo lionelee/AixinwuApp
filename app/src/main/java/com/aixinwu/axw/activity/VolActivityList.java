@@ -1,73 +1,74 @@
 package com.aixinwu.axw.activity;
 
 import android.content.Intent;
-import android.os.Message;
+import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.GridView;
-
-import com.aixinwu.axw.Adapter.VolunteerAdapter;
 import com.aixinwu.axw.R;
-import com.aixinwu.axw.fragment.LoveCoin;
+import com.aixinwu.axw.adapter.VolunteerListAdapter;
+import com.aixinwu.axw.fragment.HomePage;
 import com.aixinwu.axw.model.VolunteerActivity;
+import com.aixinwu.axw.tools.OnRecyclerItemClickListener;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Handler;
-import java.util.logging.LogRecord;
 
 public class VolActivityList extends AppCompatActivity {
 
     private List<VolunteerActivity> volList = new ArrayList<VolunteerActivity>();
-    private GridView volListGrid;
-
-    private android.os.Handler dHandler = new android.os.Handler() {
-        @Override
-        public void handleMessage(Message msg){
-            super.handleMessage(msg);
-            switch (msg.what){
-                case 479234:
-                    VolunteerAdapter adapter3 = new VolunteerAdapter(
-                            VolActivityList.this,
-                            R.layout.volunteer_list_item,
-                            volList
-                    );
-
-                    volListGrid.setAdapter(adapter3);
-                    volListGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                            VolunteerActivity product = volList.get(i);
-                            Intent intent = new Intent(VolActivityList.this, VolunteerApply.class);
-                            Bundle bundle = new Bundle();
-                            bundle.putSerializable("volActivityId", product);
-                            intent.putExtras(bundle);
-                            startActivity(intent);
-                        }
-                    });
-                    break;
-            }
-        };
-    };
+    private RecyclerView volListGrid;
+    private VolunteerListAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_vol_activity_list);
 
-        volListGrid = (GridView) findViewById(R.id.volList);
-
-        new Thread(new Runnable() {
+        volListGrid = (RecyclerView) findViewById(R.id.volList);
+        volListGrid.setLayoutManager(new GridLayoutManager(this, 2));
+        adapter = new VolunteerListAdapter(VolActivityList.this);
+        volListGrid.setAdapter(adapter);
+        volListGrid.addOnItemTouchListener(new OnRecyclerItemClickListener(volListGrid) {
             @Override
-            public void run() {
-                volList = LoveCoin.getVolunteer();
-                Message msg = new Message();
-                msg.what = 479234;
-                dHandler.sendMessage(msg);
+            public void onItemClick(RecyclerView.ViewHolder vh) {
+                VolunteerActivity product = ((VolunteerListAdapter.ViewHolder)vh).getData();
+                Intent intent = new Intent(VolActivityList.this, VolunteerApply.class);
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("volActivityId", product);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, 0);
+                overridePendingTransition(R.anim.slide_in_bottom, R.anim.scale_fade_out);
             }
-        }).start();
+        });
+        new GetVolunteerTask().execute();
+    }
 
+    class GetVolunteerTask extends AsyncTask<Void, Void, Void>{
+        @Override
+        protected Void doInBackground(Void... voids) {
+            volList = HomePage.getVolunteer();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            if(volList == null)return;
+            int len = volList.size();
+            for(int i = 0; i < len; ++i){
+                adapter.addItem(volList.get(i));
+            }
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.scale_fade_in, R.anim.slide_out_bottom);
+        super.onBackPressed();
     }
 }

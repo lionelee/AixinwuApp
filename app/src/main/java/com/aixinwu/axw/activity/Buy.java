@@ -1,35 +1,24 @@
 package com.aixinwu.axw.activity;
 
-import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import android.graphics.Paint;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.SystemClock;
-import android.util.Log;
-import android.view.Menu;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.SimpleAdapter;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.aixinwu.axw.Adapter.PicAdapter;
 import com.aixinwu.axw.R;
 
 import java.io.IOException;
@@ -37,37 +26,28 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
-import java.net.URLConnection;
-import java.nio.channels.GatheringByteChannel;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Date;
-import java.util.TreeMap;
 
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.simple.JSONObject;
 
 import com.aixinwu.axw.database.Sqlite;
 import com.aixinwu.axw.tools.GlobalParameterApplication;
 import com.aixinwu.axw.tools.MyAlertDialog;
-import com.aixinwu.axw.tools.Tool;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * Created by liangyuding on 2016/4/15.
  */
-public class Buy extends Activity{
+public class Buy extends AppCompatActivity{
     private final String surl = GlobalParameterApplication.getSurl();
     public  java.lang.String MyToken;
-    private Tool am = new Tool();
-    private boolean flag;
-    private boolean flag1 = false;
     private int itemID;
     private int OwnerID;
     private String Desc;
@@ -79,24 +59,19 @@ public class Buy extends Activity{
     private String picId;
     private String description;
 
-//    private ListView pics;
     private TextView textView1;
     private TextView textView2;
     private TextView textView3;
     private TextView textView4;
     private EditText commentword;
-    private String CommentWord;
-    private TextView commentsubmit;
+    private LinearLayout commentsubmit;
     private ListView comments;
     private TextView button2;
     private String[] picts;
     private List<String> pic_list;
-    private PicAdapter sim_adapter;
     private SimpleAdapter com_adapter;
     private Context mContext;
     private String commentwords;
-    private ArrayList<String> User;
-    private ArrayList<String> TimeStamp;
     private ArrayList<String> Comments = new ArrayList<String>();
     private ArrayList<String> comment_times = new ArrayList<String>();
     private ArrayList<HashMap<String,Object>> comment_list;
@@ -106,19 +81,24 @@ public class Buy extends Activity{
 
     private String imgUrl;
 
-    private RelativeLayout relativeLayoutCollect;
-    private RelativeLayout relativeLayoutCollected;
+    private LinearLayout relativeLayoutCollect;
+    private ImageView iv_collect;
+    private TextView tv_collect;
+    private boolean flag = false;
 
     private Sqlite userDbHelper = new Sqlite(this);
 
-    private ImageView headProtrait;
+    private CircleImageView headProtrait;
 
-    //private Handler nhandler;
     @Override
     protected void onCreate(Bundle savedInstanceState){
-        Log.i("AAAAA", "WHY");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_buy);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.buy_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
+
         final Intent intent=getIntent();
         Bundle out = intent.getExtras();
         itemID=(int)out.get("itemId");
@@ -132,17 +112,15 @@ public class Buy extends Activity{
         textView3 = (TextView)findViewById(R.id.price3);
         textView4 = (TextView)findViewById(R.id.shuoming);
         commentword = (EditText)findViewById(R.id.commentword);
-        commentsubmit = (TextView) findViewById(R.id.commentsubmit);
+        commentsubmit = (LinearLayout) findViewById(R.id.commentsubmit);
         comments = (ListView)findViewById(R.id.comments);
 
-        headProtrait = (ImageView)findViewById(R.id.img_activity_product);
-    //    pics = (ListView)findViewById(R.id.picdetail);
+        headProtrait = (CircleImageView) findViewById(R.id.img_activity_product);
         Caption = (TextView)findViewById(R.id.caption);
         Caption.setText(_caption);
         pic_list = new ArrayList<String>();
         comment_list=new ArrayList<HashMap<String, Object>>();
         mContext = this;
-        flag=false;
 
 
         new Thread(new Runnable() {
@@ -166,14 +144,16 @@ public class Buy extends Activity{
             public void onClick(View view) {
                 if (GlobalParameterApplication.getLogin_status()==0){
                     Intent intent3 = new Intent(Buy.this, LoginActivity.class);
-                    startActivity(intent3);
+                    startActivityForResult(intent3,0);
+                    overridePendingTransition(R.anim.slide_in_bottom, R.anim.scale_fade_out);
                 } else {
                     Intent intent2 = new Intent(Buy.this,Chattoother.class);
-                    //intent.setClass();
                     intent2.putExtra("itemID",itemID);
                     intent2.putExtra("To",OwnerID);
                     intent2.putExtra("ToName",ownerName);
-                    startActivity(intent2);}
+                    startActivityForResult(intent2,0);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.scale_fade_out);
+                }
 
             }
         });
@@ -187,21 +167,6 @@ public class Buy extends Activity{
                         final MyAlertDialog confirmDialog = new MyAlertDialog(Buy.this, "", "提交评论", "×",nhandler);
                         confirmDialog.setView(inputServer);
                         confirmDialog.show();
-                        /*confirmDialog.setClicklistener(new MyAlertDialog.ClickListenerInterface() {
-                            @Override
-                            public void doConfirm() {
-                                // TODO Auto-generated method stub
-                                Toast.makeText(mContext,"Yes",Toast.LENGTH_LONG).show();
-                            }
-
-                            @Override
-                            public void doCancel() {
-                                // TODO Auto-generated method stub
-
-                                Toast.makeText(mContext,"No",Toast.LENGTH_LONG).show();
-                                confirmDialog.dismiss();
-                            }
-                        });*/
                     }
 
         });
@@ -214,14 +179,6 @@ public class Buy extends Activity{
                 HashMap<String,String> usrInfo = ChatList.getUserName("" + OwnerID);
                 ownerName = usrInfo.get("usrName");
                 imgUrl = usrInfo.get("img");
-
-                /*
-                textView1.setText("用户："+OwnerID);
-                textView2.setText("描述："+Desc);
-                textView3.setText("价格："+Price);
-                textView4.setText("留言：");*/
-
-
                 picts = Picset.split(",");
                 pic_list.clear();
                 for (int i = 0; i < picts.length; i++){
@@ -239,62 +196,42 @@ public class Buy extends Activity{
                 Message msg=new Message();
                 msg.what=2310231;
                 nhandler.sendMessage(msg);
-                flag=true;
 
             }
         }).start();
-        //while(!flag);
-//        textView1.setText("用户："+OwnerID);
-        //      textView2.setText("描述："+Desc);
-        //  textView3.setText("价格："+Price);
-        //    textView4.setText("留言：");
-
-
-
-        //collection
-        relativeLayoutCollect = (RelativeLayout)findViewById(R.id.relativeCollect);
+        iv_collect = (ImageView) findViewById(R.id.iv_collect);
+        tv_collect = (TextView) findViewById(R.id.tv_collect);
+        relativeLayoutCollect = (LinearLayout) findViewById(R.id.relativeCollect);
         relativeLayoutCollect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                relativeLayoutCollected.setVisibility(View.VISIBLE);
-                relativeLayoutCollect.setVisibility(View.GONE);
-                try {
-
-                    SQLiteDatabase db = userDbHelper.getWritableDatabase();
-                    db.execSQL("insert into AXWcollect(itemId,userName,type,desc,picUrl,price) values(" +itemID+",'"+GlobalParameterApplication.getUser_name() + "','" + _caption + "','" + description + "','" + picId + "',"+Price+")");
-                    db.close();
-                }catch (Throwable e){
-                    e.printStackTrace();
-                }
-                Toast.makeText(Buy.this,"收藏成功",Toast.LENGTH_SHORT).show();
-            }
-        });
-        relativeLayoutCollected = (RelativeLayout) findViewById(R.id.relativeCollected);
-        relativeLayoutCollected.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                relativeLayoutCollect.setVisibility(View.VISIBLE);
-                relativeLayoutCollected.setVisibility(View.GONE);
-
-                try {
-                    SQLiteDatabase db = userDbHelper.getWritableDatabase();
-                    db.execSQL("delete from AXWcollect where itemId = " + itemID +" and userName='"+GlobalParameterApplication.getUser_name()+"'");
-                    db.close();
-                }catch (Throwable e){
-                    e.printStackTrace();
-                }
-                /*new Thread(new Runnable() {
-                    @Override
-                    public void run() {
+                if(flag){
+                    try {
                         SQLiteDatabase db = userDbHelper.getWritableDatabase();
-                        db.execSQL("delete from COLLECT where itemId = "+itemID);
+                        db.execSQL("delete from AXWcollect where itemId = " + itemID +" and userName='"+GlobalParameterApplication.getUser_name()+"'");
+                        db.close();
+                        flag = false;
+                        iv_collect.setImageResource(R.drawable.ic_star);
+                        tv_collect.setTextColor(getResources().getColor(R.color.gray));
+                        tv_collect.setText("收藏");
+                    }catch (Throwable e){
+                        e.printStackTrace();
                     }
-                }).start();*/
-                Toast.makeText(Buy.this,"已成功取消收藏",Toast.LENGTH_SHORT).show();
+                }else{
+                    try {
+                        SQLiteDatabase db = userDbHelper.getWritableDatabase();
+                        db.execSQL("insert into AXWcollect(itemId,userName,type,desc,picUrl,price) values(" +itemID+",'"+GlobalParameterApplication.getUser_name() + "','" + _caption + "','" + description + "','" + picId + "',"+Price+")");
+                        db.close();
+                        flag = true;
+                        iv_collect.setImageResource(R.drawable.ic_stared);
+                        tv_collect.setTextColor(getResources().getColor(R.color.accent));
+                        tv_collect.setText("已收藏");
+                    }catch (Throwable e){
+                        e.printStackTrace();
+                    }
+                }
             }
         });
-
-
     }
 
     public Handler dHandler = new Handler() {
@@ -303,9 +240,10 @@ public class Buy extends Activity{
             super.handleMessage(msg);
             switch (msg.what){
                 case 521521:
-
-                    relativeLayoutCollected.setVisibility(View.VISIBLE);
-                    relativeLayoutCollect.setVisibility(View.GONE);
+                    flag = true;
+                    iv_collect.setImageResource(R.drawable.ic_stared);
+                    tv_collect.setTextColor(getResources().getColor(R.color.accent));
+                    tv_collect.setText("已收藏");
                     break;
         }
     };
@@ -376,9 +314,9 @@ public class Buy extends Activity{
                     case 2310231:
 
                         flag=false;
-                        textView1.setText("用户："+ownerName);
-                        textView2.setText("描述："+Desc);
-                        textView3.setText("价格："+Price);
+                        textView1.setText(ownerName);
+                        textView2.setText(Desc);
+                        textView3.setText("价格：￥"+Price);
 
                         if (!imgUrl.equals(""))
                             ImageLoader.getInstance().displayImage(GlobalParameterApplication.imgSurl+imgUrl, headProtrait);
@@ -417,24 +355,6 @@ public class Buy extends Activity{
                             img.setLayoutParams(imgLayoutParams);
                             pictures.addView(img,imgLayoutParams);
                         }
-/*
-                        sim_adapter = new PicAdapter(mContext,pic_list,R.layout.picitem);
-
-
-                        pics.setAdapter(sim_adapter);
-                        pics.setVisibility(View.VISIBLE);
-                        totalHeight = 0;
-                        for (int i = 0; i < sim_adapter.getCount(); i++) {
-                            View listItem = sim_adapter.getView(i, null, pics);
-                            listItem.measure(0, 0);
-                            totalHeight += listItem.getMeasuredHeight();
-                        }
-                        ViewGroup.LayoutParams params1;
-
-                        params1 = pics.getLayoutParams();
-                        params1.height = totalHeight + (pics.getDividerHeight() * (sim_adapter.getCount()));
-                        pics.setLayoutParams(params1);
-  */
                         break;
                     case 231123:
                         //comments.setAdapter(com_adapter);
@@ -448,12 +368,8 @@ public class Buy extends Activity{
 
                         ViewGroup.LayoutParams params11 = comments.getLayoutParams();
                         params11.height = totalHeight1 + (comments.getDividerHeight() * (com_adapter.getCount() - 1));
-                        //params11.height = 5* params11.height;
                         comments.setLayoutParams(params11);
                         com_adapter.notifyDataSetChanged();
-                        //comments.setVisibility(View.VISIBLE);
-                        //flag1 = true;
-                        // Toast.makeText(mContext,"We have1 "+comment_list.size()+"comments",Toast.LENGTH_LONG).show();
                         break;
                 }
             }
@@ -461,38 +377,11 @@ public class Buy extends Activity{
         }
 
     };
-    public void onStart(){
-        super.onStart();
-        // han'd.makeText(this,"UUonStart",Toast.LENGTH_LONG).show();
-    }
-
-    @Override
-    protected void onResume(){
-        super.onResume();
-        //  if (flag1){
-        //        flag1 = false;
-
-        //      Toast.makeText(mContext,"We have "+com_adapter.getCount()+"comments",Toast.LENGTH_LONG).show();
-
-        //   }
-        //Toast.makeText(this,"UUonResumekengbi",Toast.LENGTH_LONG).show();;
-
-    }
 
 
-    @Override
-    public void onPause(){
-        super.onPause();
-        //Toast.makeText(this,"UUonPause",Toast.LENGTH_LONG).show();;
-    }
     public void GetComments(int itemID){
-        URL url = null;
         try {
-            url = new URL(surl + "/item_get_comment");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        try {
+            URL url = new URL(surl + "/item_get_comment");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
@@ -504,65 +393,59 @@ public class Buy extends Activity{
             data.put("comment",comment);
             conn.getOutputStream().write(data.toJSONString().getBytes());
             String ostr = IOUtils.toString(conn.getInputStream());
-            System.out.println(ostr);
-            JSONArray result=null;
-            try {
-                org.json.JSONObject outjson = new org.json.JSONObject(ostr);
-                result=outjson.getJSONArray("comment");
-                org.json.JSONObject outt=null;
-                Comments.clear();
-                comment_times.clear();
-                for (int i = 0; i < result.length();i++){
-                    {
-                        outt=result.getJSONObject(i);
-                        //Comments.add(outt.getString("publisherID")+" "+outt.getString("content"));
-                        Comments.add(outt.getString("content"));
-                        comment_times.add(outt.getString("created"));
-                    }
-                }
-
-            } catch (JSONException e) {
-                e.printStackTrace();
+            org.json.JSONObject outjson = new org.json.JSONObject(ostr);
+            JSONArray result=outjson.getJSONArray("comment");
+            org.json.JSONObject outt=null;
+            Comments.clear();
+            comment_times.clear();
+            for (int i = 0; i < result.length();i++){
+                    outt=result.getJSONObject(i);
+                    Comments.add(outt.getString("content"));
+                    comment_times.add(outt.getString("created"));
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
     public void GetInfo(int itemID) {
-
-        URL url = null;
         try {
-            url = new URL(surl + "/item_get");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        try {
+            URL url = new URL(surl + "/item_get");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
             conn.setRequestProperty("Content-Type","application/json");
             JSONObject data = new JSONObject();
-            //data.put("token",MyToken);
             JSONObject iteminfo = new JSONObject();
             iteminfo.put("ID",itemID);
             data.put("itemInfo",iteminfo);
             conn.getOutputStream().write(data.toJSONString().getBytes());
             String ostr = IOUtils.toString(conn.getInputStream());
-            System.out.println(ostr);
-            try {
-                org.json.JSONObject outjson = new org.json.JSONObject(ostr);
+            org.json.JSONObject outjson = new org.json.JSONObject(ostr);
 
-                OwnerID = outjson.getJSONObject("itemInfo").getInt("ownerID");
+            OwnerID = outjson.getJSONObject("itemInfo").getInt("ownerID");
 
-                Desc = outjson.getJSONObject("itemInfo").getString("description");
-                Price = outjson.getJSONObject("itemInfo").getInt("estimatedPriceByUser");
-                Picset = outjson.getJSONObject("itemInfo").getString("images");
-                System.out.println("---------------"+Picset+"----------------");
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        } catch (IOException e) {
+            Desc = outjson.getJSONObject("itemInfo").getString("description");
+            Price = outjson.getJSONObject("itemInfo").getInt("estimatedPriceByUser");
+            Picset = outjson.getJSONObject("itemInfo").getString("images");
+        } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                onBackPressed();
+            default:break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.scale_fade_in, R.anim.slide_out_bottom);
+        super.onBackPressed();
     }
 }

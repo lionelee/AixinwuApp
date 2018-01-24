@@ -1,17 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="8dp">
+    android:background="@color/white">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <ImageView
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
             android:layout_gravity="center_vertical"
+            android:layout_margin="10dp"
             android:id="@+id/img"/>
 
 
@@ -23,20 +24,36 @@
             android:layout_marginRight="10dp"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp">
-            <TextView
-                android:id="@+id/tv_item_shopping_cart_name"
+
+            <RelativeLayout
+                android:id="@+id/id_shop_cart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:textColor="#3e3a39"/>
+                android:layout_below="@+id/tv_item_shopping_cart_category"
+                android:layout_marginBottom="8dp">
+                <TextView
+                    android:id="@+id/orderid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="订单编号："
+                    android:textSize="12sp"/>
+                <TextView
+                    android:layout_toRightOf="@id/orderid"
+                    android:layout_toEndOf="@id/orderid"
+                    android:id="@+id/tv_item_shopping_cart_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="12sp"
+                    android:text="adsfadsfasdfasdfasdfasdf"
+                    android:textColor="#3e3a39"/>
+            </RelativeLayout>
 
             <RelativeLayout
                 android:id="@+id/price_shop_cart"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/tv_item_shopping_cart_category"
-                android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp">
+                android:layout_below="@+id/id_shop_cart"
+                android:layout_marginBottom="8dp">
                 <TextView
                     android:id="@+id/love_coin"
                     android:layout_width="wrap_content"
@@ -79,4 +96,4 @@
             </RelativeLayout>
         </RelativeLayout>
     </LinearLayout>
-</android.support.v7.widget.CardView>
+</LinearLayout>

@@ -2,13 +2,18 @@ package com.aixinwu.axw.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -25,9 +30,9 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 
-public class CashTransfer extends Activity {
+public class CashTransfer extends AppCompatActivity {
 
-    RelativeLayout submit ;
+    AppCompatButton submit ;
     EditText enter_jaccount;
     EditText amount;
 
@@ -43,14 +48,22 @@ public class CashTransfer extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_cash_transfer);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.transfer_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("爱心币转移");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         enter_jaccount = (EditText)findViewById(R.id.enter_jaccount);
         amount = (EditText)findViewById(R.id.enter_coin);
 
-        submit = (RelativeLayout)findViewById(R.id.submit);
+        submit = (AppCompatButton) findViewById(R.id.submit);
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                if(imm.isActive())
+                    imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
+                
                  _enter_jaccount = enter_jaccount.getText().toString();
                  _amount = amount.getText().toString();
 
@@ -85,35 +98,34 @@ public class CashTransfer extends Activity {
         });
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                onBackPressed();
+            default:break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.scale_fade_in,R.anim.slide_out_right);
+    }
+
     public Handler nHandler = new Handler(){
         public void handleMessage(Message msg){
             super.handleMessage(msg);
             switch (msg.what){
                 case 134:
                     if (transfer_status == 0){
-                        new  AlertDialog.Builder(CashTransfer.this)
-                                .setTitle("消息" )
-                                .setMessage("转账成功，感谢您的使用!" )
-                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int ii) {
-                                        finish();
-                                    }
-                                }).show();
+                        Toast.makeText(CashTransfer.this,"转账成功" ,Toast.LENGTH_SHORT).show();
                     }
                     break;
                 case 135:
-                    new  AlertDialog.Builder(CashTransfer.this)
-                                .setTitle("消息" )
-                                .setMessage(transfer_status + " " + transfer_desp)
-                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int ii) {
-
-                                    }
-                                }).show();
-
-                    //SendToAXw.this.setResult(RESULT_OK);
+                    String str = transfer_status + " " + transfer_desp;
+                    Toast.makeText(CashTransfer.this, str,Toast.LENGTH_SHORT).show();
                     break;
             }
         }
@@ -130,13 +142,9 @@ public class CashTransfer extends Activity {
         cashTransfer.put("jaccount_id",jaccount);
         cashTransfer.put("cash",amount);
 
-        //cashTransfer.put("receiver_name","");
-        //cashTransfer.put("receiver_id","");
-
         try {
             URL url = new URL(surl + "/AixinwuCashTransfer");
             try {
-                Log.i("CashTransfer", "getconnection");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setRequestProperty("Content-Type", "application/json");

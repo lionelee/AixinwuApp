@@ -1,9 +1,7 @@
 package com.aixinwu.axw.activity;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,17 +12,17 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.aixinwu.axw.Adapter.ConfirmOrderAdapter;
+import com.aixinwu.axw.adapter.ConfirmOrderAdapter;
 import com.aixinwu.axw.R;
 import com.aixinwu.axw.database.ProductReadDbHelper;
 import com.aixinwu.axw.database.ProductReaderContract;
-import com.aixinwu.axw.fragment.ShoppingCart;
 import com.aixinwu.axw.model.ShoppingCartEntity;
 import com.aixinwu.axw.tools.GlobalParameterApplication;
 import com.aixinwu.axw.model.Consignee;
@@ -50,7 +48,7 @@ public class ConfirmOrder extends Activity {
     private double mTotalMoney = 0;
     private int size = 0;
     private int orderid = -1;
-    private TextView order;
+    private Button order;
 
     private TextView consigneeName;
     private TextView stuId;
@@ -135,10 +133,10 @@ public class ConfirmOrder extends Activity {
                 consigneeName.setVisibility(View.VISIBLE);
                 stuId.setVisibility(View.VISIBLE);
                 phone.setVisibility(View.VISIBLE);
-                editName.setVisibility(View.GONE);
                 editName.setText("");
                 editStuId.setText("");
                 editPhone.setText("");
+                editName.setVisibility(View.GONE);
                 editStuId.setVisibility(View.GONE);
                 editPhone.setVisibility(View.GONE);
             }
@@ -148,12 +146,10 @@ public class ConfirmOrder extends Activity {
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        Toast.makeText(ConfirmOrder.this,"SUBMIT",Toast.LENGTH_SHORT).show();
-                        Message msg = new Message();
+                       Message msg = new Message();
                         int status = changeCosingnee();
                         if (status == 0){
                             msg.what=234242;
@@ -198,32 +194,32 @@ public class ConfirmOrder extends Activity {
         commodityList = (ListView)findViewById(R.id.commodityList);
         mAdapter = new ConfirmOrderAdapter(this,mDatas);
         commodityList.setAdapter(mAdapter);
-        ((TextView)findViewById(R.id.numberOfCommodity)).setText("共" + size + "件商品");
-        ((TextView)findViewById(R.id.totalMoney)).setText("合计：" + mTotalMoney);
-        order = (TextView)findViewById(R.id.order);
+        ((TextView)findViewById(R.id.totalMoney)).setText("合计：" + mTotalMoney+"爱心币");
+        order = (Button)findViewById(R.id.order);
         order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //delete from database
                 for (int i = 0; i < CheckedProductId.size(); ++i) {
                     deleteFromDatabase(CheckedProductId.get(i));
                 }
-                //====
-                //send order request to the server
-
                 final ProgressDialog progressDialog = new ProgressDialog(ConfirmOrder.this,
                         R.style.AppTheme_Dark_Dialog);
                 progressDialog.setIndeterminate(true);
                 progressDialog.setMessage("结算中...");
                 progressDialog.setCancelable(false);
                 progressDialog.show();
-
                 oThread.start();
             }
         });
     }
 
-    //在数据库中删除物品id 为id的操作
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.scale_fade_in,R.anim.slide_out_bottom);
+        super.onBackPressed();
+    }
+
     private void deleteFromDatabase (int id) {
         ProductReadDbHelper mDbHelper = new ProductReadDbHelper(getApplicationContext());
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
@@ -231,7 +227,6 @@ public class ConfirmOrder extends Activity {
                 ProductReaderContract.ProductEntry.COLUMN_NAME_ENTRY_ID+"=?",
                 new String[]{id+""}
         );
-        Log.i("Check!", id + " Ok");
     }
 
     public void initData(){
@@ -240,22 +235,20 @@ public class ConfirmOrder extends Activity {
         mTotalMoney = (Double)intent.getSerializableExtra("mTotalMoney");
         for (int i = 0; i < size; ++i){
             mDatas.add((ShoppingCartEntity)intent.getSerializableExtra("OrderedData"+i));
-            CheckedProductId.add((Integer)intent.getSerializableExtra("CheckedProductId"+i));
-           // JSONObject abc = (JSONObject)intent.getSerializableExtra("OrderedProduct"+i);
-           // OrderedProduct.add(abc);
+            String cid = (String)intent.getSerializableExtra("CheckedProductId"+i);
+            Integer a = Integer.parseInt(cid);
+            CheckedProductId.add(a);
         }
 
         createOrderList();
-        Log.i("YUDING", "YES");
     }
 
 
-    //创建JSONArray 用于order
     private void createOrderList () {
         int quant = 0;
         for (int i = 0; i < CheckedProductId.size(); i++) {
             JSONObject orderproduct = new JSONObject();
-            String index = CheckedProductId.get(i).toString();
+            String index = String.valueOf(CheckedProductId.get(i));
             ProductReadDbHelper mDbHelper = new ProductReadDbHelper(getApplicationContext());
             SQLiteDatabase db = mDbHelper.getWritableDatabase();
             Cursor cursor = db.query(ProductReaderContract.ProductEntry.TABLE_NAME,
@@ -266,45 +259,17 @@ public class ConfirmOrder extends Activity {
                     null,
                     null
             );
-            //String SELECT_PRODUCT_QUANT = "Select number From entry Where product_id=?";
-            //Cursor cursor = db.rawQuery(SELECT_PRODUCT_QUANT, new String[]{index});
             if (cursor.moveToNext()) {
                 quant = cursor.getInt(cursor.getColumnIndex("number"));
             }
             cursor.close();
             orderproduct.put("product_id", CheckedProductId.get(i));
-            //orderproduct.put("product_id", CheckedProductId.get(i));
             orderproduct.put("isbook", 0);
             orderproduct.put("quantity", quant);
-            Log.i("Orderproduct", orderproduct.toString());
             OrderedProduct.add(orderproduct);
-            Log.i("Orderedlist:", OrderedProduct.toString());
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_confirm_order, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
-    //链接服务器
     private void order(){
         String MyToken= GlobalParameterApplication.getToken();
         String surl = GlobalParameterApplication.getSurl();
@@ -315,36 +280,20 @@ public class ConfirmOrder extends Activity {
         orderrequest.put("order_info", OrderedProduct);
         orderrequest.put("consignee_id", userid);
 
-
-        //data.put("token", MyToken);
-
-
         try {
             URL url = new URL(surl + "/item_aixinwu_item_make_order");
-            try {
-                Log.i("Order","getconnection");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setDoOutput(true);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
 
-                Log.i("orderorder", orderrequest.toJSONString());
-                conn.getOutputStream().write(orderrequest.toJSONString().getBytes());
+            conn.getOutputStream().write(orderrequest.toJSONString().getBytes());
 
-                java.lang.String ostr = IOUtils.toString(conn.getInputStream());
-                org.json.JSONObject outjson = null;
-                try{
-                    outjson = new org.json.JSONObject(ostr);
-                    //orderid = outjson.getInt("order_id") + "";
-                    orderid = outjson.getJSONObject("status").getInt("code");
-                    Log.i("Order successful", outjson.toString()+"id: "+orderid);
-                }catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        } catch (MalformedURLException e) {
+            java.lang.String ostr = IOUtils.toString(conn.getInputStream());
+            org.json.JSONObject outjson = null;
+            outjson = new org.json.JSONObject(ostr);
+            orderid = outjson.getJSONObject("status").getInt("code");
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -357,7 +306,7 @@ public class ConfirmOrder extends Activity {
         public void run() {
             super.run();
             order();
-                        Message msg = new Message();
+            Message msg = new Message();
             msg.what = 1994;
             oHandler.sendMessage(msg);
         }
@@ -369,10 +318,6 @@ public class ConfirmOrder extends Activity {
             super.handleMessage(msg);
             switch (msg.what){
                 case 1994:
-                    /*Intent intent = new Intent(ConfirmOrder.this, DealFinished.class);
-                    intent.putExtra("overallcost", mTotalMoney + "");
-                    intent.putExtra("orderid", orderid);
-                    startActivity(intent);*/
                     String dialogContent = "";
                     if (orderid == 0)
                         dialogContent = "商品购买成功";
@@ -387,13 +332,8 @@ public class ConfirmOrder extends Activity {
     };
 
     public void GetAddress(){
-        URL url = null;
         try {
-            url = new URL(GlobalParameterApplication.getSurl() + "/usr_get_address");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-        try {
+            URL url = new URL(GlobalParameterApplication.getSurl() + "/usr_get_address");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
@@ -402,15 +342,24 @@ public class ConfirmOrder extends Activity {
             data.put("token",GlobalParameterApplication.getToken());
             conn.getOutputStream().write(data.toJSONString().getBytes());
             String ostr = IOUtils.toString(conn.getInputStream());
-            System.out.println(ostr);
             org.json.JSONObject result=null;
-            try {
-                org.json.JSONObject outjson = new org.json.JSONObject(ostr);
-                org.json.JSONArray outt=null;
-                outt=outjson.getJSONArray("address");
+            org.json.JSONObject outjson = new org.json.JSONObject(ostr);
+            org.json.JSONArray outt=null;
+            outt=outjson.getJSONArray("address");
 
-                for (int i = 0; i < outt.length(); ++i){
-                    consignees.add(new Consignee(
+            for (int i = 0; i < outt.length(); ++i){
+                consignees.add(new Consignee(
+                        outt.getJSONObject(i).getString("consignee"),
+                        outt.getJSONObject(i).getString("snum"),
+                        outt.getJSONObject(i).getString("mobile"),
+                        outt.getJSONObject(i).getInt("id"),
+                        outt.getJSONObject(i).getInt("customer_id"),
+                        outt.getJSONObject(i).getString("email"),
+                        outt.getJSONObject(i).getInt("is_default")
+                ));
+
+                if (outt.getJSONObject(i).getInt("is_default")==1){
+                    commonConsigne = new Consignee(
                             outt.getJSONObject(i).getString("consignee"),
                             outt.getJSONObject(i).getString("snum"),
                             outt.getJSONObject(i).getString("mobile"),
@@ -418,45 +367,22 @@ public class ConfirmOrder extends Activity {
                             outt.getJSONObject(i).getInt("customer_id"),
                             outt.getJSONObject(i).getString("email"),
                             outt.getJSONObject(i).getInt("is_default")
-                    ));
-
-                    if (outt.getJSONObject(i).getInt("is_default")==1){
-                        commonConsigne = new Consignee(
-                                outt.getJSONObject(i).getString("consignee"),
-                                outt.getJSONObject(i).getString("snum"),
-                                outt.getJSONObject(i).getString("mobile"),
-                                outt.getJSONObject(i).getInt("id"),
-                                outt.getJSONObject(i).getInt("customer_id"),
-                                outt.getJSONObject(i).getString("email"),
-                                outt.getJSONObject(i).getInt("is_default")
-                        );
-                    }
+                    );
                 }
-                System.out.println("GOOD\n"+outt.toString());
-
-            } catch (JSONException e) {
-                e.printStackTrace();
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public int changeCosingnee(){
-        URL url = null;
         int status = -1;
         try {
-            url = new URL(GlobalParameterApplication.getSurl() + "/usr_set_address");
-        } catch (MalformedURLException e) {
-            e.printStackTrace();
-        }
-
-        String newName = editName.getText().toString();
-        String newStuId = stuId.getText().toString();
-        String newPhone = editPhone.getText().toString();
-        if (newName.length() >= 2 && newStuId.length() >= 10 && newPhone.length()==11){
-
-            try {
+            URL url = new URL(GlobalParameterApplication.getSurl() + "/usr_set_address");
+            String newName = editName.getText().toString();
+            String newStuId = stuId.getText().toString();
+            String newPhone = editPhone.getText().toString();
+            if (newName.length() >= 2 && newStuId.length() >= 10 && newPhone.length()==11){
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("POST");
                 conn.setDoOutput(true);
@@ -468,22 +394,13 @@ public class ConfirmOrder extends Activity {
                 data.put("mobile",newPhone);
                 conn.getOutputStream().write(data.toJSONString().getBytes());
                 String ostr = IOUtils.toString(conn.getInputStream());
-                System.out.println(ostr);
                 org.json.JSONObject result=null;
-                try {
-                    org.json.JSONObject outjson = new org.json.JSONObject(ostr);
-                    org.json.JSONArray outt=null;
-
-                    status = outjson.getJSONObject("status").getInt("code");
-
-                    System.out.println("GOOD\n"+outjson.toString());
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
+                org.json.JSONObject outjson = new org.json.JSONObject(ostr);
+                org.json.JSONArray outt=null;
+                status = outjson.getJSONObject("status").getInt("code");
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
         return status;

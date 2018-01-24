@@ -1,19 +1,19 @@
 package com.aixinwu.axw.activity;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import butterknife.ButterKnife;
@@ -35,7 +35,6 @@ import java.net.URL;
 
 
 public class SignupActivity extends AppCompatActivity{
-    private static final String TAG = "SignupActivity";
 
     @Bind(R.id.input_name)
     EditText _nameText;
@@ -70,7 +69,6 @@ public class SignupActivity extends AppCompatActivity{
         setContentView(R.layout.activity_signup);
         ButterKnife.bind(this);
 
-
         Toolbar toolbar = (Toolbar) findViewById(R.id.signup_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("注册");
@@ -79,6 +77,9 @@ public class SignupActivity extends AppCompatActivity{
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                if(imm.isActive())
+                    imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
                 signup();
             }
         });
@@ -87,6 +88,7 @@ public class SignupActivity extends AppCompatActivity{
         _catchVerificationCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(TextUtils.isEmpty(_nameText.getText().toString()))return;
                 Toast.makeText(getApplicationContext(),"开始获取验证码……",Toast.LENGTH_SHORT).show();
                 new Thread(new Runnable()
                 {
@@ -129,8 +131,6 @@ public class SignupActivity extends AppCompatActivity{
     }
 
     public void signup() {
-        Log.d(TAG, "Signup");
-
         if (!validate()) {
             onSignupFailed();
             return;

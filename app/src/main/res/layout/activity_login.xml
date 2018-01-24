@@ -13,7 +13,6 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/primary"
-            app:layout_scrollFlags="scroll|enterAlways|snap"
             app:popupTheme="@style/AppTheme.PopupOverlay">
         </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
@@ -58,7 +57,6 @@
                     android:id="@+id/forgetPWD"
                     android:layout_width="wrap_content"
                     android:layout_height="46dp"
-                    android:layout_marginBottom="8dp"
                     android:text="忘记密码?"
                     android:textColor="@color/gray"
                     android:textSize="14sp"

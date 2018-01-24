@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:key="@string/pref_feedback_key"
+        android:title="@string/pref_feedback_title"/>
+    <PreferenceCategory android:title="常见问题">
+        <Preference
+            android:key="@string/pref_rabj_key"
+            android:title="@string/pref_rabj_title">
+            <intent
+                android:targetPackage="com.aixinwu.axw"
+                android:targetClass="com.aixinwu.axw.activity.HelpBind"/>
+        </Preference>
+    </PreferenceCategory>
+    <PreferenceCategory/>
+</PreferenceScreen>

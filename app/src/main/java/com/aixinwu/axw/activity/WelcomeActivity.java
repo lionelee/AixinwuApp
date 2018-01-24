@@ -47,7 +47,7 @@ public class WelcomeActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
-
+        setContentView(R.layout.activity_welcome);
 
         try {
             PackageManager manager = this.getPackageManager();
@@ -98,8 +98,8 @@ public class WelcomeActivity extends Activity {
         public void run() {
             if (judge) {
                 Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-                startActivity(intent);
-                overridePendingTransition(R.anim.fade_in,R.anim.scale_out);
+                startActivityForResult(intent,0);
+                overridePendingTransition(R.anim.welcome_enter,R.anim.welcome_exit);
                 finish();
             }
         }
@@ -247,7 +247,6 @@ public class WelcomeActivity extends Activity {
             URL url = new URL(GlobalParameterApplication.getSurl() + "/version_code");
             Log.i("Find product", "1");
             try {
-                Log.i("LoveCoin", "getconnection");
                 HttpURLConnection conn = (HttpURLConnection) url.openConnection();
                 conn.setRequestMethod("GET");
                 conn.setRequestProperty("Content-Type", "application/json");

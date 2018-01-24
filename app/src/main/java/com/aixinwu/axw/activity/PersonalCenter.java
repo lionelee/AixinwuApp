@@ -5,8 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.PersistableBundle;
-import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.os.Bundle;
 //import android.support.v4.app.FragmentActivity;
@@ -14,18 +13,16 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ImageView;
 
-import com.aixinwu.axw.Adapter.PagerAdapter;
+import com.aixinwu.axw.adapter.PagerAdapter;
 import com.aixinwu.axw.R;
 import com.aixinwu.axw.database.Sqlite;
 import com.aixinwu.axw.fragment.ItemList;
 import com.aixinwu.axw.fragment.ItemRecord;
+import com.aixinwu.axw.fragment.MyCollection;
 import com.aixinwu.axw.fragment.MyDonation;
 import com.aixinwu.axw.tools.GlobalParameterApplication;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -34,8 +31,11 @@ import com.nostra13.universalimageloader.core.ImageLoader;
  * Created by lionel on 2017/10/19.
  */
 public class PersonalCenter extends AppCompatActivity {
+    private CollapsingToolbarLayout layout;
     private TabLayout tabLayout;
     private ViewPager viewPager;
+    private ImageView iv_avatar;
+    private String headProtrait, uname;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,25 +44,29 @@ public class PersonalCenter extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.personal_toolbar);
         setSupportActionBar(toolbar);
-        String uname = getIntent().getStringExtra("uname");
-        if(!TextUtils.isEmpty(uname))
-            getSupportActionBar().setTitle(uname);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        uname = getIntent().getStringExtra("uname");
+        layout = (CollapsingToolbarLayout)findViewById(R.id.personal_layout);
+        if(!TextUtils.isEmpty(uname))
+            layout.setTitle(uname);
 
         tabLayout = (TabLayout) findViewById(R.id.tab_header);
         viewPager = (ViewPager) findViewById(R.id.tab_container);
-        ImageView iv_avatar = (ImageView) findViewById(R.id.personal_avatar);
-        String headProtrait = getIntent().getStringExtra("headProtrait");
+        iv_avatar = (ImageView) findViewById(R.id.personal_avatar);
+        headProtrait = getIntent().getStringExtra("headProtrait");
         if(!TextUtils.isEmpty(headProtrait))
             ImageLoader.getInstance().displayImage(GlobalParameterApplication.imgSurl+headProtrait, iv_avatar);
 
-        PagerAdapter adapter = new PagerAdapter(PersonalCenter.this, getSupportFragmentManager());
+        String[] strings = new String[]{getString(R.string.tab0),getString(R.string.tab1),
+                getString(R.string.tab2),getString(R.string.tab3)};
+        PagerAdapter adapter = new PagerAdapter(PersonalCenter.this, getSupportFragmentManager(),strings);
         adapter.addItem(new ItemRecord());
-        adapter.addItem(new ItemList());
         adapter.addItem(new MyDonation());
+        adapter.addItem(new ItemList());
+        adapter.addItem(new MyCollection());
 
         viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(4);
         tabLayout.setupWithViewPager(viewPager);
     }
 
@@ -79,6 +83,11 @@ public class PersonalCenter extends AppCompatActivity {
                 onBackPressed();
                 break;
             case R.id.personal_edit:
+                Intent intent = new Intent(PersonalCenter.this, ModifyProfile.class);
+                intent.putExtra("uname", uname);
+                intent.putExtra("headProtrait",headProtrait);
+                startActivityForResult(intent, 0);
+                overridePendingTransition(R.anim.slide_in_right,R.anim.scale_fade_out);
                 break;
             case R.id.personal_exit:
                 logOff();
@@ -96,10 +105,21 @@ public class PersonalCenter extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(PersonalCenter.this,MainActivity.class));
-        overridePendingTransition(R.anim.scale_fade_in,R.anim.slide_out_right);
         finish();
-        super.onBackPressed();
+        overridePendingTransition(R.anim.scale_fade_in, R.anim.slide_out_right);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == 0 && resultCode == RESULT_OK){
+            if(!data.getStringExtra("newavatar").equals(headProtrait)){
+                headProtrait = data.getStringExtra("newavatar");
+                ImageLoader.getInstance().displayImage(GlobalParameterApplication.imgSurl+headProtrait, iv_avatar);
+            }
+            uname = data.getStringExtra("newuname");
+            layout.setTitle(uname);
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     private void logOff(){

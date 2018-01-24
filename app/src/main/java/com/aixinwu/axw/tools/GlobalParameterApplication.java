@@ -6,13 +6,17 @@ package com.aixinwu.axw.tools;
 
 import android.app.Application;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.support.v7.app.AppCompatDelegate;
 
-import com.aixinwu.axw.Adapter.NotifyMessage;
+import com.aixinwu.axw.adapter.NotifyMessage;
 import com.aixinwu.axw.R;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import org.json.JSONException;
@@ -49,7 +53,14 @@ public class GlobalParameterApplication extends Application{
     public static boolean wetherHaveNewVersion = false;
     public static String versionName = "";
 
-    public GlobalParameterApplication(){
+    // This flag should be set to true to enable VectorDrawable support for API < 21
+    static{
+        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+    }
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
         DataBaseM = new dbmessage(this);
         newOldIntToString.put(Integer.valueOf(1),"全新");
         newOldIntToString.put(Integer.valueOf(2),"九成新");
@@ -60,27 +71,24 @@ public class GlobalParameterApplication extends Application{
         newOldStringToInt.put("九成新",Integer.valueOf(2));
         newOldStringToInt.put("七成新",Integer.valueOf(3));
         newOldStringToInt.put("六成新及以下",Integer.valueOf(4));
-    }
 
-    private void configImageLoader() {
-        @SuppressWarnings("deprecation")
         DisplayImageOptions options = new DisplayImageOptions.Builder().showStubImage(R.drawable.icon_stub)
                 .showImageForEmptyUri(R.drawable.icon_empty)
                 .showImageOnFail(R.drawable.icon_error)
-                .cacheInMemory(true)
-                .cacheOnDisc(true)
+                .imageScaleType(ImageScaleType.EXACTLY)
+                .bitmapConfig(Bitmap.Config.RGB_565)
+                .cacheInMemory(false)
+                .cacheOnDisc(false)
                 .build();
 
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext()).defaultDisplayImageOptions(options)
-                .threadPriority(Thread.NORM_PRIORITY - 2).denyCacheImageMultipleSizesInMemory()
-                .discCacheFileNameGenerator(new Md5FileNameGenerator()).tasksProcessingOrder(QueueProcessingType.LIFO).build();
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(getApplicationContext())
+                .defaultDisplayImageOptions(options)
+                .threadPriority(Thread.NORM_PRIORITY - 2)
+                .denyCacheImageMultipleSizesInMemory()
+                .discCacheFileNameGenerator(new Md5FileNameGenerator())
+                .tasksProcessingOrder(QueueProcessingType.LIFO)
+                .build();
         ImageLoader.getInstance().init(config);
-    }
-
-    @Override
-    public void onCreate() {
-        super.onCreate();
-        configImageLoader();
     }
 
     public static void start(String _token){
@@ -113,7 +121,6 @@ public class GlobalParameterApplication extends Application{
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                System.out.println("GET"+msgjson.toString());
                 //     System.out.println(messages.toString());
                 //      for (int i = 0; i < messages.getMessages().size(); i++){
                 //       int send = messages.getFrom(i);

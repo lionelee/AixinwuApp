@@ -1,5 +1,6 @@
-package com.aixinwu.axw.Adapter;
+package com.aixinwu.axw.adapter;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,65 +13,99 @@ import com.aixinwu.axw.R;
 
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.List;
+
 import com.aixinwu.axw.model.Product;
+import com.marshalchen.ultimaterecyclerview.SwipeableUltimateViewAdapter;
+import com.marshalchen.ultimaterecyclerview.UltimateViewAdapter;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ViewHolder> {
-    public ArrayList<Product> datas = null;
-    public ProductListAdapter(ArrayList<Product> datas) {
-        this.datas = datas;
+//    extends UltimateViewAdapter<ProductListAdapter.ViewHolder>{
+    LayoutInflater inflater;
+    private List<Product> datas = null;
+
+    public ProductListAdapter(Context context) {
+        inflater = LayoutInflater.from(context);
+        datas = new ArrayList<>();
     }
 
-    private MyOnItemClickListener itemClickListener;
-    private MyOnItemLongClickListener itemLongClickListener;
+    public void addItem(Product product){
+        datas.add(product);
+        notifyItemInserted(datas.size());
+    }
 
-    //创建新View，被LayoutManager所调用
+    public void clear(){
+        notifyItemRangeRemoved(0,datas.size());
+        datas.clear();
+    }
+
+//    @Override
+//    public ViewHolder newFooterHolder(View view) {
+//        return new ViewHolder(view);
+//    }
+//
+//    @Override
+//    public ViewHolder newHeaderHolder(View view) {
+//        return new ViewHolder(view);
+//    }
+//
+//    @Override
+//    public ViewHolder onCreateViewHolder(ViewGroup parent) {
+//        View view = inflater.inflate(R.layout.activity_list_product, null);
+//        return new ViewHolder(view);
+//    }
+//
+//    @Override
+//    public int getAdapterItemCount() {
+//        return datas.size();
+//    }
+//
+//    @Override
+//    public long generateHeaderId(int position) {
+//        return -1;
+//    }
+//
+//    @Override
+//    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup parent) {
+//        View view = inflater.inflate(R.layout.activity_list_product, null);
+//        return new ViewHolder(view);
+//    }
+//
+//    @Override
+//    public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int position) {
+//        ((ViewHolder)holder).mNameView.setText("");
+//        ((ViewHolder)holder).mPriceView.setText("");
+//        ((ViewHolder)holder).mImageView.setImageResource(R.drawable.icon);
+//    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.activity_list_product, viewGroup, false);
+        View view = inflater.inflate(R.layout.activity_list_product, viewGroup, false);
         return new ViewHolder(view);
     }
-    //将数据与界面进行绑定的操作
+
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
+//        if(position >= getItemCount())return;
+//        if(customHeaderView == null){
+//            if(position >= datas.size())return;
+//        }else{
+//            if(position > datas.size() || position <= 0)return;
+//            position -= 1;
+//        }
         viewHolder.mNameView.setText(datas.get(position).getProduct_name());
         viewHolder.mPriceView.setText(datas.get(position).getPrice() + "");
         ImageLoader.getInstance().displayImage(datas.get(position).getImage_url(), viewHolder.mImageView);
-
-        final ViewHolder myViewHolder = viewHolder;
-
-        /*自定义item的点击事件不为null，设置监听事件*/
-        if (itemClickListener != null) {
-            myViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    itemClickListener.OnItemClickListener(myViewHolder.itemView, myViewHolder.getLayoutPosition());
-                }
-            });
-        }
-
-        /*自定义item的长按事件不为null，设置监听事件*/
-        if (itemLongClickListener != null) {
-
-            myViewHolder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View view) {
-                    itemLongClickListener.OnItemLongClickListener(myViewHolder.itemView, myViewHolder.getLayoutPosition());
-                    return true;
-                }
-            });
-        }
-
-
     }
-    //获取数据的数量
+
     @Override
     public int getItemCount() {
         return datas.size();
     }
-    //自定义的ViewHolder，持有每个Item的的所有界面元素
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+
+
+    public class ViewHolder extends RecyclerView.ViewHolder {
         public ImageView mImageView;
         public TextView mNameView;
         public TextView mPriceView;
@@ -79,42 +114,11 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
             mImageView = (ImageView) view.findViewById(R.id.product_image);
             mNameView = (TextView) view.findViewById(R.id.product_name);
             mPriceView = (TextView) view.findViewById(R.id.product_price);
+        }
 
-
+        public Product getData(){
+            int pos = this.getAdapterPosition();
+            return datas.get(pos);
         }
     }
-
-    /**
-     * 列表点击事件
-     *
-     * @param itemClickListener
-     */
-    public void setOnItemClickListener(MyOnItemClickListener itemClickListener) {
-        this.itemClickListener = itemClickListener;
-    }
-
-    /**
-     * 列表长按事件
-     *
-     * @param itemLongClickListener
-     */
-    public void setOnItemLongClickListener(MyOnItemLongClickListener itemLongClickListener) {
-        this.itemLongClickListener = itemLongClickListener;
-    }
-
-
-    /**
-     * item点击接口
-     */
-    public interface MyOnItemClickListener {
-        void OnItemClickListener(View view, int position);
-    }
-
-    /**
-     * item长按接口
-     */
-    public interface MyOnItemLongClickListener {
-        void OnItemLongClickListener(View view, int position);
-    }
-
 }

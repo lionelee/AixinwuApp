@@ -1,149 +1,125 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/body"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/sms_item"
-    android:orientation="vertical"
-    >
-<LinearLayout
-              android:id="@+id/body"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
-    <LinearLayout
+    android:layout_height="wrap_content"
+    android:background="@color/transparent"
+    android:orientation="vertical">
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="120dp"
-        android:background="@drawable/shape_pop"
-        android:orientation="horizontal">
-
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:layout_marginTop="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="16dp"
+            android:paddingLeft="142dp"
+            android:paddingRight="8dp"
+            android:background="@color/white"
+            android:orientation="vertical">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:id="@+id/tv_pop_price"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:layout_gravity="center_vertical"
+                    android:text="￥1000"
+                    android:textColor="?attr/colorAccent"/>
+                <ImageView
+                    android:id="@+id/img_pop_close"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    app:srcCompat="@drawable/ic_close"/>
+            </LinearLayout>
+        </LinearLayout>
         <ImageView
             android:id="@+id/img_pop_icon"
             android:layout_width="110dp"
             android:layout_height="110dp"
-            android:layout_gravity="top|left"
-            android:layout_margin="5dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/popup_img_bg"
+            android:padding="4dp"
             android:scaleType="fitXY"
-            android:src="@drawable/lottery_head_1"/>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="120dp"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/tv_pop_price"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_gravity="left|top"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_weight="1"
-                android:gravity="top"
-                android:text="￥1000"
-                android:textColor="#ffea0c23"/>
-
-            <TextView
-                android:id="@+id/tv_pop_category"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_gravity="left|top"
-                android:layout_marginLeft="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_weight="1"
-                android:gravity="top"
-                android:text="健康产品"
-                android:textColor="#ff30e8ea"/>
-
-        </LinearLayout>
-
-
-        <ImageView
-            android:id="@+id/img_pop_close"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_margin="5dp"
-            android:src="@drawable/x"
-            />
-
-    </LinearLayout>
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_margin="2dp"
-        android:background="#eaeaea"/>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
-
+            android:src="@drawable/icon"/>
         <TextView
             android:id="@+id/tv_pop_details"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="5dp"
-            android:ellipsize="end"
-            android:maxLines="4"
-            />
+            android:background="@color/white"
+            android:layout_marginTop="110dp"
+            android:padding="16dp"
+            android:maxLines="6"/>
+    </RelativeLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:layout_height="1dp"
+        android:background="@color/white">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/darkgray"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:paddingTop="16dp"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+        android:paddingBottom="72dp"
+        android:orientation="horizontal">
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="购买数量"
+            android:textSize="16sp"
+            android:layout_gravity="left|center_vertical"/>
 
         <Button
             android:id="@+id/btn_pop_minute"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_below="@id/tv_pop_details"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp"
-            android:layout_toLeftOf="@+id/tv_pop_number"
-            android:layout_toStartOf="@+id/tv_pop_number"
-            android:padding="0dp"
+            android:layout_gravity="center_vertical"
             android:text="－"
-            android:textColor="#000000"/>
+            android:textColor="@color/white"/>
 
         <EditText
             android:id="@+id/tv_pop_number"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:inputType="number"
-            android:layout_below="@id/tv_pop_details"
-            android:layout_alignParentBottom="true"
-            android:layout_marginBottom="20dp"
-            android:layout_toLeftOf="@+id/btn_pop_plus"
-            android:layout_toStartOf="@+id/btn_pop_plus"
+            android:inputType="number|numberDecimal"
             android:gravity="center"
-            android:padding="0dp"
             android:text="1"/>
 
         <Button
             android:id="@+id/btn_pop_plus"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_below="@id/tv_pop_details"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginBottom="20dp"
-            android:layout_marginRight="20dp"
-            android:layout_marginEnd="20dp"
-            android:padding="0dp"
             android:text="＋"
-            android:textColor="#000000"/>
-    </RelativeLayout>
-
+            android:textColor="@color/white"/>
+    </LinearLayout>
 
     <Button
         android:id="@+id/btn_pop_ok"
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:layout_gravity="bottom"
-        android:background="#ffea1a15"
+        android:background="?attr/colorAccent"
         android:gravity="center"
-        android:text="确定"
-        android:textColor="#ffffffff"/>
-
-
+        android:text="确  定"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"/>
 </LinearLayout>
-</ScrollView>

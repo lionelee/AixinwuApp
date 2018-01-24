@@ -1,26 +1,39 @@
 package com.aixinwu.axw.fragment;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.design.widget.BottomSheetDialog;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
-import com.aixinwu.axw.Adapter.DealListAdapter;
+import com.aixinwu.axw.activity.LaunchDialog;
+import com.aixinwu.axw.activity.SendToAXW;
+import com.aixinwu.axw.activity.SendToPeople;
+import com.aixinwu.axw.adapter.DealListAdapter;
 import com.aixinwu.axw.R;
 import com.aixinwu.axw.activity.Buy;
+import com.aixinwu.axw.activity.MainActivity;
 import com.aixinwu.axw.tools.Bean;
 import com.aixinwu.axw.tools.GlobalParameterApplication;
+import com.aixinwu.axw.tools.NetInfo;
 import com.aixinwu.axw.tools.OnRecyclerItemClickListener;
+import com.aixinwu.axw.view.MyFooterView;
+import com.aixinwu.axw.view.MyRefreshLayout;
 import com.cjj.MaterialRefreshLayout;
 import com.cjj.MaterialRefreshListener;
-import com.github.clans.fab.FloatingActionMenu;
+import com.melnykov.fab.FloatingActionButton;
 
 
 import org.apache.commons.io.IOUtils;
@@ -38,46 +51,34 @@ import java.util.List;
  */
 public class UsedDeal extends Fragment{
 
-    private MaterialRefreshLayout mRefreshLayout;
+    private MyRefreshLayout mRefreshLayout;
     private RecyclerView mRecyclerView;
-    private FloatingActionMenu fam;
     private int start = 0;
+    private LaunchDialog dialog;
 
     public String MyToken;
     public String surl = GlobalParameterApplication.getSurl();
 
     private static DealListAdapter mAdapter;
 
-    private MaterialRefreshListener mOnClickListener = new MaterialRefreshListener() {
-        @Override
-        public void onRefresh(MaterialRefreshLayout materialRefreshLayout) {
-            start = 0;
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            new GetDataTask().execute(0);
-        }
-
-        @Override
-        public void onRefreshLoadMore(MaterialRefreshLayout materialRefreshLayout) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            new GetDataTask().execute(1);
-        }
-    };
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View view = inflater.inflate(R.layout.used_deal,null);
-        mRefreshLayout = (MaterialRefreshLayout) view.findViewById(R.id.homepageScroll2);
-        mRefreshLayout.setMaterialRefreshListener(mOnClickListener);
-        mRefreshLayout.autoRefresh();
+        mRefreshLayout = (MyRefreshLayout) view.findViewById(R.id.homepageScroll2);
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                start = 0;
+                new GetDataTask().execute(0);
+            }
+        });
 
+        mRefreshLayout.setOnLoadListener(new MyRefreshLayout.OnLoadingListener() {
+            @Override
+            public void onLoad() {
+                new GetDataTask().execute(1);
+            }
+        });
         mAdapter = new DealListAdapter(getActivity());
         mRecyclerView = (RecyclerView)view.findViewById(R.id.deal_item_list);
         mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2));
@@ -85,50 +86,63 @@ public class UsedDeal extends Fragment{
         mRecyclerView.addOnItemTouchListener(new OnRecyclerItemClickListener(mRecyclerView){
         @Override
             public void onItemClick(RecyclerView.ViewHolder vh) {
-                Intent intent = new Intent();
-                Bean bean = ((DealListAdapter.VHolder)vh).getData();
-                intent.putExtra("itemId", bean.getItemId());
-                intent.putExtra("caption",bean.getType());
-                intent.putExtra("pic_url",bean.getPicId());
-                intent.putExtra("description",bean.getDoc());
-                intent.setClass(getActivity(), Buy.class);
-                startActivity(intent);
+                if(vh instanceof DealListAdapter.VHolder){
+                    Intent intent = new Intent();
+                    Bean bean = ((DealListAdapter.VHolder)vh).getData();
+                    intent.putExtra("itemId", bean.getItemId());
+                    intent.putExtra("caption",bean.getType());
+                    intent.putExtra("pic_url",bean.getPicId());
+                    intent.putExtra("description",bean.getDoc());
+                    intent.setClass(getActivity(), Buy.class);
+                    startActivityForResult(intent, 0);
+                    getActivity().overridePendingTransition(R.anim.slide_in_bottom, R.anim.scale_fade_out);
+                }
             }
         });
 
-        fam = (FloatingActionMenu) view.findViewById(R.id.fab_menu);
-        fam.setClosedOnTouchOutside(true);
+        dialog = new LaunchDialog(getActivity());
+        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
+        fab.attachToRecyclerView(mRecyclerView);
+        fab.setImageResource(R.drawable.ic_tool_add);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.show();
+            }
+        });
+        mRefreshLayout.setRefreshing(true);
+        new GetDataTask().execute(0);
         return view;
     }
 
     private class GetDataTask extends AsyncTask<Integer, Void, List<Bean>>{
-        private int type; //0 represents refresh, 1 represents load
+        private int type = 0; //0 represents refresh, 1 represents load
 
         @Override
         protected List<Bean> doInBackground(Integer... params) {
             if(params.length == 0)
                 return null;
             type = params[0];
+            if(!NetInfo.checkNetwork(getActivity())){
+                return null;
+            }
             return getDbData();
         }
 
         @Override
         protected void onPostExecute(List<Bean> beanList) {
-            if(type==0){
-                mAdapter.clear();
+            if(beanList != null) {
+                if (type == 0) mAdapter.clear();
+                int len = beanList.size();
+                for (int i = 0; i < len; ++i) {
+                    mAdapter.addItem(beanList.get(i));
+                }
             }
-            if(beanList == null)return;
-            int len = beanList.size();
-            for(int i = 0; i < len; ++i){
-                mAdapter.addItem(beanList.get(i));
-            }
-            mAdapter.notifyDataSetChanged();
             if(type==0){
-                mRefreshLayout.finishRefresh();
+                mRefreshLayout.setRefreshing(false);
             }else if(type==1){
-                mRefreshLayout.finishRefreshLoadMore();
+                mRefreshLayout.setLoading(false);
             }
-            return;
         }
     }
 

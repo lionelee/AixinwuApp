@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:title="界面">
+        <SwitchPreference
+            android:defaultValue="@bool/pref_show_slider_default"
+            android:key="@string/pref_show_slider_key"
+            android:summaryOn="@string/pref_show_slider_on"
+            android:summaryOff="@string/pref_show_slider_off"
+            android:title="@string/pref_show_slider_title" />
+
+        <ListPreference
+            android:defaultValue="@string/pref_size_default"
+            android:entries="@array/pref_size_option_labels"
+            android:entryValues="@array/pref_size_option_values"
+            android:key="@string/pref_size_key"
+            android:title="@string/pref_size_title" />
+
+        <ListPreference
+            android:defaultValue="@string/pref_color_default"
+            android:entries="@array/pref_color_option_labels"
+            android:entryValues="@array/pref_color_option_values"
+            android:key="@string/pref_color_key"
+            android:title="@string/pref_color_title" />
+    </PreferenceCategory>
+
+    <PreferenceCategory android:title="通用">
+        <Preference
+            android:key="@string/pref_bind_JAccount_key"
+            android:title="@string/pref_bind_JAccount_title"/>
+        <Preference
+            android:key="@string/pref_check_update_key"
+            android:title="@string/pref_check_update_title"/>
+    </PreferenceCategory>
+</PreferenceScreen>

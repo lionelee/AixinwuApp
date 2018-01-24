@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <array name="pref_color_option_labels">
+        <item>@string/pref_color_label_red</item>
+        <item>@string/pref_color_label_blue</item>
+        <item>@string/pref_color_label_green</item>
+    </array>
+
+    <array name="pref_color_option_values">
+        <item>@string/pref_color_red_value</item>
+        <item>@string/pref_color_blue_value</item>
+        <item>@string/pref_color_green_value</item>
+    </array>
+
+
+    <array name="pref_size_option_labels">
+        <item>@string/pref_size_label_3</item>
+        <item>@string/pref_size_label_6</item>
+        <item>@string/pref_size_label_9</item>
+        <item>@string/pref_size_label_12</item>
+    </array>
+
+    <array name="pref_size_option_values">
+        <item>@string/pref_size_3_value</item>
+        <item>@string/pref_size_6_value</item>
+        <item>@string/pref_size_9_value</item>
+        <item>@string/pref_size_12_value</item>
+    </array>
+
+    <array name="campus">
+        <item>@string/minhang</item>
+        <item>@string/xuhui</item>
+    </array>
+</resources>

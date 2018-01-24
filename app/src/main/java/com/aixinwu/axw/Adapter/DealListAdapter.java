@@ -1,4 +1,4 @@
-package com.aixinwu.axw.Adapter;
+package com.aixinwu.axw.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -10,11 +10,12 @@ import android.widget.TextView;
 
 import com.aixinwu.axw.R;
 import com.aixinwu.axw.tools.Bean;
-import com.aixinwu.axw.tools.GlobalParameterApplication;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.OnItemLongClick;
 
 /**
  * Created by lionel on 2017/10/15.
@@ -24,7 +25,6 @@ public class DealListAdapter extends RecyclerView.Adapter<DealListAdapter.VHolde
     LayoutInflater inflater;
     List<Bean> beanList;
 
-
     public DealListAdapter(Context context){
         inflater = LayoutInflater.from(context);
         beanList = new ArrayList<>();
@@ -32,9 +32,11 @@ public class DealListAdapter extends RecyclerView.Adapter<DealListAdapter.VHolde
 
     public void addItem(Bean bean){
         beanList.add(bean);
+        notifyItemInserted(beanList.size());
     }
 
     public void clear(){
+        notifyItemRangeRemoved(0,beanList.size());
         beanList.clear();
     }
 

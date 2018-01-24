@@ -1,4 +1,4 @@
-package com.aixinwu.axw.Adapter;
+package com.aixinwu.axw.adapter;
 
 import android.content.Context;
 import android.support.v4.app.Fragment;
@@ -21,12 +21,12 @@ public class PagerAdapter extends FragmentPagerAdapter {
     private List<Fragment> fragments = new ArrayList<>();
     private List<String> titles = new ArrayList<>();
 
-    public PagerAdapter(Context context, FragmentManager fm) {
+    public PagerAdapter(Context context, FragmentManager fm, String[] strs) {
         super(fm);
         mContext = context;
-        titles.add(context.getString(R.string.tab0));
-        titles.add(context.getString(R.string.tab1));
-        titles.add(context.getString(R.string.tab2));
+        for(int i = 0; i < strs.length; ++i){
+            titles.add(strs[i]);
+        }
     }
 
     public void addItem(Fragment frag) {

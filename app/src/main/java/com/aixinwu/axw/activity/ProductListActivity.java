@@ -2,119 +2,47 @@ package com.aixinwu.axw.activity;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.net.Uri;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v7.app.AppCompatActivity;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.TextView;
 
-import com.aixinwu.axw.Adapter.ProductAdapter;
-import com.aixinwu.axw.Adapter.ProductListAdapter;
+import com.aixinwu.axw.adapter.ProductListAdapter;
 import com.aixinwu.axw.R;
 import com.aixinwu.axw.model.Product;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.aixinwu.axw.tools.GlobalParameterApplication;
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.jcodecraeer.xrecyclerview.*;
+import com.aixinwu.axw.tools.NetInfo;
+import com.aixinwu.axw.tools.OnRecyclerItemClickListener;
+import com.aixinwu.axw.view.MyRefreshLayout;
+import com.cjj.MaterialRefreshLayout;
+import com.cjj.MaterialRefreshListener;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.simple.JSONObject;
 
 public class ProductListActivity extends Activity {
-    private ArrayList<Product> productList = new ArrayList<Product>();
-    private XRecyclerView mRecyclerView;
+    private MyRefreshLayout mRefreshLayout;
+    private RecyclerView mRecyclerView;
+    View view;
     private int times = 0;
     private String type;
     private ProductListAdapter mAdapter;
-
-
-    public class thread extends Thread {
-        private String type;
-        private int refreshtype;
-        public thread(String type, int refreshtype) {
-            this.type = type;
-            this.refreshtype = refreshtype;
-        }
-        @Override
-        public void run() {
-            super.run();
-            getDbData(type, times);
-            Message msg = new Message();
-            msg.what = refreshtype;
-            handler.sendMessage(msg);
-        }
-    }
-
-    public Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            switch (msg.what) {
-                case 0:
-                    mAdapter = new ProductListAdapter(productList);
-                    mRecyclerView.setAdapter(mAdapter);
-                    mAdapter.setOnItemClickListener(new ProductListAdapter.MyOnItemClickListener() {
-                        @Override
-                        public void OnItemClickListener(View view, int i) {
-                            Product product = productList.get(i-1);
-                            Intent intent = new Intent(ProductListActivity.this, ProductDetailActivity.class);
-                            //intent.putExtra("param1", product.getProduct_name());
-                            //getActivity().startActivity(intent);
-
-                            try {
-                                Bundle bundle = new Bundle();
-                                bundle.putSerializable("productId", product.getId());
-                                intent.putExtras(bundle);
-                                ProductListActivity.this.startActivity(intent);
-                            } catch(Throwable e){
-                                e.printStackTrace();
-                            }
-                        }
-                    });
-                    break;
-                case 1:
-                    mAdapter.notifyDataSetChanged();
-                    mRecyclerView.refreshComplete();
-                    break;
-                case 2:
-                    mRecyclerView.loadMoreComplete();
-                    mAdapter.notifyDataSetChanged();
-                    break;
-            }
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         type = getIntent().getStringExtra("type");
-
-
         setContentView(R.layout.activity_product_list);
-        mRecyclerView = (XRecyclerView) this.findViewById(R.id.recyclerview);
-        GridLayoutManager layoutManager = new GridLayoutManager(this, 2);
-        mRecyclerView.setLayoutManager(layoutManager);
-        mRecyclerView.setRefreshProgressStyle(ProgressStyle.BallSpinFadeLoader);
-        mRecyclerView.setLoadingMoreProgressStyle(ProgressStyle.BallRotate);
-        mRecyclerView.setArrowImageView(R.drawable.iconfont_downgrey);
         TextView title = (TextView) this.findViewById(R.id.product_list_title);
         switch (type) {
             case "exchange":
@@ -127,43 +55,76 @@ public class ProductListActivity extends Activity {
                 title.setText("公益专区");
                 break;
         }
-        //=========================
 
-
-
-        mRecyclerView.setLoadingListener(new XRecyclerView.LoadingListener() {
+        mRefreshLayout = (MyRefreshLayout) findViewById(R.id.refreshLayout);
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 times = 0;
-                productList.clear();
-
-                Thread plthread1 = new thread(type, 1);
-
-                plthread1.start();
+                new GetDataTask().execute(0);
             }
+        });
+        mRefreshLayout.setOnLoadListener(new MyRefreshLayout.OnLoadingListener() {
             @Override
-            public void onLoadMore() {
+            public void onLoad() {
                 times++;
+                new GetDataTask().execute(1);
+            }
+        });
+        mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        mAdapter = new ProductListAdapter(ProductListActivity.this);
+        mRecyclerView.setAdapter(mAdapter);
 
-                Thread plthread2 = new thread(type, 2);
-
-                plthread2.start();
+        mRecyclerView.addOnItemTouchListener(new OnRecyclerItemClickListener(mRecyclerView) {
+            @Override
+            public void onItemClick(RecyclerView.ViewHolder vh) {
+                Intent intent = new Intent(ProductListActivity.this, ProductDetailActivity.class);
+                Product p = ((ProductListAdapter.ViewHolder)vh).getData();
+                intent.putExtra("productId", p.getId());
+                startActivityForResult(intent, 0);
+                overridePendingTransition(R.anim.slide_in_bottom, R.anim.scale_fade_out);
             }
         });
 
-        Thread plthread = new thread(type, 0);
-        plthread.start();
-
+        mRefreshLayout.setRefreshing(true);
+        new GetDataTask().execute(0);
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
+    private class GetDataTask extends AsyncTask<Integer, Void, List<Product>>{
+        private int type = 0; //0 represents refresh, 1 represents load
 
+        @Override
+        protected List<Product> doInBackground(Integer... params) {
+            if(params.length == 0)
+                return null;
+            type = params[0];
+            if(!NetInfo.checkNetwork(ProductListActivity.this)){
+                return null;
+            }
+            return getDbData();
+        }
+
+        @Override
+        protected void onPostExecute(List<Product> products) {
+            if(products !=null){
+                if(type==0){
+                    mAdapter.clear();
+                }
+                int len = products.size();
+                for(int i = 0; i < len; ++i){
+                    mAdapter.addItem(products.get(i));
+                }
+            }
+            if(type==0){
+                mRefreshLayout.setRefreshing(false);
+            }else if(type==1){
+                mRefreshLayout.setLoading(false);
+            }
+        }
     }
 
-    private void getDbData(String type, int times) {
-        //List<Product> ProductList = new ArrayList<Product>();
+    private List<Product> getDbData() {
         String MyToken = GlobalParameterApplication.getToken();
         String surl = GlobalParameterApplication.getSurl();
         JSONObject itemsrequest = new JSONObject();
@@ -184,94 +145,72 @@ public class ProductListActivity extends Activity {
         }
 
         itemsrequest.put("type", typestr);
-        //data.put("token", MyToken);
-        Log.i("LoveCoin", "get");
-        Log.i("Request", itemsrequest.toString());
 
         try {
             URL url = new URL(surl + "/item_aixinwu_item_get_list");
-            try {
-                Log.i("LoveCoin", "getconnection");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("POST");
-                conn.setRequestProperty("Content-Type", "application/json");
-                conn.setDoOutput(true);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setRequestProperty("Content-Type", "application/json");
+            conn.setDoOutput(true);
 
-                conn.getOutputStream().write(itemsrequest.toJSONString().getBytes());
-                java.lang.String ostr = IOUtils.toString(conn.getInputStream());
-                org.json.JSONObject outjson = null;
+            conn.getOutputStream().write(itemsrequest.toJSONString().getBytes());
+            java.lang.String ostr = IOUtils.toString(conn.getInputStream());
+            org.json.JSONObject outjson = null;
 
-                try {
-                    JSONArray result = null;
-                    outjson = new org.json.JSONObject(ostr);
-                    result = outjson.getJSONArray("items");
-                    start += result.length();
-                    Log.i("Inall", result.length() + "");
-                    for (int i = 0; i < result.length(); i++)
-                    //if (result.getJSONObject(i).getInt("status") == 0)
-                    {
-                        String jsonall = result.getJSONObject(i).toString();
-                        Log.i("JSONALL", jsonall);
+            JSONArray result = null;
+            outjson = new org.json.JSONObject(ostr);
+            result = outjson.getJSONArray("items");
+            start += result.length();
+            List<Product> productList = new ArrayList<Product>();
+            for (int i = 0; i < result.length(); i++){
+                String jsonall = result.getJSONObject(i).toString();
 
-                        String[] imageurl = result.getJSONObject(i).getString("image").split(",");//==========================
-                        /*
-                        String logname = result.getJSONObject(i).getString("name");
-                        String value = result.getJSONObject(i).getInt("price") + "";
-                        String iid = result.getJSONObject(i).getInt("id") + "";
-                        String descurl = result.getJSONObject(i).getString("desp_url");
-                        String descdetail = result.getJSONObject(i).getString("desc");
-                        String shortdesc = result.getJSONObject(i).getString("short_desc");
-                        String despUrl   = result.getJSONObject(i).getString("desp_url");
-                        int stock = result.getJSONObject(i).getInt("stock");
-                        Log.i("Image Url", imageurl[0]);
-                        Log.i("aixinwuitemid", iid);
-                        Log.i("value", value);
-                        Log.i("name", logname);
-                        Log.i("stock", stock + "");
-                        //Log.i("xxxx", logname + value + iid);
-                        Log.i("Image Url", imageurl[0]);
-                        Log.i("Desc", descurl + "null");
-                        */
-                        String descdetail = result.getJSONObject(i).getString("desc");
-                        String shortdesc = result.getJSONObject(i).getString("short_desc");
-                        String despUrl = result.getJSONObject(i).getString("desp_url");
-                        int stock = result.getJSONObject(i).getInt("stock");
-                        if (imageurl[0].equals("")) {
-                            //If no images in database, show a default image.
-                            //BitmapFactory.Options cc = new BitmapFactory.Options();
-                            //cc.inSampleSize = 20;
-                            productList.add(new Product(result.getJSONObject(i).getInt("id"),
-                                    result.getJSONObject(i).getString("name"),
-                                    result.getJSONObject(i).getDouble("price"),
-                                    stock,
-                                    GlobalParameterApplication.imgSurl+"121000239217360a3d2.jpg",
-                                    descdetail,
-                                    shortdesc,
-                                    despUrl
-                            ));
-                            Log.i("Status ", "001");
-                        } else
-                            productList.add(new Product(result.getJSONObject(i).getInt("id"),
-                                    result.getJSONObject(i).getString("name"),
-                                    result.getJSONObject(i).getDouble("price"),
-                                    stock,
-                                    GlobalParameterApplication.axwUrl + imageurl[0],
-                                    descdetail,
-                                    shortdesc,
-                                    despUrl
-                            ));
-                        Log.i("Status ", "021");
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
+                String[] imageurl = result.getJSONObject(i).getString("image").split(",");
+                String descdetail = result.getJSONObject(i).getString("desc");
+                String shortdesc = result.getJSONObject(i).getString("short_desc");
+                String despUrl = result.getJSONObject(i).getString("desp_url");
+                int stock = result.getJSONObject(i).getInt("stock");
+                if (imageurl[0].equals("")) {
+                    productList.add(new Product(result.getJSONObject(i).getInt("id"),
+                            result.getJSONObject(i).getString("name"),
+                            result.getJSONObject(i).getDouble("price"),
+                            stock,
+                            GlobalParameterApplication.imgSurl+"121000239217360a3d2.jpg",
+                            descdetail,
+                            shortdesc,
+                            despUrl
+                    ));
+                } else
+                    productList.add(new Product(result.getJSONObject(i).getInt("id"),
+                            result.getJSONObject(i).getString("name"),
+                            result.getJSONObject(i).getDouble("price"),
+                            stock,
+                            GlobalParameterApplication.axwUrl + imageurl[0],
+                            descdetail,
+                            shortdesc,
+                            despUrl
+                    ));
             }
-        } catch (MalformedURLException e) {
+            return productList;
+        } catch (Exception e) {
             e.printStackTrace();
+        }
+        return null;
+    }
+
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.scale_fade_in, R.anim.slide_out_bottom);
+        super.onBackPressed();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == 0 && resultCode == RESULT_OK){
+            setResult(RESULT_OK, data);
+            finish();
+            overridePendingTransition(R.anim.scale_fade_in, R.anim.slide_out_bottom);
         }
     }
 }

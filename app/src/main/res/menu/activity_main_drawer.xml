@@ -12,10 +12,9 @@
             android:id="@+id/nav_coin"
             android:icon="@drawable/ic_nav_coin"
             android:title="爱心币转移" />
-        <item
-            android:id="@+id/nav_bind"
-            android:icon="@drawable/ic_nav_bind"
-            android:title="绑定JAccout" />
+        <item android:id="@+id/nav_msg"
+            android:icon="@drawable/ic_nav_message"
+            android:title="消息"/>
         <item
             android:id="@+id/nav_exit"
             android:icon="@drawable/ic_nav_exit"
@@ -23,15 +22,13 @@
     </group>
     <group android:id="@+id/group1"
         android:checkableBehavior="single">
+        <item android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_nav_settings"
+            android:title="设置"/>
         <item
             android:id="@+id/nav_help"
             android:icon="@drawable/ic_nav_help"
-            android:title="帮助" />
-        <item
-            app:actionLayout="@layout/badge"
-            android:id="@+id/nav_update"
-            android:icon="@drawable/ic_nav_update"
-            android:title="检查更新"/>
+            android:title="帮助与反馈" />
         <item
             android:id="@+id/nav_about"
             android:icon="@drawable/ic_nav_about"

@@ -44,28 +44,6 @@ public class RawPictureActivity extends Activity {
 
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_raw_picture, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
-
     private final class TouchListener implements OnTouchListener {
 
         /** 记录是拖拉照片模式还是放大缩小照片模式 */
@@ -149,7 +127,7 @@ public class RawPictureActivity extends Activity {
                         count = 0;
                         imageView.setScaleType(ImageView.ScaleType.MATRIX);
                         float endDis = distance(event);// 结束距离
-                        if (endDis > 10f) { // 两个手指并拢在一起的时候像素大于10
+                        if (endDis > 100f) { // 两个手指并拢在一起的时候像素大于10
                             float scale = endDis / startDis;// 得到缩放倍数
                             matrix.set(currentMatrix);
                             matrix.postScale(scale, scale,midPoint.x,midPoint.y);

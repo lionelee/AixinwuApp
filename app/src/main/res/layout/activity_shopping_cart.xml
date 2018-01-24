@@ -1,40 +1,42 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
+    android:fillViewport="true"
     android:orientation="vertical">
-
-    <ListView
-        android:id="@+id/lv_shopping_cart_activity"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:cacheColorHint="#00000000"
-        android:descendantFocusability="blocksDescendants"
-        android:divider="@null"
-        android:scrollbars="none" />
-
+    <!--<android.support.v4.widget.SwipeRefreshLayout-->
+        <!--android:id="@+id/shopping_cart_refresh_layout"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--android:orientation="vertical">-->
+        <com.yanzhenjie.recyclerview.swipe.SwipeMenuRecyclerView
+            android:id="@+id/lv_shopping_cart_activity"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true"
+            android:paddingBottom="48dp"
+            android:scrollbars="none"/>
+    <!--</android.support.v4.widget.SwipeRefreshLayout>-->
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="48dp"
+        android:layout_alignParentBottom="true"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:background="@color/white">
         <CheckBox
             android:id="@+id/cb_activity_shopping_cart"
-            android:layout_margin="7dp"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_marginLeft="16dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:button="@null"
             android:checked="false"
             android:background="@drawable/check_box_background" />
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="7dp"
-            android:layout_marginStart="7dp"
-            android:text="全选"
-            android:textColor="#3e3a39" />
+            android:layout_marginLeft="8dp"
+            android:text="全选"/>
         <TextView
             android:id="@+id/tv_activity_shopping_cart_total"
             android:layout_width="0dp"
@@ -45,59 +47,14 @@
             android:padding="7dp"
             android:layout_marginEnd="10dp"
             android:layout_marginRight="10dp"/>
-        <android.support.v7.widget.ButtonBarLayout
+        <Button
             android:id="@+id/btn_activity_shopping_cart_clearing"
-            android:layout_width="80dp"
-            android:background="@color/accent"
-            android:layout_height="match_parent">
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:text="去结算"
-                android:textColor="@color/white"
-                android:layout_marginTop="10dp"/>
-        </android.support.v7.widget.ButtonBarLayout>
-
+            android:layout_width="100dp"
+            android:background="?attr/colorAccent"
+            android:layout_height="48dp"
+            android:text="去结算"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"/>
     </LinearLayout>
-
-
-
-    <LinearLayout
-        android:orientation="vertical"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:visibility="gone">
-
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:text="清空购物车"
-            android:textColor="#ffffffff"
-            android:id="@+id/btn_delete_all_product"
-            android:layout_gravity="end"
-            android:layout_weight="0.10" />
-
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="120dp"
-        android:orientation="vertical"
-        android:gravity="center_vertical">
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:text="删除所选商品"
-            android:textColor="#ea5404"
-            android:background="@color/white"
-            android:layout_marginTop="10dp"
-            style="?android:attr/borderlessButtonStyle"
-            android:id="@+id/btn_delete_selected_product"/>
-
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>

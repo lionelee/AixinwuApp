@@ -1,26 +1,19 @@
-package com.aixinwu.axw.Adapter;
+package com.aixinwu.axw.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
-import android.widget.CheckBox;
 import android.widget.ImageView;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import com.aixinwu.axw.R;
 import com.aixinwu.axw.model.Record;
-import com.aixinwu.axw.model.ShoppingCartEntity;
-import com.aixinwu.axw.tools.Bean;
 import com.aixinwu.axw.tools.GlobalParameterApplication;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by liangyuding on 2016/10/29.
@@ -70,7 +63,7 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
         }
 
         public void bindData(Record item){
-            name.setText("订单编号："+ item.getOrder_sn());
+            name.setText(item.getOrder_sn());
             price.setText(item.getTotal_product_price());
             number.setText(item.getUpdateTime());
             String [] imgUrls = item.getImgUrls().split(",");

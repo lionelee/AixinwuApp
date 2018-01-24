@@ -1,264 +1,195 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="@color/white"
-    >
 <RelativeLayout
-
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    >
-
-
-
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@color/white">
     <TextView
+        android:id="@+id/tv_title"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center"
         android:text="捐赠"
-        android:textSize="25sp"
-        android:textColor="#3e3a39"
-        android:background="#eeefef"
-        android:layout_marginBottom="20dp"
+        android:textSize="18sp"
+        android:textColor="@color/white"
+        android:background="?attr/colorPrimary"
         android:layout_alignParentTop="true"/>
-
-    <RelativeLayout
-        android:id="@+id/supplyAXW1"
-        android:layout_width="fill_parent"
-        android:layout_height="70dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_marginTop="50dp">
-        <TextView
-            android:id="@+id/axwComName"
-            android:layout_width="wrap_content"
-            android:layout_height="70dp"
-            android:gravity="center"
-            android:textColor="#3e3a39"
-            android:textSize="16sp"
-            android:text="商品名称  " />
-
-        <EditText
-            android:id="@+id/itemname1"
-            android:layout_toRightOf="@id/axwComName"
-            android:layout_toEndOf="@id/axwComName"
-            android:layout_width="200dp"
-            android:layout_height="70dp"
-            android:singleLine="false"
-            android:inputType="text"
-            android:textColor="#3e3a39"
-            android:textSize="16sp"
-            android:background="@color/white"
-            />
-    </RelativeLayout>
-
-    <View
-        android:id="@+id/supplyAXWLine1"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#dcdcdd"
-        android:layout_below="@id/supplyAXW1"
-        />
+        android:layout_height="match_parent"
+        android:fillViewport="true"
+        android:layout_below="@+id/tv_title">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingTop="32dp"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp">
+            <RelativeLayout
+                android:id="@+id/supplyAXW1"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:paddingBottom="16dp">
+                <TextView
+                    android:id="@+id/axwComName"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:text="商品名称: " />
+                <EditText
+                    android:id="@+id/itemname1"
+                    android:layout_toRightOf="@id/axwComName"
+                    android:layout_toEndOf="@id/axwComName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:singleLine="false"
+                    android:inputType="text"
+                    android:textColor="#3e3a39"
+                    android:textSize="16sp"
+                    android:background="@color/white" />
+            </RelativeLayout>
 
-    <RelativeLayout
-        android:id="@+id/supplyAXW2"
-        android:layout_width="fill_parent"
-        android:layout_height="70dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_below="@id/supplyAXWLine1"
-        >
-        <TextView
-            android:id="@+id/axwComNumber"
-            android:layout_width="wrap_content"
-            android:layout_height="70dp"
-            android:gravity="center"
-            android:textColor="#3e3a39"
-            android:textSize="16sp"
-            android:text="商品数量  X" />
-        <EditText
-            android:id="@+id/itemnumber"
-            android:layout_toRightOf="@id/axwComNumber"
-            android:layout_toEndOf="@id/axwComNumber"
-            android:layout_width="100dp"
-            android:layout_height="70dp"
-            android:singleLine="false"
-            android:textColor="#3e3a39"
-            android:textSize="16sp"
-            android:hint="0"
-            android:background="@color/white"
-            android:inputType="numberDecimal"
-            />
-    </RelativeLayout>
+            <View
+                android:id="@+id/supplyAXWLine1"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#dcdcdd"
+                android:layout_below="@id/supplyAXW1" />
 
-    <View
-        android:id="@+id/supplyAXWLine2"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#dcdcdd"
-        android:layout_below="@id/supplyAXW2"
-        />
+            <RelativeLayout
+                android:id="@+id/supplyAXW2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:layout_below="@id/supplyAXWLine1">
+                <TextView
+                    android:id="@+id/axwComNumber"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:textSize="16sp"
+                    android:text="商品数量: " />
+                <EditText
+                    android:id="@+id/itemnumber"
+                    android:layout_toRightOf="@id/axwComNumber"
+                    android:layout_toEndOf="@id/axwComNumber"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:singleLine="true"
+                    android:textSize="16sp"
+                    android:hint="0"
+                    android:background="@color/white"
+                    android:inputType="numberDecimal" />
+            </RelativeLayout>
 
+            <View
+                android:id="@+id/supplyAXWLine2"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#dcdcdd"
+                android:layout_below="@id/supplyAXW2" />
 
-    <RelativeLayout
-        android:id="@+id/supplyAXW3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:layout_below="@id/supplyAXWLine2">
+            <RelativeLayout
+                android:id="@+id/supplyAXW3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:paddingTop="16dp"
+                android:paddingBottom="16dp"
+                android:layout_below="@id/supplyAXWLine2">
 
-        <TextView
-            android:id="@+id/axwComDescription1"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:textColor="#3e3a39"
-            android:textSize="16sp"
-            android:gravity="center"
-            android:text="商品描述" />
+                <TextView
+                    android:id="@+id/axwComDescription1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:text="商品描述: " />
+                <EditText
+                    android:id="@+id/commodityDescription"
+                    android:layout_height="150dp"
+                    android:layout_width="match_parent"
+                    android:layout_marginLeft="8dp"
+                    android:layout_toRightOf="@id/axwComDescription1"
+                    android:layout_toEndOf="@id/axwComDescription1"
+                    android:textColor="#3e3a39"
+                    android:textSize="16sp"
+                    android:hint="(不少于15字)"
+                    android:gravity="top"
+                    android:maxLength="500"
+                    android:maxLines="8"
+                    android:inputType="textMultiLine"
+                    android:background="@color/white"/>
+            </RelativeLayout>
 
-        <ScrollView
-            android:layout_height="150dp"
-            android:layout_width="300dp"
-            android:paddingTop="3dp"
-            android:layout_toRightOf="@id/axwComDescription1"
-            android:layout_toEndOf="@id/axwComDescription1">
-        <EditText
-            android:id="@+id/commodityDescription"
-            android:layout_height="150dp"
-            android:layout_width="300dp"
-            android:textColor="#3e3a39"
-            android:textSize="16sp"
-            android:hint="(不少于15字)"
-            android:maxLength="500"
-            android:singleLine="false"
-            android:background="@color/white"
-            android:padding="10dp" />
-        </ScrollView>
-    </RelativeLayout>
+            <View
+                android:id="@+id/supplyAXWLine3"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#dcdcdd"
+                android:layout_below="@id/supplyAXW3"/>
 
-    <View
-        android:id="@+id/supplyAXWLine3"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#dcdcdd"
-        android:layout_below="@id/supplyAXW3"
-        />
+            <RelativeLayout
+                android:id="@+id/supplyAXW4"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:paddingBottom="32dp"
+                android:layout_below="@id/supplyAXWLine3">
+                <TextView
+                    android:id="@+id/axwComDonation"
+                    android:layout_width="wrap_content"
+                    android:layout_height="30dp"
+                    android:textColor="#888889"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:text="捐赠到爱心屋" />
 
-    <RelativeLayout
-        android:id="@+id/supplyAXW4"
-        android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
-        android:layout_below="@id/supplyAXWLine3"
-        >
-        <TextView
-            android:id="@+id/axwComDonation"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:textColor="#3e3a39"
-            android:textSize="16sp"
-            android:gravity="center"
-            android:text="捐赠到爱心屋" />
+                <TextView
+                    android:id="@+id/axwComValue"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/axwComDonation"
+                    android:textSize="16sp"
+                    android:gravity="center"
+                    android:text="价格 ¥" />
 
-        <TextView
-            android:id="@+id/axwComValue"
-            android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:layout_below="@id/axwComDonation"
-            android:textColor="#888889"
-            android:textSize="16sp"
-            android:gravity="center"
-            android:text="价格  ¥" />
+                <EditText
+                    android:id="@+id/donationPrice"
+                    android:layout_toRightOf="@id/axwComValue"
+                    android:layout_toEndOf="@id/axwComValue"
+                    android:layout_below="@id/axwComDonation"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:textColor="#888889"
+                    android:textSize="16sp"
+                    android:singleLine="true"
+                    android:background="@color/white"
+                    android:inputType="numberDecimal|number" />
+            </RelativeLayout>
 
-        <EditText
-            android:id="@+id/donationPrice"
-            android:layout_toRightOf="@id/axwComValue"
-            android:layout_toEndOf="@id/axwComValue"
-            android:layout_below="@id/axwComDonation"
-            android:layout_width="100dp"
-            android:layout_height="50dp"
-            android:textColor="#888889"
-            android:textSize="16sp"
-            android:singleLine="false"
-            android:background="@color/white"
-            android:inputType="numberDecimal"
-            />
-    </RelativeLayout>
-
-    <View
-        android:id="@+id/supplyAXWLine4"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:background="#dcdcdd"
-        android:visibility="gone"
-        android:layout_below="@id/supplyAXW4"
-        />
-
-    <LinearLayout
-        android:id="@+id/supplyAXW5"
-        android:layout_width="fill_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        android:layout_below="@id/supplyAXWLine4"
-        >
-        <TextView
-            android:layout_weight="2"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-
-            android:gravity="center"
-            android:text="Jaccount ID" />
-        <EditText
-            android:id="@+id/jaccountID"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="1"
-            android:gravity="center"
-            android:singleLine="false"
-            android:background="@color/white"
-            />
-    </LinearLayout>
-    <Button
-        android:layout_gravity="center"
-        android:id="@+id/button2"
-        android:layout_width="wrap_content"
-        android:layout_height="50dp"
-        android:layout_below="@id/supplyAXW5"
-        android:textSize="16sp"
-        android:layout_centerHorizontal="true"
-        android:visibility="gone"
-        android:text="提交给爱心屋" />
-
-    <RelativeLayout
-        android:id="@+id/donate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/button2"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="70dp"
-        android:background="#eeefef">
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_margin="5dp"
-            android:text="确认捐赠"
-            android:textSize="18sp"
-            android:textColor="#ea5404"/>
-    </RelativeLayout>
-
-
+            <Button
+                android:id="@+id/btn_donate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="16dp"
+                android:text="确认捐赠"
+                style="@style/PrimaryButton"/>
+        </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>
-
-</ScrollView>

@@ -23,7 +23,7 @@ public class AXWInfo extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.axwinfo_toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("爱心屋");
+        getSupportActionBar().setTitle("关于爱心屋");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         qrApp = (ImageView) findViewById(R.id.qrAPP);
@@ -60,9 +60,7 @@ public class AXWInfo extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(AXWInfo.this,MainActivity.class));
-        overridePendingTransition(R.anim.scale_fade_in,R.anim.slide_out_right);
         finish();
-        super.onBackPressed();
+        overridePendingTransition(R.anim.scale_fade_in,R.anim.slide_out_right);
     }
 }

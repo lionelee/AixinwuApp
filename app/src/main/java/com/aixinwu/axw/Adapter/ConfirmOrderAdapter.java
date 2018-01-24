@@ -1,34 +1,19 @@
-package com.aixinwu.axw.Adapter;
+package com.aixinwu.axw.adapter;
 
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aixinwu.axw.R;
-import com.aixinwu.axw.activity.Buy;
-import com.aixinwu.axw.model.Product;
 import com.aixinwu.axw.model.ShoppingCartEntity;
-import com.aixinwu.axw.tools.Bean;
-import com.aixinwu.axw.tools.ViewHolder;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * Created by liangyuding on 2016/10/16.

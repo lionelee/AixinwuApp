@@ -1,0 +1,38 @@
+[
+    {
+        "merged": "C:\\Users\\10911\\Documents\\github\\AixinwuApp\\library\\build\\intermediates\\res\\merged\\release\\color\\abc_primary_text_material_light.xml",
+        "source": "C:\\Users\\10911\\.android\\build-cache\\6fd43b5a8761ef3f4c663e83c3c4c2b5a15f650b\\output\\res\\color\\abc_primary_text_material_light.xml"
+    },
+    {
+        "merged": "C:\\Users\\10911\\Documents\\github\\AixinwuApp\\library\\build\\intermediates\\res\\merged\\release\\color\\abc_primary_text_disable_only_material_dark.xml",
+        "source": "C:\\Users\\10911\\.android\\build-cache\\6fd43b5a8761ef3f4c663e83c3c4c2b5a15f650b\\output\\res\\color\\abc_primary_text_disable_only_material_dark.xml"
+    },
+    {
+        "merged": "C:\\Users\\10911\\Documents\\github\\AixinwuApp\\library\\build\\intermediates\\res\\merged\\release\\color\\abc_primary_text_disable_only_material_light.xml",
+        "source": "C:\\Users\\10911\\.android\\build-cache\\6fd43b5a8761ef3f4c663e83c3c4c2b5a15f650b\\output\\res\\color\\abc_primary_text_disable_only_material_light.xml"
+    },
+    {
+        "merged": "C:\\Users\\10911\\Documents\\github\\AixinwuApp\\library\\build\\intermediates\\res\\merged\\release\\color\\abc_primary_text_material_dark.xml",
+        "source": "C:\\Users\\10911\\.android\\build-cache\\6fd43b5a8761ef3f4c663e83c3c4c2b5a15f650b\\output\\res\\color\\abc_primary_text_material_dark.xml"
+    },
+    {
+        "merged": "C:\\Users\\10911\\Documents\\github\\AixinwuApp\\library\\build\\intermediates\\res\\merged\\release\\color\\switch_thumb_material_dark.xml",
+        "source": "C:\\Users\\10911\\.android\\build-cache\\6fd43b5a8761ef3f4c663e83c3c4c2b5a15f650b\\output\\res\\color\\switch_thumb_material_dark.xml"
+    },
+    {
+        "merged": "C:\\Users\\10911\\Documents\\github\\AixinwuApp\\library\\build\\intermediates\\res\\merged\\release\\color\\abc_secondary_text_material_light.xml",
+        "source": "C:\\Users\\10911\\.android\\build-cache\\6fd43b5a8761ef3f4c663e83c3c4c2b5a15f650b\\output\\res\\color\\abc_secondary_text_material_light.xml"
+    },
+    {
+        "merged": "C:\\Users\\10911\\Documents\\github\\AixinwuApp\\library\\build\\intermediates\\res\\merged\\release\\color\\abc_search_url_text.xml",
+        "source": "C:\\Users\\10911\\.android\\build-cache\\6fd43b5a8761ef3f4c663e83c3c4c2b5a15f650b\\output\\res\\color\\abc_search_url_text.xml"
+    },
+    {
+        "merged": "C:\\Users\\10911\\Documents\\github\\AixinwuApp\\library\\build\\intermediates\\res\\merged\\release\\color\\switch_thumb_material_light.xml",
+        "source": "C:\\Users\\10911\\.android\\build-cache\\6fd43b5a8761ef3f4c663e83c3c4c2b5a15f650b\\output\\res\\color\\switch_thumb_material_light.xml"
+    },
+    {
+        "merged": "C:\\Users\\10911\\Documents\\github\\AixinwuApp\\library\\build\\intermediates\\res\\merged\\release\\color\\abc_secondary_text_material_dark.xml",
+        "source": "C:\\Users\\10911\\.android\\build-cache\\6fd43b5a8761ef3f4c663e83c3c4c2b5a15f650b\\output\\res\\color\\abc_secondary_text_material_dark.xml"
+    }
+]

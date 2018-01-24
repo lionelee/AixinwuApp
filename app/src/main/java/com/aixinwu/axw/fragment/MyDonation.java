@@ -1,11 +1,14 @@
 package com.aixinwu.axw.fragment;
 
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -19,6 +22,8 @@ import android.widget.TextView;
 import com.aixinwu.axw.R;
 import com.aixinwu.axw.model.Record;
 import com.aixinwu.axw.tools.GlobalParameterApplication;
+import com.aixinwu.axw.widget.RecyclerViewDivider;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -34,8 +39,7 @@ import java.util.HashMap;
 
 public class MyDonation extends Fragment {
 
-    private ListView donateListView;
-    private SimpleAdapter simpleAdapter;
+    private RecyclerView donateListView;
     private ArrayList<HashMap<String,String>> donateMaps = new ArrayList<HashMap<String, String>>();
     private ArrayList<Record> record = new ArrayList<>();
 
@@ -46,19 +50,8 @@ public class MyDonation extends Fragment {
             super.handleMessage(msg);
             switch (msg.what){
                 case 395932:
-                    simpleAdapter = new SimpleAdapter(getActivity(),donateMaps,R.layout.donation_item,new String[]{"desc","barcode","produced_at"},new int[]{R.id.t1,R.id.t2,R.id.t3});
-                    simpleAdapter.setViewBinder(new SimpleAdapter.ViewBinder() {
-                        @Override
-                        public boolean setViewValue(View view, Object o, String s) {
-                            if (view instanceof TextView && o instanceof String) {
-                                TextView i = (TextView) view;
-                                i.setText((String) o);
-                                return true;
-                            }
-                            return false;
-                        }
-                    });
-                    donateListView.setAdapter(simpleAdapter);
+                    MyDonationAdapter adapter = new MyDonationAdapter(getActivity(),donateMaps);
+                    donateListView.setAdapter(adapter);
                     break;
             }
         };
@@ -68,7 +61,9 @@ public class MyDonation extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_my_donation, null);
-        donateListView = (ListView) view.findViewById(R.id.myOwnDonation);
+        donateListView = (RecyclerView) view.findViewById(R.id.myOwnDonation);
+        donateListView.setLayoutManager(new LinearLayoutManager(getActivity()));
+        donateListView.addItemDecoration(new RecyclerViewDivider(getActivity()));
 
         new Thread(new Runnable() {
             @Override
@@ -83,28 +78,12 @@ public class MyDonation extends Fragment {
         return view;
     }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     private void getDbData(){
         String MyToken= GlobalParameterApplication.getToken();
         JSONObject data = new JSONObject();
 
         data.put("token",MyToken);
-
-        {
 
             try {
                 URL url = new URL(GlobalParameterApplication.getSurl() + "/donate_get");
@@ -121,12 +100,9 @@ public class MyDonation extends Fragment {
                     try {
                         JSONArray result = null;
                         outjson = new org.json.JSONObject(ostr);
-                        //System.out.println(ostr);
                         result = outjson.getJSONArray("records");
                         for (int i = result.length()-1; i >=0 ; i--){
                             org.json.JSONObject tmpJSONObject = result.getJSONObject(i);
-                            //System.out.println(a.toString());
-
                             String desc = tmpJSONObject.getString("desc");
                             String barcode = tmpJSONObject.getString("barcode");
                             String donateTime = tmpJSONObject.getString("produced_at");
@@ -148,7 +124,56 @@ public class MyDonation extends Fragment {
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
+    }
+
+
+    private class MyDonationAdapter extends RecyclerView.Adapter<MyDonationAdapter.ViewHolder> {
+
+        private LayoutInflater mInflater;
+        private ArrayList<HashMap<String,String>> donateMaps;
+
+
+        public MyDonationAdapter(Context context, ArrayList<HashMap<String,String>> donateMaps) {
+            mInflater = LayoutInflater.from(context);
+            this.donateMaps = donateMaps;
         }
 
+        @Override
+        public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+            View view = mInflater.inflate(R.layout.donation_item, parent, false);
+            return new ViewHolder(view);
+        }
+
+        @Override
+        public void onBindViewHolder(ViewHolder holder, int position) {
+            holder.bindData(position);
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return position;
+        }
+
+        @Override
+        public int getItemCount() {
+            return donateMaps.size();
+        }
+
+        class ViewHolder extends RecyclerView.ViewHolder{
+            TextView desc, barcode, producedAt;
+
+            public ViewHolder(View view){
+                super(view);
+                desc = (TextView) view.findViewById(R.id.t1);
+                barcode = (TextView) view.findViewById(R.id.t2);
+                producedAt = (TextView) view.findViewById(R.id.t3);
+            }
+
+            public void bindData(int position){
+                desc.setText(donateMaps.get(position).get("desc"));
+                barcode.setText(donateMaps.get(position).get("barcode"));
+                producedAt.setText(donateMaps.get(position).get("produced_at"));
+            }
+        }
     }
 }

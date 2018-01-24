@@ -1,6 +1,6 @@
 package com.aixinwu.axw.activity;
 
-import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Notification;
 import android.app.NotificationManager;
@@ -8,45 +8,43 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.aixinwu.axw.Adapter.NotifyMessage;
+import com.aixinwu.axw.adapter.NotifyMessage;
 
 import com.aixinwu.axw.R;
+import com.aixinwu.axw.adapter.PagerAdapter;
 import com.aixinwu.axw.database.Sqlite;
 import com.aixinwu.axw.fragment.HomePage;
 import com.aixinwu.axw.fragment.ShoppingCart;
 import com.aixinwu.axw.fragment.UsedDeal;
 import com.aixinwu.axw.tools.DownloadTask;
 import com.aixinwu.axw.tools.GlobalParameterApplication;
-import com.aixinwu.axw.tools.NetInfo;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.commons.io.IOUtils;
@@ -55,9 +53,10 @@ import org.json.simple.JSONObject;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
 
 /**
  * Created by liangyuding on 2016/4/6.
@@ -65,66 +64,38 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,View.OnClickListener{
-
-    private Fragment[] mFragments;
-    private int idx = 0;
-    private String coins="", username="", headProtrait="";
-    private String updateDesp ="";
+    private String coins="", username="", headProtrait="", updateDesp ="";;
     private Intent intent=null;
  
     private int mBackKeyPressedTimes = 0;
+    public static Activity mActivity;
 
     private DrawerLayout drawer;
+    private Toolbar toolbar;
     private NavigationView navigationView;
-    private RelativeLayout badge;
     private CircleImageView iv_avatar;
     private TextView tv_coins, tv_uname, tv_type;
     private AppCompatButton btn_login, btn_register, btn_sign;
-    private BottomNavigationView bnve;
-
-    private BottomNavigationView.OnNavigationItemSelectedListener
-            mListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            hideFragment(ft);
-            bnve.getMenu().getItem(idx).setChecked(false);
-            item.setChecked(true);
-            switch(item.getItemId()){
-                case R.id.navigation_home:
-                    ft.show(mFragments[0]);
-                    idx = 0;
-                    break;
-                case R.id.navigation_deal:
-                    if(mFragments[1]==null){
-                        mFragments[1] = new UsedDeal();
-                        ft.add(R.id.fragment_layout,mFragments[1]);
-                    }else{
-                        ft.show(mFragments[1]);
-                    }
-                    idx = 1;
-                    break;
-                case R.id.navigation_cart:
-                    if(mFragments[2]==null){
-                        mFragments[2] = new ShoppingCart();
-                        ft.add(R.id.fragment_layout,mFragments[2]);
-                    }else{
-                        ft.show(mFragments[2]);
-                    }
-                    idx = 2;
-                default:break;
-            }
-            ft.commit();
-            return false;
-        }
-    };
+    private ViewPager viewPager;
+    private TabLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
+        mActivity = MainActivity.this;
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        initView();
+        try{
+            NotifyThread.start();
+        }catch (Throwable e){
+            e.printStackTrace();
+        }
+    }
+
+    private void initView(){
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -146,24 +117,31 @@ public class MainActivity extends AppCompatActivity
         btn_sign = (AppCompatButton) nav_view.findViewById(R.id.nav_sign);
         btn_sign.setOnClickListener(this);
 
-        badge = (RelativeLayout) navigationView.getMenu().findItem(R.id.nav_update).getActionView();
+        tabLayout = (TabLayout) findViewById(R.id.tab_header);
+        viewPager = (ViewPager) findViewById(R.id.main_viewpager);
+        String[] strings = new String[]{getString(R.string.homepage),getString(R.string.usedDeal),getString(R.string.shopCart)};
+        PagerAdapter adapter = new PagerAdapter(MainActivity.this, getSupportFragmentManager(),strings);
+        adapter.addItem(new HomePage());
+        adapter.addItem(new UsedDeal());
+        adapter.addItem(new ShoppingCart());
 
-        bnve = (BottomNavigationView) findViewById(R.id.bottom_nav);
-//        bnve.enableAnimation(false);
-//        bnve.enableShiftingMode(false);
-//        bnve.enableItemShiftingMode(false);
+        viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(3);
+        tabLayout.setupWithViewPager(viewPager);
 
-        init();
-        bnve.setOnNavigationItemSelectedListener(mListener);
-        try{
-            NotifyThread.start();
-        }catch (Throwable e){
-            e.printStackTrace();
-        }
     }
+
 
     @Override
     protected void onStart() {
+        super.onStart();
+        Intent intent = getIntent();
+        if(intent != null){
+            String msg = intent.getStringExtra("msg");
+            if(msg != null && msg.equals("cart")){
+            }
+        }
+
         if (GlobalParameterApplication.getLogin_status() == 1) {
             tv_uname.setVisibility(View.VISIBLE);
             tv_coins.setVisibility(View.VISIBLE);
@@ -189,7 +167,6 @@ public class MainActivity extends AppCompatActivity
         else if (GlobalParameterApplication.getLogin_status() == 0) {
             setOffStatus();
         }
-        super.onStart();
     }
 
     private void setOffStatus(){
@@ -199,15 +176,8 @@ public class MainActivity extends AppCompatActivity
         btn_sign.setVisibility(View.GONE);
         btn_login.setVisibility(View.VISIBLE);
         btn_register.setVisibility(View.VISIBLE);
-        iv_avatar.setImageResource(R.drawable.personal_cicle);
+        iv_avatar.setImageResource(R.color.gray);
         navigationView.getMenu().findItem(R.id.nav_exit).setVisible(false);
-    }
-
-    private void init(){
-        mFragments = new Fragment[3];
-        mFragments[0] = new HomePage();
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.add(R.id.fragment_layout, mFragments[0]).commit();
     }
 
     public String genJson(String token) {
@@ -265,6 +235,9 @@ public class MainActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.action_search:
+                Intent intent = new Intent(MainActivity.this, Search.class);
+                startActivityForResult(intent,0);
+                overridePendingTransition(R.anim.alpha_fade_in,R.anim.alpha_fade_out);
                 break;
             case R.id.action_share:
                 Intent shareIntent = new Intent();
@@ -291,18 +264,27 @@ public class MainActivity extends AppCompatActivity
                 }
                 break;
             case R.id.nav_coin:
+                if (GlobalParameterApplication.getLogin_status() == 1){
+                    intent = new Intent(MainActivity.this, CashTransfer.class);
+                } else {
+                    Toast.makeText(this,"请先登录",Toast.LENGTH_SHORT).show();
+                }
                 break;
-            case R.id.nav_bind:
-                bindJaccount();
+            case R.id.nav_msg:
+                if (GlobalParameterApplication.getLogin_status() == 1){
+                    intent = new Intent(MainActivity.this, ChatList.class);
+                } else {
+                    Toast.makeText(this,"请先登录",Toast.LENGTH_SHORT).show();
+                }
                 break;
             case R.id.nav_exit:
                 logOff();
                 break;
-            case R.id.nav_help:
-                intent = new Intent(MainActivity.this, Help.class);
+            case R.id.nav_settings:
+                intent = new Intent(MainActivity.this, Settings.class);
                 break;
-            case R.id.nav_update:
-                checkUpdate();
+            case R.id.nav_help:
+                intent = new Intent(MainActivity.this, HelpFeed.class);
                 break;
             case R.id.nav_about:
                 intent = new Intent(MainActivity.this, AXWInfo.class);
@@ -314,7 +296,7 @@ public class MainActivity extends AppCompatActivity
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    startActivity(intent);
+                    startActivityForResult(intent,0);
                     overridePendingTransition(R.anim.slide_in_right,R.anim.scale_fade_out);
                 }
             },140);
@@ -324,40 +306,11 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
-    private void bindJaccount(){
-        if (GlobalParameterApplication.getLogin_status() != 1){
+    private void logOff(){
+        if (GlobalParameterApplication.getLogin_status() == 0){
             Toast.makeText(this,"请先登录",Toast.LENGTH_SHORT).show();
             return;
         }
-        int status = -1;
-        String MyToken= GlobalParameterApplication.getToken();
-        String surl = GlobalParameterApplication.getSurl();
-        JSONObject orderrequest = new JSONObject();
-        orderrequest.put("token", MyToken);
-
-        try {
-            URL url = new URL(surl + "/aixinwu_associate_jaccount");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setRequestProperty("Content-Type", "application/json");
-            conn.setDoOutput(true);
-
-            conn.getOutputStream().write(orderrequest.toJSONString().getBytes());
-
-            java.lang.String ostr = IOUtils.toString(conn.getInputStream());
-            org.json.JSONObject outjson = null;
-            outjson = new org.json.JSONObject(ostr);
-            status = outjson.getJSONObject("status").getInt("code");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        String msg = "绑定失败";
-        if (status == 0)
-            msg = "绑定成功";
-        Toast.makeText(MainActivity.this,msg,Toast.LENGTH_SHORT).show();
-    }
-
-    private void logOff(){
         new  AlertDialog.Builder(MainActivity.this)
                 .setTitle("提示" )
                 .setMessage("确定要退出当前账号？")
@@ -387,56 +340,15 @@ public class MainActivity extends AppCompatActivity
                 .setNegativeButton("取消",null).show();
     }
 
-    private void checkUpdate(){
-        if (PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(MainActivity.this, Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            //has permission, do operation directly
-
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    HashMap<String , String> versionInfo = WelcomeActivity.getVersionNumber();
-                    String versionNumber = versionInfo.get("versionCode");
-                    updateDesp = versionInfo.get("desp");
-                    int a = versionNumber.compareTo(GlobalParameterApplication.versionName);
-                    if (versionNumber.compareTo(GlobalParameterApplication.versionName) > 0){
-                        GlobalParameterApplication.wetherHaveNewVersion = true;
-                    }
-                    else GlobalParameterApplication.wetherHaveNewVersion = false;
-
-                    Message msg = new Message();
-                    msg.what = 395923;
-                    mHandler.sendMessage(msg);
-                }
-            }).start();
-
-        } else {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-            } else {
-
-
-                try {
-                    ActivityCompat.requestPermissions(MainActivity.this,
-                            new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
-                            5698);
-                } catch (Throwable e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-    }
-
     private void startAct(final Class cls){
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 Intent intent = new Intent(MainActivity.this, cls);
-                intent.putExtra("uname", "lionel");
+                intent.putExtra("uname", username);
                 intent.putExtra("headProtrait",headProtrait);
-                startActivity(intent);
+                startActivityForResult(intent,0);
                 overridePendingTransition(R.anim.slide_in_right,R.anim.scale_fade_out);
             }
         },140);
@@ -465,17 +377,6 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
 
-    }
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        outState.putInt("idx", idx);
-    }
-
-    @Override
-    protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        bnve.setSelectedItemId(idx);
-        super.onRestoreInstanceState(savedInstanceState);
     }
 
     @Override
@@ -554,8 +455,15 @@ public class MainActivity extends AppCompatActivity
                                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int ii) {
-                                        DownloadTask downloadTask = new DownloadTask(MainActivity.this);
-                                        downloadTask.execute("http://salary.aixinwu.info/apk/axw.apk");
+                                        if (PackageManager.PERMISSION_GRANTED ==
+                                                ContextCompat.checkSelfPermission(MainActivity.this, WRITE_EXTERNAL_STORAGE)){
+                                            DownloadTask downloadTask = new DownloadTask(MainActivity.this);
+                                            downloadTask.execute("http://salary.aixinwu.info/apk/axw.apk");
+                                        } else {
+                                            if(Build.VERSION.SDK_INT >= 23) {
+                                                ActivityCompat.requestPermissions(MainActivity.this,new String[]{WRITE_EXTERNAL_STORAGE}, 5698);
+                                            }
+                                        }
                                     }
                                 })
                                 .setNegativeButton("取消",null).show();
@@ -566,14 +474,6 @@ public class MainActivity extends AppCompatActivity
                                 .setMessage("当前已经是最新版本" )
                                 .setPositiveButton("确定", null).show();
                     }
-
-                    if (GlobalParameterApplication.wetherHaveNewVersion){
-                        badge.setVisibility(View.VISIBLE);
-                    }
-                    else{
-                        badge.setVisibility(View.GONE);
-                    }
-
                 default: break;
             }
         }
@@ -597,28 +497,17 @@ public class MainActivity extends AppCompatActivity
             }
         }
     });
+
     @Override
-    protected void onActivityResult(int requestCode, int resultCode,Intent data){
-
-        if (requestCode == 1){
-            mFragments[0].onActivityResult(requestCode,resultCode,data);
-        }else if (requestCode == 11){
-            mFragments[2].onActivityResult(requestCode,resultCode,data);
-        }else if (requestCode == 12){
-            mFragments[2].onActivityResult(requestCode,resultCode,data);
-        }
-        super.onActivityResult(requestCode, resultCode, data);
-    }
-
-    private void hideFragment(FragmentTransaction fragmentTransaction) {
-        if (mFragments[0]!=null){
-            fragmentTransaction.hide(mFragments[0]);
-        }
-        if (mFragments[1]!=null){
-            fragmentTransaction.hide(mFragments[1]);
-        }
-        if (mFragments[2]!=null){
-            fragmentTransaction.hide(mFragments[2]);
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if(requestCode == 5698){
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                DownloadTask downloadTask = new DownloadTask(MainActivity.this);
+                downloadTask.execute("http://salary.aixinwu.info/apk/axw.apk");
+            } else {
+                Toast.makeText(MainActivity.this,getString(R.string.permission_denied_info),Toast.LENGTH_SHORT).show();
+            }
+            return;
         }
     }
 }

@@ -1,13 +1,11 @@
 package com.aixinwu.axw.activity;
 
-import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.Message;
+import android.os.AsyncTask;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -17,61 +15,47 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.aixinwu.axw.R;
-import com.aixinwu.axw.model.Product;
 import com.aixinwu.axw.tools.GlobalParameterApplication;
 import com.aixinwu.axw.tools.talkmessage;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import org.apache.commons.io.IOUtils;
-import org.json.JSONException;
-import org.json.simple.JSONObject;
-
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
-import java.util.Vector;
-import java.util.concurrent.TimeoutException;
 
-import io.nats.client.ConnectionFactory;
-import schoolapp.chat.Chat;
+import de.hdodenhof.circleimageview.CircleImageView;
 
-public class ChatList extends Activity {
+public class ChatList extends AppCompatActivity{
+
+    private SwipeRefreshLayout layout;
     private ListView chatlist;
     private SimpleAdapter sim_adapter;
-    private ArrayList<String> Name;
-    private String surl = GlobalParameterApplication.getSurl();
-    private ArrayList<String> Item;
-    private ArrayList<HashMap<String,String>> chatitem;
-    // private ArrayList<String> Content;
-    private Button refreshbutton;
-    private String[] Files;
-    //   private Chat chat;
+    private ArrayList<HashMap<String,String>> chatitem = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_chat_list);
-        Files = fileList();
-        //     chat = new Chat(GlobalParameterApplication.getToken(), ConnectionFactory.DEFAULT_URL);
-        //   try {
-        //     chat.start();
-        //} catch (IOException | TimeoutException e) {
-        //   e.printStackTrace();
-        // }
-        String[] tmp;
-        chatitem = new ArrayList<HashMap<String, String>>();
+        Toolbar toolbar = (Toolbar) findViewById(R.id.chatlist_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("消息");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        layout = (SwipeRefreshLayout) findViewById(R.id.chatlist_layout);
         chatlist = (ListView)findViewById(R.id.chatlist);
-        refreshbutton = (Button)findViewById(R.id.refresh);
+
         chatitem.clear();
-        mThread.start();
+        layout.setColorSchemeResources(R.color.primary);
+        layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                new GetChatlistTask().execute();
+            }
+        });
+
         sim_adapter = new SimpleAdapter(this,chatitem,R.layout.chatlist_item,new String[]{"Name","Item","Doc","Time","Img"},new int[]{R.id.name,R.id.itemid,R.id.product,R.id.messageTime,R.id.img_activity_product});
         sim_adapter.setViewBinder(new SimpleAdapter.ViewBinder(){
             @Override
@@ -82,7 +66,7 @@ public class ChatList extends Activity {
                     return true;
                 }
                 if (view instanceof ImageView && o instanceof String){
-                    ImageView img = (ImageView) view;
+                    CircleImageView img = (CircleImageView) view;
                     String imgUrl = (String) o;
                     if (!o.equals(""))
                         ImageLoader.getInstance().displayImage(GlobalParameterApplication.imgSurl+imgUrl,img);
@@ -90,24 +74,7 @@ public class ChatList extends Activity {
                 return false;
             }
         });
-
         chatlist.setAdapter(sim_adapter);
-        chatlist.setVisibility(View.VISIBLE);
-        refreshbutton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        getChatlist();
-                        Message msg = new Message();
-                        msg.what = 1324;
-                        nHandler.sendMessage(msg);
-                    }
-                }).start();
-
-            }
-        });
         chatlist.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -118,77 +85,58 @@ public class ChatList extends Activity {
                 startActivity(intent);
             }
         });
+        new GetChatlistTask().execute();
     }
-    public Thread mThread = new Thread(new Runnable() {
-        @Override
-        public void run() {
-            getChatlist();
-            Message msg = new Message();
-            msg.what = 1324;
-            nHandler.sendMessage(msg);
-        }
-    });
-    public Handler nHandler = new Handler(){
-        @Override
-        public void handleMessage(Message msg){
-            super.handleMessage(msg);
-            switch (msg.what){
-                case 1324:
-                    sim_adapter.notifyDataSetChanged();
-                    break;
-            }
-        }
-    };
 
+    @Override
+    public void onBackPressed() {
+        finish();
+        overridePendingTransition(R.anim.scale_fade_in,R.anim.slide_out_right);
+        super.onBackPressed();
+    }
+
+    class GetChatlistTask extends AsyncTask<Void, Void, Void> {
+        @Override
+        protected Void doInBackground(Void... voids) {
+            layout.setRefreshing(true);
+            getChatlist();
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            layout.setRefreshing(false);
+            sim_adapter.notifyDataSetChanged();
+        }
+    }
     static public HashMap<String,String> getUserName(String userId){
-        //Product dbData = null;
         String usrName = "";
         HashMap<String, String> output = new HashMap<>();
-
         try {
             URL url = new URL(GlobalParameterApplication.getSurl() + "/usr_get_by_id/"+userId);
-            Log.i("Find product", "1");
-            try {
-                Log.i("LoveCoin", "getconnection");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
-                conn.setRequestProperty("Content-Type", "application/json");
-                java.lang.String ostr ;
-                org.json.JSONObject outjson = null;
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Content-Type", "application/json");
+            java.lang.String ostr ;
+            org.json.JSONObject outjson = null;
 
-                if (conn.getResponseCode() == 200){
-                    InputStream is = conn.getInputStream();
+            if (conn.getResponseCode() == 200){
+                InputStream is = conn.getInputStream();
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                int i;
+                while ((i = is.read()) != -1) baos.write(i);
+                ostr = baos.toString();
+                outjson = new org.json.JSONObject(ostr);
 
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    int i;
-                    while ((i = is.read()) != -1) {
-                        baos.write(i);
-                    }
-                    ostr = baos.toString();
-                    try {
-                        outjson = new org.json.JSONObject(ostr);
-                        // Log.i("Inall", result.length() + "");
-
-                        String myUserName = outjson.getString("username");
-                        String myNickName = outjson.getString("nickname");
-                        //String imgSrul = outjson.getString("img");
-                        if (myNickName.length() == 0)
-                            usrName = myUserName;
-                        else usrName = myNickName;
-                        output.put("usrName",usrName);
-                        output.put("img",outjson.getString("image"));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-
-                }
-
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
+                String myUserName = outjson.getString("username");
+                String myNickName = outjson.getString("nickname");
+                if (myNickName.length() == 0)
+                    usrName = myUserName;
+                else usrName = myNickName;
+                output.put("usrName",usrName);
+                output.put("img",outjson.getString("image"));
             }
-        } catch (MalformedURLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

@@ -1,38 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical"
-    android:background="#eeefef">
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:background="@color/white"
-        />
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="wrap_content"
         android:orientation="horizontal">
 
         <CheckBox
             android:id="@+id/cb_item_shopping_cart"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_gravity="center_vertical|left"
             android:button="@null"
-            android:layout_marginLeft="17dp"
-            android:layout_marginRight="7dp"
-            android:background="@drawable/check_box_background"
-            />
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="8dp"
+            android:background="@drawable/check_box_background" />
 
         <ImageView
-            android:layout_width="120dp"
-            android:layout_height="120dp"
+            android:id="@+id/img_item_shopping_cart_number"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_margin="8dp"
             android:layout_gravity="center_vertical"
-            android:id="@+id/img_item_shopping_cart_number"/>
+            android:scaleType="fitXY"/>
 
         <RelativeLayout
             android:layout_width="0dp"
@@ -40,14 +34,20 @@
             android:gravity="center_vertical"
             android:layout_margin="10dp"
             android:layout_weight="1">
-
             <TextView
                 android:id="@+id/tv_item_shopping_cart_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:textColor="#3e3a39"/>
-
+            <ImageView
+                android:id="@+id/iv_more"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginTop="-16dp"
+                app:srcCompat="@drawable/ic_more"/>
             <TextView
                 android:layout_below="@+id/tv_item_shopping_cart_name"
                 android:id="@+id/tv_item_shopping_cart_category"
@@ -57,8 +57,7 @@
                 android:textColor="#ff606461"
                 android:layout_marginBottom="10dp"
                 android:layout_marginTop="10dp"
-                android:visibility="gone"
-                />
+                android:visibility="gone" />
 
             <RelativeLayout
                 android:id="@+id/price_shop_cart"
@@ -66,9 +65,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/tv_item_shopping_cart_category"
                 android:layout_marginBottom="10dp"
-                android:layout_marginTop="10dp"
-                >
-
+                android:layout_marginTop="10dp">
                 <TextView
                     android:id="@+id/love_coin"
                     android:layout_width="wrap_content"
@@ -82,91 +79,60 @@
                     android:id="@+id/tv_item_shopping_cart_price"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="￥0"
-                    android:textSize="12sp"
+                    android:text="0"
+                    android:textSize="14sp"
                     android:textColor="#ea5404"/>
-
-
             </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/price_shop_cart">
-
                 <TextView
                     android:id="@+id/count"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:text="数量: "
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textColor="#3e3a39"/>
                 <Button
                     android:id="@+id/shopping_cart_minus"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
-                    android:layout_centerVertical="true"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
                     android:layout_toRightOf="@id/count"
                     android:layout_toEndOf="@id/count"
                     android:layout_alignTop="@id/count"
                     android:layout_alignBottom="@id/count"
-                    android:layout_margin="2dp"
-                    android:background="@drawable/shopcart_selector"
-                    android:textSize="12sp"
+                    android:textSize="16sp"
                     android:text="－"
-                    android:textColor="#000000"/>
+                    style="@style/BorderlessButton"/>
                 <TextView
                     android:id="@+id/tv_item_shopping_cart_number"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
                     android:layout_centerVertical="true"
                     android:text="1"
-                    android:textSize="12sp"
+                    android:textSize="16sp"
                     android:layout_toEndOf="@id/shopping_cart_minus"
                     android:layout_toRightOf="@id/shopping_cart_minus"
                     android:textColor="#3e3a39"
                     android:typeface="serif"/>
                 <Button
                     android:id="@+id/shopping_cart_add"
-                    android:layout_width="15dp"
-                    android:layout_height="15dp"
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
                     android:layout_centerVertical="true"
                     android:layout_toEndOf="@id/tv_item_shopping_cart_number"
                     android:layout_toRightOf="@id/tv_item_shopping_cart_number"
                     android:layout_alignTop="@id/count"
                     android:layout_alignBottom="@id/count"
-                    android:layout_margin="2dp"
-                    android:background="@drawable/shopcart_selector"
-                    android:textSize="12sp"
+                    android:textSize="16sp"
                     android:text="＋"
-                    android:textColor="#000000"/>
-
-                <TextView
-                    android:id="@+id/shopping_cart_stock_text1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/shopping_cart_add"
-                    android:text="（库存"
-                    android:textSize="14sp"
-                    />
-                <TextView
-                    android:id="@+id/shopping_cart_stock"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/shopping_cart_stock_text1"
-                    android:textSize="14sp"
-                    />
-                <TextView
-                    android:id="@+id/shopping_cart_stock_text2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_toRightOf="@id/shopping_cart_stock"
-                    android:text="件)"
-                    android:textSize="14sp"
-                    />
+                    style="@style/BorderlessButton"/>
             </RelativeLayout>
         </RelativeLayout>
     </LinearLayout>
-
 </LinearLayout>

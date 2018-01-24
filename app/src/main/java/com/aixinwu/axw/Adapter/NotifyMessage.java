@@ -1,12 +1,10 @@
-package com.aixinwu.axw.Adapter;
+package com.aixinwu.axw.adapter;
 
 /**
  * Created by Cross_Life on 2016/10/16.
  */
 
 import java.io.Serializable;
-
-import android.os.Parcelable;
 
 
 /**

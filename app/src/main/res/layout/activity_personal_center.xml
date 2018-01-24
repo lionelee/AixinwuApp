@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
     <android.support.design.widget.AppBarLayout
@@ -9,9 +8,9 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
         <android.support.design.widget.CollapsingToolbarLayout
+            android:id="@+id/personal_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:title="lionel"
             android:fitsSystemWindows="true"
             app:contentScrim="@color/translucent"
             app:statusBarScrim="@color/translucent"
@@ -19,10 +18,14 @@
             <ImageView
                 android:id="@+id/personal_avatar"
                 android:layout_width="match_parent"
-                android:layout_height="296dp"
+                android:layout_height="300dp"
                 app:layout_collapseMode="parallax"
-                android:scaleType="fitXY"
-                android:src="@color/darkgray"/>
+                android:scaleType="centerCrop"
+                android:src="@color/gray"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="78dp"
+                android:background="@drawable/translucent_bgt"/>
             <android.support.v7.widget.Toolbar
                 android:id="@+id/personal_toolbar"
                 android:layout_marginTop="24dp"
@@ -30,29 +33,31 @@
                 android:layout_height="?attr/actionBarSize"
                 android:background="#00000000"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/AppTheme.PopupOverlay">
-                <TextView
-                    android:id="@+id/profile_title"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:visibility="gone"
-                    android:text="Lionel"
-                    android:textColor="@android:color/white"
-                    android:textSize="24dp"/>
-            </android.support.v7.widget.Toolbar>
+                app:popupTheme="@style/AppTheme.PopupOverlay"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="88dp"
+                android:layout_gravity="bottom"
+                app:layout_collapseMode="parallax"
+                android:background="@drawable/product_desc"/>
         </android.support.design.widget.CollapsingToolbarLayout>
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tab_header"
             android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:background="@color/white"
-            app:tabIndicatorColor="@color/primary"
+            android:layout_height="40dp"
             app:tabTextColor="@color/text_color"
-            app:tabSelectedTextColor="@color/primary"
+            app:tabIndicatorColor="?attr/colorPrimary"
+            app:tabSelectedTextColor="?attr/colorPrimary"
+            app:tabBackground="@drawable/tab_bg"
             app:tabGravity="fill"
             app:tabMode="fixed"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/bg_color_deep"/>
     </android.support.design.widget.AppBarLayout>
+
     <android.support.v4.view.ViewPager
         android:id="@+id/tab_container"
         android:layout_width="match_parent"

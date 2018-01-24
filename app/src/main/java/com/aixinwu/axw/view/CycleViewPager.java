@@ -7,9 +7,11 @@ import java.util.List;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.v4.app.Fragment;
 import android.os.Bundle;
 import android.os.Message;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -371,12 +373,11 @@ public class CycleViewPager extends Fragment implements OnPageChangeListener {
      */
     private void setIndicator(int selectedPosition) {
         for (int i = 0; i < indicators.length; i++) {
-            indicators[i]
-                    .setBackgroundResource(R.drawable.icon_point);
+            indicators[i].setImageResource(R.color.gray);
         }
-        if (indicators.length > selectedPosition)
-            indicators[selectedPosition]
-                    .setBackgroundResource(R.drawable.icon_point_pre);
+        if (indicators.length > selectedPosition){
+            indicators[selectedPosition].setImageResource(R.color.primary);
+        }
     }
 
     /**

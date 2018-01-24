@@ -103,40 +103,50 @@
     </content>
     <orderEntry type="jdk" jdkName="Android API 25 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" exported="" name="com.yanzhenjie:loading-1.0.2" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:support-v13-25.4.0" level="project" />
+    <orderEntry type="library" exported="" name="com.melnykov:floatingactionbutton-1.3.0" level="project" />
     <orderEntry type="library" exported="" name="de.hdodenhof:circleimageview-2.1.0" level="project" />
     <orderEntry type="library" exported="" name="__local_jars__:C.\Users\10911\Documents\github\AixinwuApp\app\libs\slf4j-api-1.7.21-sources.jar:unspecified@jar" level="project" />
     <orderEntry type="library" exported="" name="__local_jars__:C.\Users\10911\Documents\github\AixinwuApp\app\libs\universal-image-loader-1.9.2-SNAPSHOT-with-sources.jar:unspecified@jar" level="project" />
     <orderEntry type="library" exported="" name="__local_jars__:C.\Users\10911\Documents\github\AixinwuApp\app\libs\slf4j-simple-1.7.21.jar:unspecified@jar" level="project" />
     <orderEntry type="library" exported="" name="__local_jars__:C.\Users\10911\Documents\github\AixinwuApp\app\libs\json-20160212.jar:unspecified@jar" level="project" />
     <orderEntry type="library" exported="" name="com.android.support:cardview-v7-25.3.1" level="project" />
-    <orderEntry type="library" exported="" name="com.android.support:support-core-ui-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:support-core-ui-25.4.0" level="project" />
     <orderEntry type="library" exported="" name="q.rorbin:badgeview-1.1.0" level="project" />
-    <orderEntry type="library" exported="" name="com.android.support:support-compat-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:support-compat-25.4.0" level="project" />
+    <orderEntry type="library" exported="" name="com.nineoldandroids:library:2.4.0@jar" level="project" />
+    <orderEntry type="library" exported="" name="jp.wasabeef:recyclerview-animators-2.2.3" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:support-annotations:25.4.0@jar" level="project" />
     <orderEntry type="library" exported="" name="com.android.support.constraint:constraint-layout-solver:1.0.2@jar" level="project" />
-    <orderEntry type="library" exported="" name="com.android.support:support-core-utils-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="com.yanzhenjie:recyclerview-swipe-1.1.4" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:support-core-utils-25.4.0" level="project" />
     <orderEntry type="library" exported="" name="com.android.support.constraint:constraint-layout-1.0.2" level="project" />
-    <orderEntry type="library" exported="" name="com.android.support:support-v4-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:support-v4-25.4.0" level="project" />
     <orderEntry type="library" exported="" name="com.jakewharton:butterknife:7.0.1@jar" level="project" />
-    <orderEntry type="library" exported="" name="com.android.support:support-fragment-25.3.1" level="project" />
-    <orderEntry type="library" exported="" name="com.android.support:support-media-compat-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:support-fragment-25.4.0" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:support-media-compat-25.4.0" level="project" />
     <orderEntry type="library" exported="" name="__local_jars__:C.\Users\10911\Documents\github\AixinwuApp\app\libs\slf4j-log4j12-1.7.7-sources.jar:unspecified@jar" level="project" />
-    <orderEntry type="library" exported="" name="com.jcodecraeer:xrecyclerview-1.2.7" level="project" />
-    <orderEntry type="library" exported="" name="com.android.support:animated-vector-drawable-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="com.squareup.okhttp3:okhttp:3.4.1@jar" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:animated-vector-drawable-25.4.0" level="project" />
     <orderEntry type="library" exported="" name="__local_jars__:C.\Users\10911\Documents\github\AixinwuApp\app\libs\json-simple-1.1.1.jar:unspecified@jar" level="project" />
-    <orderEntry type="library" exported="" name="com.cjj.materialrefeshlayout:library-1.3.0" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:mediarouter-v7-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="com.android.support:transition-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="com.android.support:design-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="__local_jars__:C.\Users\10911\Documents\github\AixinwuApp\app\libs\slf4j-api-1.7.21.jar:unspecified@jar" level="project" />
     <orderEntry type="library" exported="" name="com.google.android.gms:play-services-appindexing-8.1.0" level="project" />
     <orderEntry type="library" exported="" name="__local_jars__:C.\Users\10911\Documents\github\AixinwuApp\app\libs\commons-io-2.4.jar:unspecified@jar" level="project" />
-    <orderEntry type="library" exported="" name="com.android.support:appcompat-v7-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:appcompat-v7-25.4.0" level="project" />
+    <orderEntry type="library" exported="" name="com.marshalchen.ultimaterecyclerview:library-0.7.3" level="project" />
+    <orderEntry type="library" exported="" name="in.srain.cube:ultra-ptr-1.0.11" level="project" />
     <orderEntry type="library" exported="" name="__local_jars__:C.\Users\10911\Documents\github\AixinwuApp\app\libs\gson-2.7.jar:unspecified@jar" level="project" />
-    <orderEntry type="library" exported="" name="com.android.support:support-vector-drawable-25.3.1" level="project" />
+    <orderEntry type="library" exported="" name="com.github.yalantis:ucrop-2.2.1" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:palette-v7-25.3.1" level="project" />
     <orderEntry type="library" exported="" name="com.google.android.gms:play-services-basement-8.1.0" level="project" />
-    <orderEntry type="library" exported="" name="com.android.support:recyclerview-v7-25.3.1" level="project" />
-    <orderEntry type="library" exported="" name="com.android.support:support-annotations:25.3.1@jar" level="project" />
-    <orderEntry type="library" exported="" name="com.github.clans:fab-1.6.4" level="project" />
-    <orderEntry type="module" module-name="PullToRefresh" exported="" />
-    <orderEntry type="library" exported="" name="android-android-25" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:support-vector-drawable-25.4.0" level="project" />
+    <orderEntry type="library" exported="" name="com.android.support:recyclerview-v7-25.4.0" level="project" />
+    <orderEntry type="library" exported="" name="com.github.bumptech.glide:glide:3.7.0@jar" level="project" />
+    <orderEntry type="library" exported="" name="com.squareup.okio:okio:1.9.0@jar" level="project" />
+    <orderEntry type="module" module-name="library" exported="" />
   </component>
 </module>

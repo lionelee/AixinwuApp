@@ -1,4 +1,4 @@
-package com.aixinwu.axw.Adapter;
+package com.aixinwu.axw.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -19,16 +19,17 @@ import java.util.List;
  */
 public class ProductAdapter extends BaseAdapter {
     private int resourceId;
-    public Product product;
-    private List<Product> products;
+    private List<Product> products = new ArrayList<>();
     private Context mContext;
 
-    public ProductAdapter (Context context, int textViewResourseId, List<Product> objects) {
+    public ProductAdapter (Context context, int textViewResourseId) {
         mContext = context;
         resourceId = textViewResourseId;
+    }
+
+    public void resetList(List<Product> objects){
+        products.clear();
         int size = objects.size();
-        if(size>6) size = 6;
-        products = new ArrayList<>();
         for(int i = 0; i < size; ++i){
             products.add(objects.get(i));
         }
@@ -51,7 +52,7 @@ public class ProductAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View concertView, ViewGroup parent) {
-        product = getItem(position);
+        Product product = getItem(position);
         VHolder holder;
         if(concertView == null) {
             concertView = LayoutInflater.from(mContext).inflate(resourceId, null);

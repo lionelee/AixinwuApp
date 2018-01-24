@@ -2,6 +2,7 @@ package com.aixinwu.axw.activity;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.content.Intent;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -37,9 +39,6 @@ import java.net.URL;
 
 
 public class LoginActivity extends AppCompatActivity{
-    private static final String TAG = "LoginActivity";
-    private static final int REQUEST_SIGNUP = 0;
-
     private Sqlite userDbHelper = new Sqlite(this);
 
     @Bind(R.id.input_email) EditText _emailText;
@@ -62,7 +61,8 @@ public class LoginActivity extends AppCompatActivity{
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getApplicationContext(), ResetPWD.class);
-                startActivity(intent);
+                startActivityForResult(intent, 0);
+                overridePendingTransition(R.anim.slide_in_right,R.anim.scale_fade_out);
             }
         });
 
@@ -71,6 +71,9 @@ public class LoginActivity extends AppCompatActivity{
 
             @Override
             public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                if(imm.isActive())
+                    imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
                 login();
             }
         });
@@ -95,8 +98,6 @@ public class LoginActivity extends AppCompatActivity{
 
 
     public void login() {
-        Log.d(TAG, "Login");
-
         if (!validate()) {
             onLoginFailed();
             return;
@@ -123,14 +124,9 @@ public class LoginActivity extends AppCompatActivity{
             e.printStackTrace();
         }
 
-
-        //end
-
-
         new android.os.Handler().postDelayed(
                 new Runnable() {
                     public void run() {
-                        //GlobalParameterApplication gpa = (GlobalParameterApplication) getApplicationContext();
                         int login_status = GlobalParameterApplication.getLogin_status();
                         if (login_status == 1)
                             onLoginSuccess();
@@ -142,30 +138,14 @@ public class LoginActivity extends AppCompatActivity{
 
     }
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_SIGNUP) {
-            if (resultCode == RESULT_OK) {
-
-                // TODO: Implement successful signup logic here
-                // By default we just finish the Activity and log them in automatically
-                this.finish();
-            }
-        }
-    }
-
     public void onLoginSuccess() {
         _loginButton.setEnabled(true);
-        Intent intent = new Intent(getApplication(), MainActivity.class);
-        startActivity(intent);
-        overridePendingTransition(R.anim.scale_fade_in,R.anim.slide_out_right);
         finish();
+        overridePendingTransition(R.anim.scale_fade_in, R.anim.slide_out_bottom);
     }
 
     public void onLoginFailed() {
         Toast.makeText(getBaseContext(), "登录失败", Toast.LENGTH_LONG).show();
-
         _loginButton.setEnabled(true);
     }
 
@@ -175,7 +155,7 @@ public class LoginActivity extends AppCompatActivity{
         String email = _emailText.getText().toString();
         String password = _passwordText.getText().toString();
 
-        if (email.isEmpty() /*|| !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()*/) {
+        if (email.isEmpty()) {
             _emailText.setError("请输入手机号");
             valid = false;
         } else {
@@ -206,8 +186,6 @@ public class LoginActivity extends AppCompatActivity{
 
         @Override
         public void run(){
-            //GlobalParameterApplication gpa = (GlobalParameterApplication) getApplicationContext();
-
             try {
                 String token = getToken(GlobalParameterApplication.getSurl(), email, password);
                 if (token.length() == 0) {

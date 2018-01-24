@@ -1,64 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="200dip"
-    android:padding="20dp"
-    android:background="@color/white"
-    >
-
-    <ImageView
-        android:id="@+id/product_image"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
-        android:layout_centerHorizontal = "true"
-        android:src="@drawable/aixinwu"
-        />
-
-    <TextView
-        android:id="@+id/product_name"
-        android:layout_width="wrap_content"
-        android:maxLines="1"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="4dp"
+    app:cardElevation="0.5dp"
+    app:cardCornerRadius="4dp"
+    android:background="@color/white">
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/product_image"
-        />
-
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerHorizontal = "true"
-        android:layout_below="@id/product_name">
-
-        <TextView
-            android:id="@+id/product_love_coin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text = "爱心币："
-            android:textColor="#ea5404"
-            />
+        android:paddingBottom="8dp"
+        android:orientation="vertical">
+        <ImageView
+            android:id="@+id/product_image"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:scaleType="fitXY"
+            android:src="@drawable/aixinwu" />
 
         <TextView
-            android:id="@+id/product_price"
+            android:id="@+id/product_name"
+            android:textSize="16sp"
+            android:singleLine="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:layout_toRightOf="@id/product_love_coin"
-            android:layout_toEndOf="@id/product_love_coin"
-            android:textColor="#ea5404"
-            />
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            android:layout_marginTop="5dp"
+            android:layout_gravity="center" />
 
-        <TextView
-            android:id="@+id/workDate"
+        <RelativeLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/product_love_coin"/>
+            android:layout_gravity="center_horizontal">
 
-        <TextView
-            android:id="@+id/fullOrNot"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_below="@id/workDate"/>
-    </RelativeLayout>
+            <TextView
+                android:id="@+id/product_love_coin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text = "爱心币："
+                android:textColor="?attr/colorAccent" />
 
-</RelativeLayout>
+            <TextView
+                android:id="@+id/product_price"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_toRightOf="@id/product_love_coin"
+                android:layout_toEndOf="@id/product_love_coin"
+                android:textColor="?attr/colorAccent" />
+
+            <TextView
+                android:id="@+id/workDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/product_love_coin"/>
+
+            <TextView
+                android:id="@+id/fullOrNot"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_below="@id/workDate"/>
+        </RelativeLayout>
+    </LinearLayout>
+</android.support.v7.widget.CardView>

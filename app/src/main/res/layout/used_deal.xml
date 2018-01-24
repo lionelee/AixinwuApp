@@ -1,78 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fab="http://schemas.android.com/tools"
-    android:orientation="vertical">
-    <com.cjj.MaterialRefreshLayout
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <com.aixinwu.axw.view.MyRefreshLayout
         android:id="@+id/homepageScroll2"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:overlay="false"
-        app:wave_show="true"
-        app:wave_color="@color/primary_translucent"
-        app:wave_height_type="normal"
-        app:isLoadMore="true">
+        android:layout_height="match_parent">
+    <!--<com.cjj.MaterialRefreshLayout-->
+        <!--android:id="@+id/homepageScroll2"-->
+        <!--xmlns:android="http://schemas.android.com/apk/res/android"-->
+        <!--xmlns:app="http://schemas.android.com/apk/res-auto"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="match_parent"-->
+        <!--app:isLoadMore="true"-->
+        <!--app:wave_show="false">-->
         <android.support.v7.widget.RecyclerView
             android:id="@+id/deal_item_list"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </com.cjj.MaterialRefreshLayout>
-
-
-    <com.github.clans.fab.FloatingActionMenu
-        android:id="@+id/fab_menu"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentBottom="true"
-        android:paddingRight="8dp"
-        android:paddingBottom="56dp"
-        app:layout_behavior="com.aixinwu.axw.behavior.FooterBehavior"
-        fab:menu_fab_size="normal"
-        fab:menu_showShadow="true"
-        fab:menu_shadowColor="#66000000"
-        fab:menu_shadowRadius="4dp"
-        fab:menu_shadowXOffset="1dp"
-        fab:menu_shadowYOffset="3dp"
-        fab:menu_colorNormal="@color/primary"
-        fab:menu_colorRipple="@color/white"
-        fab:menu_animationDelayPerItem="50"
-        fab:menu_icon="@drawable/fab_add"
-        fab:menu_labels_showAnimation="@anim/fab_slide_in_from_right"
-        fab:menu_labels_hideAnimation="@anim/fab_slide_out_to_right"
-        fab:menu_labels_paddingTop="4dp"
-        fab:menu_labels_paddingRight="8dp"
-        fab:menu_labels_paddingBottom="4dp"
-        fab:menu_labels_paddingLeft="8dp"
-        fab:menu_labels_padding="8dp"
-        fab:menu_labels_textColor="@color/black"
-        fab:menu_labels_textSize="14sp"
-        fab:menu_labels_cornerRadius="4dp"
-        fab:menu_labels_colorNormal="@color/white"
-        fab:menu_labels_colorRipple="@color/background"
-        fab:menu_labels_showShadow="true"
-        fab:menu_labels_position="left"
-        fab:menu_openDirection="up"
-        fab:menu_backgroundColor="@color/translucent"
-        fab:menu_fab_show_animation="@anim/my_show_animation"
-        fab:menu_fab_hide_animation="@anim/my_hide_animation">
-
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/menu_item1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_bottom_act"
-            fab:fab_size="mini"
-            fab:fab_label="交易" />
-        <com.github.clans.fab.FloatingActionButton
-            android:id="@+id/menu_item2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/ic_nav_help"
-            fab:fab_size="mini"
-            fab:fab_label="捐赠" />
-    </com.github.clans.fab.FloatingActionMenu>
-</RelativeLayout>
+            android:layout_height="match_parent"/>
+    </com.aixinwu.axw.view.MyRefreshLayout>
+    <!--<android.support.design.widget.FloatingActionButton-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--app:fab_type="normal"-->
+        <!--app:srcCompat="@drawable/ic_tool_add"-->
+        <!--app:fab_colorNormal="?attr/colorAccent"-->
+        <!--app:fab_colorRipple="@color/white"/>-->
+    <com.melnykov.fab.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_margin="16dp"
+        app:fabSize="normal"
+        app:fab_colorNormal="?attr/colorAccent"
+        app:fab_colorRipple="@color/white"/>
+</FrameLayout>

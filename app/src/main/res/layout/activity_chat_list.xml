@@ -1,36 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#eeeeef"
-    tools:context="com.aixinwu.axw.activity.ChatList">
-
-    <TextView
-        android:id="@+id/title"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:gravity="center"
-        android:textSize="20sp"
-        android:text="消息"
-        android:textColor="#3e3a39"
-        android:background="#eeefef"
-        android:layout_alignParentTop="true"/>
-
-
-    <Button
-        android:id="@+id/refresh"
-        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Refresh"
-        android:visibility="gone"/>
+        android:theme="@style/AppTheme.AppBarOverlay">
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/chatlist_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?attr/colorPrimary"
+            app:popupTheme="@style/AppTheme.PopupOverlay">
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
 
-    <ListView
-        android:id="@+id/chatlist"
-        android:layout_below="@id/title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-    </ListView>
-
-</RelativeLayout>
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/chatlist_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <ListView
+            android:id="@+id/chatlist"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+    </android.support.v4.widget.SwipeRefreshLayout>
+</android.support.design.widget.CoordinatorLayout>

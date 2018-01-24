@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/item_delete"
+        android:title="删除此项"/>
+    <item
+        android:id="@+id/item_clear"
+        android:title="清空购物车"/>
+</menu>

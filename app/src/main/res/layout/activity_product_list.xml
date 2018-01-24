@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:ptr="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -10,44 +11,40 @@
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:gravity="center"
-        android:textSize="24dp"
+        android:textSize="18sp"
         android:text="置换专区"
-        android:textColor="#3e3a39"
-        android:background="#eeefef"
-        android:layout_marginBottom="10dp"/>
+        android:textColor="@color/white"
+        android:background="?attr/colorPrimary"/>
 
-    <EditText
-        android:id="@+id/search_exchange_list"
-        android:layout_gravity="center_vertical"
-        android:drawableLeft="@drawable/main_bottom_tab_search_normal"
-        android:drawableStart="@drawable/main_bottom_tab_search_normal"
-        android:drawablePadding="20dp"
+        <!--<com.marshalchen.ultimaterecyclerview.UltimateRecyclerView-->
+            <!--android:id="@+id/recyclerview"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent" />-->
+
+        <!--<com.cjj.MaterialRefreshLayout-->
+            <!--android:id="@+id/refreshLayout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent"-->
+            <!--app:isLoadMore="true"-->
+            <!--app:wave_show="false">-->
+        <!--<android.support.v4.widget.SwipeRefreshLayout-->
+            <!--android:id="@+id/refreshLayout"-->
+            <!--android:layout_width="match_parent"-->
+            <!--android:layout_height="match_parent">-->
+            <!--<com.kevin.ultimaterecyclerview.UltimateRecyclerView-->
+                <!--android:id="@+id/recyclerview"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="match_parent"-->
+                <!--ptr:ptrMode="pullFromStart"/>-->
+        <!--</android.support.v4.widget.SwipeRefreshLayout>-->
+        <!--</com.cjj.MaterialRefreshLayout>-->
+    <com.aixinwu.axw.view.MyRefreshLayout
+        android:id="@+id/refreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/search_edittext_shape"
-        android:textSize="14sp"
-        android:textColor="#b4b5b5"
-        android:imeOptions="actionSearch"
-        android:inputType="text"
-        android:focusable="false"
-        android:layout_marginLeft="13dp"
-        android:layout_marginStart="13dp"
-        android:layout_marginEnd="13dp"
-        android:layout_marginRight="13dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="10dp"
-        android:text="@string/homepageSearch"/>
-
-    <!--
-        <GridView android:id="@+id/grid_product"
+        android:layout_height="match_parent">
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:numColumns="4"/>
-       -->
-    <com.jcodecraeer.xrecyclerview.XRecyclerView
-        android:id="@+id/recyclerview"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent" />
+            android:layout_height="match_parent"/>
+    </com.aixinwu.axw.view.MyRefreshLayout>
 </LinearLayout>

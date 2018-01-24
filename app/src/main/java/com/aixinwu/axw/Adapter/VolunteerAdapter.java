@@ -1,17 +1,15 @@
-package com.aixinwu.axw.Adapter;
+package com.aixinwu.axw.adapter;
 
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aixinwu.axw.R;
-import com.aixinwu.axw.model.Product;
 import com.aixinwu.axw.model.VolunteerActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
@@ -23,21 +21,20 @@ import java.util.List;
  */
 public class VolunteerAdapter extends BaseAdapter {
     private int resourceId;
-    public VolunteerActivity product;
-    public Bitmap bitmap;
-    private  List<VolunteerActivity> products;
+    private  List<VolunteerActivity> products = new ArrayList<>();
     private Context mContext;
 
-    public VolunteerAdapter (Context context, int textViewResourseId, List<VolunteerActivity> objects) {
+    public VolunteerAdapter (Context context, int textViewResourseId) {
         mContext = context;
         resourceId = textViewResourseId;
+    }
+
+    public void resetList(List<VolunteerActivity> objects){
+        products.clear();
         int size = objects.size();
-        if(size>6) size = 6;
-        products = new ArrayList<>();
         for(int i = 0; i < size; ++i){
             products.add(objects.get(i));
         }
-
     }
 
     @Override
@@ -58,7 +55,7 @@ public class VolunteerAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View concertView, ViewGroup parent) {
-        product = getItem(position);
+        VolunteerActivity product = getItem(position);
         VHolder holder;
         if(concertView == null) {
             concertView = LayoutInflater.from(mContext).inflate(resourceId, null);
@@ -88,8 +85,8 @@ public class VolunteerAdapter extends BaseAdapter {
         if (!product.getImg_url().equals(""))
             ImageLoader.getInstance().displayImage(product.getImg_url(), holder.imageView);
         holder.name.setText(product.getName());
-        holder.price.setText("+ "+String.valueOf(product.getPayback()));
-        holder.workDate.setText("活动时间："+product.getTime().substring(5,10)+" "+product.getTime().substring(11,16));
+        holder.price.setText("爱心币：+"+String.valueOf(product.getPayback()));
+        holder.workDate.setText("时间："+product.getTime().substring(5,10)+" "+product.getTime().substring(11,16));
         return concertView;
     }
 

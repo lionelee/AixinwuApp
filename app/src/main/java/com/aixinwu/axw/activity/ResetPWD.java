@@ -1,16 +1,16 @@
 package com.aixinwu.axw.activity;
 
-import android.app.AlertDialog;
 import android.app.ProgressDialog;
-import android.content.DialogInterface;
+import android.content.Context;
 import android.os.Handler;
 import android.os.Message;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Menu;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -32,9 +32,7 @@ import java.net.URL;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class ResetPWD extends ActionBarActivity {
-
-    private static final String TAG = "ResetPWD";
+public class ResetPWD extends AppCompatActivity {
 
     @Bind(R.id.input_name)
     EditText _nameText;
@@ -69,9 +67,17 @@ public class ResetPWD extends ActionBarActivity {
         setContentView(R.layout.activity_reset_pwd);
         ButterKnife.bind(this);
 
+        Toolbar toolbar = (Toolbar) findViewById(R.id.signup_toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("重置密码");
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
         _signupButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                if(imm.isActive())
+                    imm.hideSoftInputFromWindow(getWindow().getDecorView().getWindowToken(), 0);
                 signup();
             }
         });
@@ -80,6 +86,7 @@ public class ResetPWD extends ActionBarActivity {
         _catchVerificationCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if(TextUtils.isEmpty(_nameText.getText().toString()))return;
                 Toast.makeText(getApplicationContext(), "开始获取验证码……", Toast.LENGTH_SHORT).show();
                 new Thread(new Runnable()
                 {
@@ -103,9 +110,17 @@ public class ResetPWD extends ActionBarActivity {
         });
     }
 
-    public void signup() {
-        Log.d(TAG, "Signup");
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                onBackPressed();
+            default:break;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
+    public void signup() {
         if (!validate()) {
             onSignupFailed();
             return;
@@ -123,7 +138,6 @@ public class ResetPWD extends ActionBarActivity {
         String phoneNumber = _nameText.getText().toString();
         String password = _passwordText.getText().toString();
         String verifyCode = _emailText.getText().toString();
-        // TODO: Implement your own signup logic here.
 
         RegisterThread registerThread = new RegisterThread(phoneNumber, verifyCode, password);
 
@@ -141,19 +155,7 @@ public class ResetPWD extends ActionBarActivity {
             new android.os.Handler().postDelayed(
                     new Runnable() {
                         public void run() {
-                            // On complete call either onSignupSuccess or onSignupFailed
-                            // depending on success
-
-                            new  AlertDialog.Builder(ResetPWD.this)
-                                    .setTitle("消息")
-                                    .setMessage("密码重置成功!" )
-                                    .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialogInterface, int ii) {
-                                            finish();
-                                        }
-                                    }).show();
-                            // onSignupFailed();
+                            Toast.makeText(getBaseContext(), "重置成功", Toast.LENGTH_LONG).show();
                             progressDialog.dismiss();
                         }
                     }, 3000);
@@ -166,14 +168,6 @@ public class ResetPWD extends ActionBarActivity {
         }
 
 
-    }
-
-
-    public void onSignupSuccess() {
-        _signupButton.setEnabled(true);
-        Toast.makeText(getBaseContext(), "重置成功", Toast.LENGTH_LONG).show();
-        setResult(RESULT_OK, null);
-        finish();
     }
 
     public void onSignupFailed() {
