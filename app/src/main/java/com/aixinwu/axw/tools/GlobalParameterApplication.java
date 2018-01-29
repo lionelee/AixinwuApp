@@ -4,15 +4,32 @@ package com.aixinwu.axw.tools;
  * Created by dell1 on 2016/4/23.
  */
 
+import android.app.Activity;
 import android.app.Application;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
+import android.os.Bundle;
+import android.preference.PreferenceManager;
+import android.provider.Settings;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatDelegate;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.aixinwu.axw.activity.MainActivity;
+import com.aixinwu.axw.activity.PersonalCenter;
+import com.aixinwu.axw.activity.ProductDetailActivity;
+import com.aixinwu.axw.activity.RawPictureActivity;
+import com.aixinwu.axw.activity.VolunteerApply;
+import com.aixinwu.axw.activity.WelcomeActivity;
 import com.aixinwu.axw.adapter.NotifyMessage;
 import com.aixinwu.axw.R;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.cache.memory.impl.WeakMemoryCache;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
@@ -36,6 +53,7 @@ import schoolapp.chat.Chat;
 public class GlobalParameterApplication extends Application{
     public static int login_status = 0;
     private static String user_name;
+    private static String imgUrl;
     private static String token;
     private static boolean pause=true;
     private static String jaccount;
@@ -52,6 +70,11 @@ public class GlobalParameterApplication extends Application{
     public static int whtherBindJC = 0;
     public static boolean wetherHaveNewVersion = false;
     public static String versionName = "";
+    private static int themeId = 0;
+    public static int theme[]= {R.style.AppTheme_Aixinwu, R.style.AppTheme_Seiee, R.style.AppTheme_UltraViolet,
+            R.style.AppTheme_ChiliOil, R.style.AppTheme_LittleBoyBlue,R.style.AppTheme_Arcadia,R.style.AppTheme_Emperador};
+    public static int transtheme[] = {R.style.AppTheme_Aixinwu_TransBar,R.style.AppTheme_Seiee_TransBar,R.style.AppTheme_UltraViolet_TransBar,
+            R.style.AppTheme_ChiliOil_TransBar,R.style.AppTheme_LittleBoyBlue_TransBar,R.style.AppTheme_Arcadia_TransBar,R.style.AppTheme_Emperador_TransBar};
 
     // This flag should be set to true to enable VectorDrawable support for API < 21
     static{
@@ -89,6 +112,69 @@ public class GlobalParameterApplication extends Application{
                 .tasksProcessingOrder(QueueProcessingType.LIFO)
                 .build();
         ImageLoader.getInstance().init(config);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        themeId = Integer.parseInt(preferences.getString(getString(R.string.pref_theme_key),getString(R.string.pref_theme_default)));
+        setTheme(theme[themeId]);
+        listenActivity();
+    }
+
+    private void listenActivity(){
+        registerActivityLifecycleCallbacks(new ActivityLifecycleCallbacks() {
+            @Override
+            public void onActivityCreated(Activity activity, Bundle bundle) {
+                if(activity instanceof WelcomeActivity)return;
+                if(activity instanceof MainActivity || activity instanceof PersonalCenter || activity instanceof ProductDetailActivity
+                        || activity instanceof VolunteerApply || activity instanceof RawPictureActivity){
+                    activity.setTheme(transtheme[themeId]);
+                }else{
+                    activity.setTheme(theme[themeId]);
+                }
+            }
+
+            @Override
+            public void onActivityStarted(final Activity activity) {
+                if(activity instanceof WelcomeActivity || activity instanceof MainActivity)return;
+                if(NetInfo.checkNetwork(activity))return;
+                Snackbar snackbar = Snackbar.make(((ViewGroup)activity.findViewById(android.R.id.content)).getChildAt(0),
+                        "网络未连接或不可用,请检查设置", Snackbar.LENGTH_LONG)
+                        .setAction("确定", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                Intent intent = new Intent();
+                                intent.setAction(Settings.ACTION_SETTINGS);
+                                activity.startActivity(intent);
+                            }
+                        });
+                View view = snackbar.getView();
+                ((TextView) view.findViewById(R.id.snackbar_text)).setTextColor(getResources().getColor(R.color.white));
+                snackbar.show();
+            }
+
+            @Override
+            public void onActivityResumed(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityPaused(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivityStopped(Activity activity) {
+
+            }
+
+            @Override
+            public void onActivitySaveInstanceState(Activity activity, Bundle bundle) {
+
+            }
+
+            @Override
+            public void onActivityDestroyed(Activity activity) {
+
+            }
+        });
     }
 
     public static void start(String _token){
@@ -121,12 +207,6 @@ public class GlobalParameterApplication extends Application{
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                //     System.out.println(messages.toString());
-                //      for (int i = 0; i < messages.getMessages().size(); i++){
-                //       int send = messages.getFrom(i);
-                //         int recv = messages.getTo(i);
-                //      String content = messages.getContent(i);
-                //DataBaseM.add(send, recv, content);
 
 
             }
@@ -150,6 +230,7 @@ public class GlobalParameterApplication extends Application{
             e.printStackTrace();
         }
     }
+
     public static List<talkmessage> gettalklist(int mem){
         List<talkmessage> result = DataBaseM.getIntalk(Integer.toString(mem));
         return result;
@@ -176,7 +257,6 @@ public class GlobalParameterApplication extends Application{
     private static int Chat_Num = 0;
     private static int prename=-1;
     private static boolean end = true;
-    private SharedPreferences sharedPreferences;
     public static void setPrename(int _prename){
         prename=_prename;
     }
@@ -209,10 +289,7 @@ public class GlobalParameterApplication extends Application{
     public static void setChat_Num(int _Chat_Num){
         Chat_Num = _Chat_Num;
     }
-    public static void setPause(boolean _pause){
-        pause = _pause;
-
-    }
+    public static void setPause(boolean _pause){ pause = _pause; }
     public static boolean getPause(){
         return pause;
     }
@@ -250,6 +327,10 @@ public class GlobalParameterApplication extends Application{
         return user_name;
     }
 
+    public static void setImgUrl(String s){imgUrl = s;}
+
+    public static String getImgUrl(){return imgUrl;}
+
     public static String getNewOldString(int i){
         return newOldIntToString.get(Integer.valueOf(i));
     }
@@ -265,5 +346,9 @@ public class GlobalParameterApplication extends Application{
     public static String getJaccount(){
         return jaccount;
     }
+
+    public static void setThemeId(int id){themeId = id;}
+
+    public static int getCurTheme(){return theme[themeId];}
 
 }

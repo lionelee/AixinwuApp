@@ -124,7 +124,7 @@ public class PersonalCenter extends AppCompatActivity {
 
     private void logOff(){
         new  AlertDialog.Builder(PersonalCenter.this)
-                .setTitle("提示" )
+                .setTitle("注销" )
                 .setMessage("确定要退出当前账号？")
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override

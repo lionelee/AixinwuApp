@@ -6,6 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v7.app.AppCompatActivity;
+import android.text.Editable;
+import android.text.TextUtils;
+import android.text.TextWatcher;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +36,7 @@ import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 import com.aixinwu.axw.tools.GlobalParameterApplication;
 import com.aixinwu.axw.tools.talkmessage;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.nats.client.ConnectionFactory;
@@ -45,7 +51,7 @@ import java.util.concurrent.TimeoutException;
 /**
  * Created by liangyuding on 2016/4/15.
  */
-public class Chattoother extends Activity{
+public class Chattoother extends AppCompatActivity{
     public int start = -1;
     private TextView chatt;
     ArrayList<HashMap<String,Object>> chatList=null;
@@ -57,6 +63,7 @@ public class Chattoother extends Activity{
     int[] layout={R.layout.chat_listitem_me,R.layout.chat_listitem_other};
     String[] avatar={"",""};
     public String myWord;
+    TypedValue typedValue = new TypedValue();
 
     public final static int OTHER=1;
     public final static int ME=0;
@@ -72,18 +79,18 @@ public class Chattoother extends Activity{
     private boolean pause = true;
     private int To;
     private int From;
-    private String FileName;
-    private String surl = GlobalParameterApplication.getSurl();
     private boolean uploadSuccessful = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent=getIntent();
-        Bundle out = intent.getExtras();
+        Intent data=getIntent();
         GlobalParameterApplication.setAllowChatThread(false);
-        ItemID=out.getInt("itemID");
-        From=out.getInt("To");
-        otherName = out.getString("ToName");
+        ItemID = data.getIntExtra("itemID",0);
+        From = data.getIntExtra("To",0);
+        otherName = data.getStringExtra("ToName");
+        avatar[0] = GlobalParameterApplication.getImgUrl();
+        avatar[1] = data.getStringExtra("imgUrl");
+        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
 
         To = GlobalParameterApplication.getUserID();
         pause = true;
@@ -170,17 +177,6 @@ public class Chattoother extends Activity{
             }
         }).start();
 
-        /*
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                otherName = ChatList.getUserName(""+From);
-                Message msg = new Message();
-                msg.what = 537485;
-                nHandler.sendMessage(msg);
-            }
-        }).start();*/
-
         chatt =(TextView)findViewById(R.id.chat_contact_name);
         chatt.setText(otherName);
         chatSendButton=(TextView)findViewById(R.id.chat_bottom_sendbutton);
@@ -188,7 +184,25 @@ public class Chattoother extends Activity{
         chatListView=(ListView)findViewById(R.id.chat_list);
 
         adapter=new MyChatAdapter(this,chatList,layout,from,to);
+        
+        editText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {}
 
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if(TextUtils.isEmpty(editText.getText().toString())){
+                    chatSendButton.setTextColor(getResources().getColor(R.color.gray));
+                    chatSendButton.setEnabled(false);
+                } else{
+                    chatSendButton.setTextColor(getResources().getColor(typedValue.resourceId));
+                    chatSendButton.setEnabled(true);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {}
+        });
 
         chatSendButton.setOnClickListener(new View.OnClickListener() {
 
@@ -450,7 +464,9 @@ public class Chattoother extends Activity{
             }
             holder.nameView.setText(chatList.get(position).get(from[0]).toString());
             holder.textView.setText(chatList.get(position).get(from[1]).toString());
-
+            String url = avatar[who==ME?0:1];
+            if(!url.equals(""))
+                ImageLoader.getInstance().displayImage(GlobalParameterApplication.imgSurl+url, holder.imgView);
             return convertView;
         }
 

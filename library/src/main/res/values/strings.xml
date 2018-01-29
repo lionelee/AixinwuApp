@@ -1,6 +1,0 @@
-<resources>
-    <string name="app_name">BRLayoutLibrary</string>
-    <integer-array name="material_colors">
-        <item>@color/material_green</item>
-    </integer-array>
-</resources>

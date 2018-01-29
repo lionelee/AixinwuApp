@@ -82,33 +82,13 @@
                 android:layout_margin="20dp"
                 android:orientation="vertical">
             </LinearLayout>
-
-            <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/commentword"
-                android:visibility="gone"/>
-            <TextView
-                android:layout_width="wrap_content"
-                android:textSize="15sp"
-                android:layout_marginLeft="5dp"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="20dp"
-                android:layout_height="wrap_content"
-                android:id="@+id/shuoming"/>
-
-            <ListView
-                android:id="@+id/comments"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:orientation="vertical">
+        android:layout_gravity="bottom">
         <LinearLayout
             android:id="@+id/bottom"
             android:layout_width="match_parent"
@@ -149,10 +129,11 @@
                     android:layout_gravity="center_horizontal"
                     app:srcCompat="@drawable/ic_comment"/>
                 <TextView
+                    android:id="@+id/tv_comm"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:text="留言"
+                    android:text="0留言"
                     android:textColor="@color/gray"/>
             </LinearLayout>
             <LinearLayout

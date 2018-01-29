@@ -26,10 +26,14 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.aixinwu.axw.R;
+import com.aixinwu.axw.activity.MainActivity;
+import com.aixinwu.axw.activity.Settings;
 import com.aixinwu.axw.activity.WelcomeActivity;
 import com.aixinwu.axw.tools.DownloadTask;
 import com.aixinwu.axw.tools.GlobalParameterApplication;
 import com.aixinwu.axw.tools.NetInfo;
+import com.aixinwu.axw.tools.Tool;
+import com.aixinwu.axw.view.StyleDialog;
 
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
@@ -48,13 +52,21 @@ public class SettingsFragment extends PreferenceFragment implements
         SharedPreferences.OnSharedPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
     private String updateDesp ="";
+    private SharedPreferences sharedPreferences;
+    private StyleDialog dialog;
+    String labels[];
+    String values[];
+    int colors[] ={R.color.primary, R.color.SeieeBlue, R.color.UltraViolet, R.color.ChiliOil,
+            R.color.LittleBoyBlue, R.color.Arcadia, R.color.Emperador};
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.pref_settings);
 
-        SharedPreferences sharedPreferences = getPreferenceScreen().getSharedPreferences();
+        sharedPreferences = getPreferenceScreen().getSharedPreferences();
+        dialog = new StyleDialog(getActivity());
+        dialog.setSharedPreferences(sharedPreferences);
         PreferenceCategory pc = (PreferenceCategory)getPreferenceScreen().getPreference(0);
         int count = pc.getPreferenceCount();
         for(int i = 0; i < count; ++i){
@@ -65,19 +77,35 @@ public class SettingsFragment extends PreferenceFragment implements
                 if(value.equals("")){
                     if(key.equals(getActivity().getString(R.string.pref_size_key))){
                         value = getActivity().getString(R.string.pref_size_default);
-                    }else if(key.equals(getActivity().getString(R.string.pref_color_key))){
-                        value = getActivity().getString(R.string.pref_color_default);
+                    }else if(key.equals(getActivity().getString(R.string.pref_display_key))){
+                        value = getActivity().getString(R.string.pref_display_default);
                     }
                 }
                 setPreferenceSummary(p, value);
             }
         }
-        getPreferenceScreen().getSharedPreferences()
-                .registerOnSharedPreferenceChangeListener(this);
+        getPreferenceScreen().getSharedPreferences().registerOnSharedPreferenceChangeListener(this);
+        Preference theme = findPreference(getString(R.string.pref_theme_key));
+        String value = sharedPreferences.getString(theme.getKey(),"");
+        labels = getResources().getStringArray(R.array.pref_theme_option_labels);
+        values = getResources().getStringArray(R.array.pref_theme_option_values);
+        if(value.equals("")){
+            theme.setSummary(getString(R.string.pref_theme_label_ag));
+        }else {
+            for(int i = 0; i < values.length; ++i){
+                if(values[i].equals(value)){
+                    theme.setSummary(labels[i]);
+                    break;
+                }
+            }
+        }
+        theme.setOnPreferenceClickListener(this);
         Preference bindJA = findPreference(getString(R.string.pref_bind_JAccount_key));
-        Preference checkUP = findPreference(getString(R.string.pref_check_update_key));
         bindJA.setOnPreferenceClickListener(this);
+        Preference checkUP = findPreference(getString(R.string.pref_check_update_key));
         checkUP.setOnPreferenceClickListener(this);
+        if(GlobalParameterApplication.wetherHaveNewVersion)
+            checkUP.setWidgetLayoutResource(R.layout.badge);
     }
 
     @Override
@@ -86,7 +114,24 @@ public class SettingsFragment extends PreferenceFragment implements
         if (preference != null) {
             if (!(preference instanceof SwitchPreference)) {
                 String value = sharedPreferences.getString(preference.getKey(), "");
-                setPreferenceSummary(preference, value);
+                if(key.equals(getString(R.string.pref_theme_key))){
+                    for(int i = 0; i < values.length; ++i){
+                        if(values[i].equals(value)){
+                            preference.setSummary(labels[i]);
+                            GlobalParameterApplication.setThemeId(i);
+                            if(Build.VERSION.SDK_INT < 21){
+                                getActivity().recreate();
+                            }else{
+                                int color = getResources().getColor(colors[i]);
+                                getActivity().getWindow().setStatusBarColor(color);
+                                ((Settings)getActivity()).toolbar.setBackgroundColor(color);
+                            }
+                            ((Settings)getActivity()).flag = true;
+                            break;
+                        }
+                    }
+                }else
+                    setPreferenceSummary(preference, value);
             }
         }
     }
@@ -117,6 +162,8 @@ public class SettingsFragment extends PreferenceFragment implements
         }
         else if(key.equals(getString(R.string.pref_check_update_key))){
             checkUpdate();
+        }else if(key.equals(getString(R.string.pref_theme_key))){
+            dialog.show();
         }
         return false;
     }
@@ -180,10 +227,7 @@ public class SettingsFragment extends PreferenceFragment implements
                                 .setNegativeButton("取消",null).show();
                     }
                     else{
-                        new  AlertDialog.Builder(getActivity())
-                                .setTitle("爱心屋APP下载" )
-                                .setMessage("当前已经是最新版本" )
-                                .setPositiveButton("确定", null).show();
+                        Toast.makeText(getActivity(),"已是最新版本",Toast.LENGTH_SHORT).show();
                     }
                 default:break;
             }

@@ -10,11 +10,9 @@ import android.os.Bundle;
 //import android.support.v7.internal.widget.ThemeUtils;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 
 import com.aixinwu.axw.activity.Buy;
 import com.aixinwu.axw.adapter.OnSailAdapter;
@@ -28,10 +26,7 @@ import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
 import org.json.simple.JSONObject;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +41,7 @@ public class ItemList extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_item_list,null);
+        View view = inflater.inflate(R.layout.fragment_my_issue,null);
         uplist = (RecyclerView) view.findViewById(R.id.itemlistviewup);
         uplist.setLayoutManager(new LinearLayoutManager(getActivity()));
         uplist.addItemDecoration(new RecyclerViewDivider(getActivity()));

@@ -50,11 +50,8 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import in.srain.cube.views.ptr.PtrUIHandlerHook;
 
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
@@ -405,8 +402,10 @@ public class PhotoPicker extends AppCompatActivity {
         UCrop.Options options = new UCrop.Options();
         options.setAllowedGestures(UCropActivity.SCALE, UCropActivity.ROTATE, UCropActivity.ALL);
         options.setHideBottomControls(true);
-        options.setToolbarColor(ActivityCompat.getColor(PhotoPicker.this, R.color.primary));
-        options.setStatusBarColor(ActivityCompat.getColor(PhotoPicker.this, R.color.primary));
+        TypedValue typedValue = new TypedValue();
+        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+        options.setToolbarColor(getResources().getColor(typedValue.resourceId));
+        options.setStatusBarColor(getResources().getColor(typedValue.resourceId));
         options.setFreeStyleCropEnabled(false);
         uCrop.withOptions(options);
         uCrop.withAspectRatio(aspectRatioX, aspectRatioY);

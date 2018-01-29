@@ -1,46 +1,48 @@
 package com.aixinwu.axw.fragment;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.os.Build;
+import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
-import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceScreen;
-import android.preference.SwitchPreference;
 import android.support.annotation.Nullable;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.widget.Toast;
 
 import com.aixinwu.axw.R;
-import com.aixinwu.axw.tools.DownloadTask;
-import com.aixinwu.axw.tools.GlobalParameterApplication;
-import com.aixinwu.axw.tools.NetInfo;
-
-import org.apache.commons.io.IOUtils;
-import org.json.simple.JSONObject;
-
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.HashMap;
-
-import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import com.aixinwu.axw.activity.FeedBack;
+import com.aixinwu.axw.activity.SignupBind;
 
 /**
  * Created by lionel on 2017/11/15.
  */
 
-public class HelpFeedFragment extends PreferenceFragment{
+public class HelpFeedFragment extends PreferenceFragment
+        implements Preference.OnPreferenceClickListener{
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.xml.help_feedback);
+
+        Preference feedback = findPreference(getString(R.string.pref_feedback_key));
+        Preference rbindJA = findPreference(getString(R.string.pref_rabj_key));
+        feedback.setOnPreferenceClickListener(this);
+        rbindJA.setOnPreferenceClickListener(this);
+    }
+
+    @Override
+    public boolean onPreferenceClick(Preference preference) {
+        String key = preference.getKey();
+        Intent intent = null;
+        if(key.equals(getString(R.string.pref_feedback_key))){
+            intent = new Intent(getActivity(), FeedBack.class);
+        }
+        else if(key.equals(getString(R.string.pref_rabj_key))){
+            intent = new Intent(getActivity(), SignupBind.class);
+            intent.putExtra("url","https://mp.weixin.qq.com/s/jLzyrkCv9ZbowaX_GFDnoA");
+        }
+        if(intent != null){
+            startActivityForResult(intent,0);
+            getActivity().overridePendingTransition(R.anim.slide_in_right, R.anim.scale_fade_out);
+        }
+        return false;
     }
 }

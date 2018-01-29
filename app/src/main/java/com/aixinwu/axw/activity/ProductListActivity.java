@@ -2,10 +2,13 @@ package com.aixinwu.axw.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
@@ -23,8 +26,6 @@ import com.aixinwu.axw.tools.GlobalParameterApplication;
 import com.aixinwu.axw.tools.NetInfo;
 import com.aixinwu.axw.tools.OnRecyclerItemClickListener;
 import com.aixinwu.axw.view.MyRefreshLayout;
-import com.cjj.MaterialRefreshLayout;
-import com.cjj.MaterialRefreshListener;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -33,16 +34,19 @@ import org.json.simple.JSONObject;
 public class ProductListActivity extends Activity {
     private MyRefreshLayout mRefreshLayout;
     private RecyclerView mRecyclerView;
-    View view;
     private int times = 0;
     private String type;
     private ProductListAdapter mAdapter;
+    private int mode = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         type = getIntent().getStringExtra("type");
         setContentView(R.layout.activity_product_list);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        mode = Integer.parseInt(preferences.getString(getString(R.string.pref_display_key), getResources().getString(R.string.pref_display_default)));
+
         TextView title = (TextView) this.findViewById(R.id.product_list_title);
         switch (type) {
             case "exchange":
@@ -72,8 +76,9 @@ public class ProductListActivity extends Activity {
             }
         });
         mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-        mAdapter = new ProductListAdapter(ProductListActivity.this);
+        if(mode == 0) mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        else mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mAdapter = new ProductListAdapter(ProductListActivity.this, mode);
         mRecyclerView.setAdapter(mAdapter);
 
         mRecyclerView.addOnItemTouchListener(new OnRecyclerItemClickListener(mRecyclerView) {

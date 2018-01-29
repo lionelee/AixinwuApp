@@ -2,6 +2,7 @@ package com.aixinwu.axw.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,8 +16,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.OnItemLongClick;
-
 /**
  * Created by lionel on 2017/10/15.
  */
@@ -24,10 +23,12 @@ import butterknife.OnItemLongClick;
 public class DealListAdapter extends RecyclerView.Adapter<DealListAdapter.VHolder>{
     LayoutInflater inflater;
     List<Bean> beanList;
+    int mode = 0;
 
-    public DealListAdapter(Context context){
+    public DealListAdapter(Context context, int mode){
         inflater = LayoutInflater.from(context);
         beanList = new ArrayList<>();
+        this.mode = mode;
     }
 
     public void addItem(Bean bean){
@@ -36,19 +37,32 @@ public class DealListAdapter extends RecyclerView.Adapter<DealListAdapter.VHolde
     }
 
     public void clear(){
-        notifyItemRangeRemoved(0,beanList.size());
+        int size = beanList.size();
         beanList.clear();
+        notifyItemRangeRemoved(0,size);
+    }
+
+    public void changeMode(int mode){
+        this.mode = mode;
+        notifyDataSetChanged();
     }
 
     @Override
     public VHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = inflater.inflate(R.layout.item_used_commodity, parent, false);
+        View view;
+        if(viewType == 0)view = inflater.inflate(R.layout.item_used_commodityd, null);
+        else view = inflater.inflate(R.layout.item_used_commoditys, null);
         return new VHolder(view);
     }
 
     @Override
     public void onBindViewHolder(VHolder holder, int position) {
         holder.bindData(beanList.get(position));
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return mode;
     }
 
     @Override

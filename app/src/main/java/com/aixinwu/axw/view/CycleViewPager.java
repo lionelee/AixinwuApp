@@ -16,6 +16,7 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -100,6 +101,18 @@ public class CycleViewPager extends Fragment implements OnPageChangeListener {
         this.indicatorLayout = indicatorLayout;
         this.viewPager = viewPager;
         setData(views, list, listener, 0);
+    }
+
+    public void setImageViews(List<ImageView> views){
+        this.imageViews.clear();
+        if (views.size() == 0) {
+            rollPictureLayout.setVisibility(View.GONE);
+            return;
+        }
+        for (ImageView item : views) {
+            this.imageViews.add(item);
+        }
+        if(adapter != null) adapter.notifyDataSetChanged();
     }
 
     /**
@@ -376,7 +389,9 @@ public class CycleViewPager extends Fragment implements OnPageChangeListener {
             indicators[i].setImageResource(R.color.gray);
         }
         if (indicators.length > selectedPosition){
-            indicators[selectedPosition].setImageResource(R.color.primary);
+            TypedValue typedValue = new TypedValue();
+            getActivity().getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+            indicators[selectedPosition].setImageResource(typedValue.resourceId);
         }
     }
 

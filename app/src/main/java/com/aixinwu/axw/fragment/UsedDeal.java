@@ -1,39 +1,38 @@
 package com.aixinwu.axw.fragment;
 
-import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.BottomSheetDialog;
+import android.os.Handler;
+import android.preference.PreferenceManager;
+import android.provider.Settings;
+import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.aixinwu.axw.activity.LaunchDialog;
-import com.aixinwu.axw.activity.SendToAXW;
-import com.aixinwu.axw.activity.SendToPeople;
+import com.aixinwu.axw.activity.MainActivity;
+import com.aixinwu.axw.view.LaunchDialog;
 import com.aixinwu.axw.adapter.DealListAdapter;
 import com.aixinwu.axw.R;
 import com.aixinwu.axw.activity.Buy;
-import com.aixinwu.axw.activity.MainActivity;
 import com.aixinwu.axw.tools.Bean;
 import com.aixinwu.axw.tools.GlobalParameterApplication;
 import com.aixinwu.axw.tools.NetInfo;
 import com.aixinwu.axw.tools.OnRecyclerItemClickListener;
-import com.aixinwu.axw.view.MyFooterView;
 import com.aixinwu.axw.view.MyRefreshLayout;
-import com.cjj.MaterialRefreshLayout;
-import com.cjj.MaterialRefreshListener;
-import com.melnykov.fab.FloatingActionButton;
 
 
 import org.apache.commons.io.IOUtils;
@@ -49,21 +48,30 @@ import java.util.List;
  * Created by liangyuding on 2016/4/6.
  * Modified by lionel on 2017/10/16
  */
-public class UsedDeal extends Fragment{
+public class UsedDeal extends Fragment implements SharedPreferences.OnSharedPreferenceChangeListener{
 
     private MyRefreshLayout mRefreshLayout;
     private RecyclerView mRecyclerView;
     private int start = 0;
     private LaunchDialog dialog;
+    private FloatingActionButton fab;
+    private int offset = 0;
+    private View view;
 
     public String MyToken;
     public String surl = GlobalParameterApplication.getSurl();
 
     private static DealListAdapter mAdapter;
+    private int mode = 0;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        View view = inflater.inflate(R.layout.used_deal,null);
+        view = inflater.inflate(R.layout.fragment_used_deal,null);
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        preferences.registerOnSharedPreferenceChangeListener(this);
+        int mode = Integer.parseInt(preferences.getString(getString(R.string.pref_display_key),
+                getActivity().getString(R.string.pref_display_default)));
+
         mRefreshLayout = (MyRefreshLayout) view.findViewById(R.id.homepageScroll2);
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -79,9 +87,10 @@ public class UsedDeal extends Fragment{
                 new GetDataTask().execute(1);
             }
         });
-        mAdapter = new DealListAdapter(getActivity());
+        mAdapter = new DealListAdapter(getActivity(), mode);
         mRecyclerView = (RecyclerView)view.findViewById(R.id.deal_item_list);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2));
+        if(mode == 0) mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2));
+        else mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.addOnItemTouchListener(new OnRecyclerItemClickListener(mRecyclerView){
         @Override
@@ -101,8 +110,7 @@ public class UsedDeal extends Fragment{
         });
 
         dialog = new LaunchDialog(getActivity());
-        FloatingActionButton fab = (FloatingActionButton) view.findViewById(R.id.fab);
-        fab.attachToRecyclerView(mRecyclerView);
+        fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setImageResource(R.drawable.ic_tool_add);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -110,9 +118,58 @@ public class UsedDeal extends Fragment{
                 dialog.show();
             }
         });
+        offset = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48, getResources().getDisplayMetrics());
+
         mRefreshLayout.setRefreshing(true);
         new GetDataTask().execute(0);
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(!getUserVisibleHint())return;
+        if(NetInfo.checkNetwork(getActivity()))return;
+        Snackbar snackbar = Snackbar.make(view, "网络未连接或不可用,请检查设置", Snackbar.LENGTH_LONG)
+                .setAction("确定", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent();
+                        intent.setAction(Settings.ACTION_SETTINGS);
+                        getActivity().startActivity(intent);
+                    }
+                });
+        snackbar.addCallback(new Snackbar.Callback(){
+            @Override
+            public void onShown(Snackbar sb) {
+                ViewCompat.setTranslationY(fab, -offset);
+                super.onShown(sb);
+            }
+            @Override
+            public void onDismissed(Snackbar transientBottomBar, int event) {
+                ViewCompat.setTranslationY(fab, 0);
+                super.onDismissed(transientBottomBar, event);
+            }
+        });
+        View view = snackbar.getView();
+        ((TextView) view.findViewById(R.id.snackbar_text)).setTextColor(getResources().getColor(R.color.white));
+        snackbar.show();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        if(!isAdded())return;
+        if (key.equals(getActivity().getString(R.string.pref_display_key))){
+            mode = Integer.parseInt(sharedPreferences.getString(key, getActivity().getString(R.string.pref_display_default)));
+            if(mode == 0) mRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(),2));
+            else mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+            mAdapter.changeMode(mode);
+        }
     }
 
     private class GetDataTask extends AsyncTask<Integer, Void, List<Bean>>{
@@ -187,4 +244,5 @@ public class UsedDeal extends Fragment{
         }
         return null;
     }
+
 }

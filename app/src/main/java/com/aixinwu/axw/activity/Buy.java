@@ -1,6 +1,5 @@
 package com.aixinwu.axw.activity;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,22 +8,16 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.aixinwu.axw.R;
 
-import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,7 +30,7 @@ import org.json.simple.JSONObject;
 
 import com.aixinwu.axw.database.Sqlite;
 import com.aixinwu.axw.tools.GlobalParameterApplication;
-import com.aixinwu.axw.tools.MyAlertDialog;
+import com.aixinwu.axw.tools.NetInfo;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import de.hdodenhof.circleimageview.CircleImageView;
@@ -46,40 +39,32 @@ import de.hdodenhof.circleimageview.CircleImageView;
  * Created by liangyuding on 2016/4/15.
  */
 public class Buy extends AppCompatActivity{
-    private final String surl = GlobalParameterApplication.getSurl();
-    public  java.lang.String MyToken;
+    private String surl = GlobalParameterApplication.getSurl();
+    private String MyToken = GlobalParameterApplication.getToken();
     private int itemID;
     private int OwnerID;
     private String Desc;
     private int Price;
     private String Picset;
-
     private String ownerName;
-
     private String picId;
     private String description;
+    private String imgUrl;
+    private ArrayList<String> comment_texts = new ArrayList<>();
+    private ArrayList<String> comment_times = new ArrayList<>();
 
     private TextView textView1;
     private TextView textView2;
     private TextView textView3;
-    private TextView textView4;
-    private EditText commentword;
     private LinearLayout commentsubmit;
-    private ListView comments;
+    private TextView tv_comm;
     private TextView button2;
     private String[] picts;
-    private List<String> pic_list;
-    private SimpleAdapter com_adapter;
-    private Context mContext;
-    private String commentwords;
-    private ArrayList<String> Comments = new ArrayList<String>();
-    private ArrayList<String> comment_times = new ArrayList<String>();
-    private ArrayList<HashMap<String,Object>> comment_list;
+    private List<String> pic_list = new ArrayList<>();
     private TextView Caption;
     private String _caption;
     private LinearLayout pictures;
 
-    private String imgUrl;
 
     private LinearLayout relativeLayoutCollect;
     private ImageView iv_collect;
@@ -89,6 +74,7 @@ public class Buy extends AppCompatActivity{
     private Sqlite userDbHelper = new Sqlite(this);
 
     private CircleImageView headProtrait;
+    TypedValue typedValue = new TypedValue();
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -98,6 +84,7 @@ public class Buy extends AppCompatActivity{
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+        getTheme().resolveAttribute(R.attr.colorAccent, typedValue, true);
 
         final Intent intent=getIntent();
         Bundle out = intent.getExtras();
@@ -110,35 +97,12 @@ public class Buy extends AppCompatActivity{
         textView1 = (TextView)findViewById(R.id.ownerid);
         textView2 = (TextView)findViewById(R.id.desc);
         textView3 = (TextView)findViewById(R.id.price3);
-        textView4 = (TextView)findViewById(R.id.shuoming);
-        commentword = (EditText)findViewById(R.id.commentword);
         commentsubmit = (LinearLayout) findViewById(R.id.commentsubmit);
-        comments = (ListView)findViewById(R.id.comments);
+        tv_comm = (TextView) findViewById(R.id.tv_comm);
 
         headProtrait = (CircleImageView) findViewById(R.id.img_activity_product);
         Caption = (TextView)findViewById(R.id.caption);
         Caption.setText(_caption);
-        pic_list = new ArrayList<String>();
-        comment_list=new ArrayList<HashMap<String, Object>>();
-        mContext = this;
-
-
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                SQLiteDatabase db = userDbHelper.getWritableDatabase();
-                Cursor cursor = db.rawQuery("select * from AXWcollect where itemId = " + itemID + " and userName = '" + GlobalParameterApplication.getUser_name() + "'", null);
-                while (cursor.moveToNext()) {
-                    Message msg=new Message();
-                    msg.what=521521;
-                    dHandler.sendMessage(msg);
-                    break;
-                }
-                cursor.close();
-                db.close();
-            }
-        }).start();
-
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -151,7 +115,8 @@ public class Buy extends AppCompatActivity{
                     intent2.putExtra("itemID",itemID);
                     intent2.putExtra("To",OwnerID);
                     intent2.putExtra("ToName",ownerName);
-                    startActivityForResult(intent2,0);
+                    intent2.putExtra("imgUrl", imgUrl);
+                    startActivityForResult(intent2,1);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.scale_fade_out);
                 }
 
@@ -160,45 +125,44 @@ public class Buy extends AppCompatActivity{
         commentsubmit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
-                        final EditText inputServer = new EditText(Buy.this);
-                        inputServer.setFocusable(true);
-
-                        final MyAlertDialog confirmDialog = new MyAlertDialog(Buy.this, "", "提交评论", "×",nhandler);
-                        confirmDialog.setView(inputServer);
-                        confirmDialog.show();
-                    }
-
+                Intent intent = new Intent(Buy.this, Comment.class);
+                intent.putExtra("itemID",itemID);
+                intent.putStringArrayListExtra("comment_texts",comment_texts);
+                intent.putStringArrayListExtra("comment_times",comment_times);
+                startActivityForResult(intent,2);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.scale_fade_out);
+            }
         });
+
         new Thread(new Runnable() {
             @Override
             public void run() {
-                MyToken=GlobalParameterApplication.getToken();
-                GetComments(itemID);
-                GetInfo(itemID);
-                HashMap<String,String> usrInfo = ChatList.getUserName("" + OwnerID);
-                ownerName = usrInfo.get("usrName");
-                imgUrl = usrInfo.get("img");
-                picts = Picset.split(",");
-                pic_list.clear();
-                for (int i = 0; i < picts.length; i++){
-
-
-                    pic_list.add(GlobalParameterApplication.imgSurl+picts[i]);
+                SQLiteDatabase db = userDbHelper.getWritableDatabase();
+                Cursor cursor = db.rawQuery("select * from AXWcollect where itemId = " + itemID + " and userName = '" + GlobalParameterApplication.getUser_name() + "'", null);
+                while (cursor.moveToNext()) {
+                    flag = true;
+                    break;
                 }
-                comment_list.clear();
-                for (int i = 0; i < Comments.size();i++){
-                    HashMap<String,Object> map = new HashMap<String, Object>();
-                    map.put("comment",Comments.get(i));
-                    map.put("time",comment_times.get(i));
-                    comment_list.add(map);
+                cursor.close();
+                db.close();
+                if(NetInfo.checkNetwork(Buy.this)){
+                    GetInfo(itemID);
+                    GetComments();
+                    HashMap<String,String> usrInfo = ChatList.getUserName("" + OwnerID);
+                    ownerName = usrInfo.get("usrName");
+                    imgUrl = usrInfo.get("img");
+                    picts = Picset.split(",");
+                    pic_list.clear();
+                    for (int i = 0; i < picts.length; i++){
+                        pic_list.add(GlobalParameterApplication.imgSurl+picts[i]);
+                    }
                 }
                 Message msg=new Message();
                 msg.what=2310231;
                 nhandler.sendMessage(msg);
-
             }
         }).start();
+
         iv_collect = (ImageView) findViewById(R.id.iv_collect);
         tv_collect = (TextView) findViewById(R.id.tv_collect);
         relativeLayoutCollect = (LinearLayout) findViewById(R.id.relativeCollect);
@@ -224,7 +188,7 @@ public class Buy extends AppCompatActivity{
                         db.close();
                         flag = true;
                         iv_collect.setImageResource(R.drawable.ic_stared);
-                        tv_collect.setTextColor(getResources().getColor(R.color.accent));
+                        tv_collect.setTextColor(getResources().getColor(typedValue.resourceId));
                         tv_collect.setText("已收藏");
                     }catch (Throwable e){
                         e.printStackTrace();
@@ -234,152 +198,63 @@ public class Buy extends AppCompatActivity{
         });
     }
 
-    public Handler dHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg){
-            super.handleMessage(msg);
-            switch (msg.what){
-                case 521521:
-                    flag = true;
-                    iv_collect.setImageResource(R.drawable.ic_stared);
-                    tv_collect.setTextColor(getResources().getColor(R.color.accent));
-                    tv_collect.setText("已收藏");
-                    break;
-        }
-    };
-
-};
-
     Handler nhandler = new Handler(){
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if(textView1!=null){
-                textView4.setText("留言("+Comments.size()+")");
-
-
-                commentwords = (String) msg.obj;
-
-                switch (msg.what) {
-
-                    case 2323232:
-                        new Thread(new Runnable() {
-                            @Override
-                            public void run(){
-                                URL url = null;
-                                try {
-                                    url = new URL(surl + "/item_add_comment");
-                                } catch (MalformedURLException e) {
-                                    e.printStackTrace();
-                                }
-
-                                try {
-                                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                                    try {
-
-                                        conn.setRequestMethod("POST");
-                                    } catch (ProtocolException e) {
-                                        e.printStackTrace();
-                                    }
-                                    conn.setDoOutput(true);
-                                    conn.setRequestProperty("Content-Type", "application/json");
-                                    JSONObject data = new JSONObject();
-                                    data.put("token", MyToken);
-                                    JSONObject comment = new JSONObject();
-                                    comment.put("itemID", itemID);
-                                    comment.put("content", commentwords);
-                                    data.put("comment", comment);
-
-                                    conn.getOutputStream().write(data.toJSONString().getBytes());
-                                    String ostr = IOUtils.toString(conn.getInputStream());
-                                    System.out.println(ostr);
-                                    GetComments(itemID);
-                                    comment_list.clear();
-                                    for (int i = 0; i < Comments.size();i++){
-                                        HashMap<String,Object> map = new HashMap<String, Object>();
-                                        map.put("comment",Comments.get(i));
-                                        map.put("time",comment_times.get(i));
-                                        comment_list.add(map);
-                                    }
-                                    Message Msg = new Message();
-                                    Msg.what = 231123;
-                                    nhandler.sendMessage(Msg);
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-
-
-                            }
-                        }).start();
-                        break;
-                    case 2310231:
-
-                        flag=false;
-                        textView1.setText(ownerName);
-                        textView2.setText(Desc);
-                        textView3.setText("价格：￥"+Price);
-
-                        if (!imgUrl.equals(""))
-                            ImageLoader.getInstance().displayImage(GlobalParameterApplication.imgSurl+imgUrl, headProtrait);
-
-                        com_adapter=new SimpleAdapter(mContext,comment_list,R.layout.commentitem,new String[]{"comment","time"},new int[]{R.id.comment_text,R.id.comment_time});
-                        com_adapter.setViewBinder(new SimpleAdapter.ViewBinder(){
-                            @Override
-                            public boolean setViewValue(View view, Object o, String s) {
-                                if (view instanceof TextView && o instanceof String){
-                                    TextView i = (TextView) view;
-                                    i.setText((String) o);
-                                    return true;
-                                }
-                                return false;
-                            }
-                        });
-                        comments.setAdapter(com_adapter);
-                        comments.setVisibility(View.VISIBLE);
-                        int totalHeight = 0;
-                        for (int i = 0; i < com_adapter.getCount(); i++) {
-                            View listItem = com_adapter.getView(i, null, comments);
-                            listItem.measure(0, 0);
-                            totalHeight += listItem.getMeasuredHeight();
-                        }
-
-                        ViewGroup.LayoutParams params = comments.getLayoutParams();
-                        params.height = totalHeight + (comments.getDividerHeight() * (com_adapter.getCount() - 1));
-                        // params.height = params.height;
-                        comments.setLayoutParams(params);
-
+            switch (msg.what) {
+                case 2310231:
+                    if(flag){
+                        iv_collect.setImageResource(R.drawable.ic_stared);
+                        tv_collect.setTextColor(getResources().getColor(typedValue.resourceId));
+                        tv_collect.setText("已收藏");
+                    }
+                    textView1.setText(ownerName);
+                    textView2.setText(Desc);
+                    textView3.setText("价格：￥"+Price);
+                    tv_comm.setText(comment_texts.size()+"留言");
+                    if (imgUrl != null && !imgUrl.equals(""))
+                        ImageLoader.getInstance().displayImage(GlobalParameterApplication.imgSurl+imgUrl, headProtrait);
+                    if(Picset != null && !Picset.equals("")){
                         for (int i = 0; i < pic_list.size(); ++i){
-                            ImageView img = new ImageView(mContext);
+                            ImageView img = new ImageView(Buy.this);
                             img.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                             LinearLayout.LayoutParams imgLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
                             ImageLoader.getInstance().displayImage(pic_list.get(i),img);
                             img.setLayoutParams(imgLayoutParams);
                             pictures.addView(img,imgLayoutParams);
                         }
-                        break;
-                    case 231123:
-                        //comments.setAdapter(com_adapter);
-                        commentword.setText("");
-                        int totalHeight1 = 0;
-                        for (int i = 0; i < com_adapter.getCount(); i++) {
-                            View listItem = com_adapter.getView(i, null, comments);
-                            listItem.measure(0, 0);
-                            totalHeight1 += listItem.getMeasuredHeight();
-                        }
-
-                        ViewGroup.LayoutParams params11 = comments.getLayoutParams();
-                        params11.height = totalHeight1 + (comments.getDividerHeight() * (com_adapter.getCount() - 1));
-                        comments.setLayoutParams(params11);
-                        com_adapter.notifyDataSetChanged();
-                        break;
-                }
+                    }
+                    break;
             }
 
         }
 
     };
 
+    public void GetInfo(int itemID) {
+        try {
+            URL url = new URL(surl + "/item_get");
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            conn.setRequestProperty("Content-Type","application/json");
+            JSONObject data = new JSONObject();
+            JSONObject iteminfo = new JSONObject();
+            iteminfo.put("ID",itemID);
+            data.put("itemInfo",iteminfo);
+            conn.getOutputStream().write(data.toJSONString().getBytes());
+            String ostr = IOUtils.toString(conn.getInputStream());
+            org.json.JSONObject outjson = new org.json.JSONObject(ostr);
+            OwnerID = outjson.getJSONObject("itemInfo").getInt("ownerID");
+            Desc = outjson.getJSONObject("itemInfo").getString("description");
+            Price = outjson.getJSONObject("itemInfo").getInt("estimatedPriceByUser");
+            Picset = outjson.getJSONObject("itemInfo").getString("images");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
-    public void GetComments(int itemID){
+    public void GetComments(){
         try {
             URL url = new URL(surl + "/item_get_comment");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -396,37 +271,13 @@ public class Buy extends AppCompatActivity{
             org.json.JSONObject outjson = new org.json.JSONObject(ostr);
             JSONArray result=outjson.getJSONArray("comment");
             org.json.JSONObject outt=null;
-            Comments.clear();
+            comment_texts.clear();
             comment_times.clear();
             for (int i = 0; i < result.length();i++){
-                    outt=result.getJSONObject(i);
-                    Comments.add(outt.getString("content"));
-                    comment_times.add(outt.getString("created"));
+                outt=result.getJSONObject(i);
+                comment_texts.add(outt.getString("content"));
+                comment_times.add(outt.getString("created"));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-    public void GetInfo(int itemID) {
-        try {
-            URL url = new URL(surl + "/item_get");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setDoOutput(true);
-            conn.setRequestProperty("Content-Type","application/json");
-            JSONObject data = new JSONObject();
-            JSONObject iteminfo = new JSONObject();
-            iteminfo.put("ID",itemID);
-            data.put("itemInfo",iteminfo);
-            conn.getOutputStream().write(data.toJSONString().getBytes());
-            String ostr = IOUtils.toString(conn.getInputStream());
-            org.json.JSONObject outjson = new org.json.JSONObject(ostr);
-
-            OwnerID = outjson.getJSONObject("itemInfo").getInt("ownerID");
-
-            Desc = outjson.getJSONObject("itemInfo").getString("description");
-            Price = outjson.getJSONObject("itemInfo").getInt("estimatedPriceByUser");
-            Picset = outjson.getJSONObject("itemInfo").getString("images");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -440,6 +291,15 @@ public class Buy extends AppCompatActivity{
             default:break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == 2 && resultCode == RESULT_OK){
+            comment_texts = data.getStringArrayListExtra("comment_texts");
+            comment_times = data.getStringArrayListExtra("comment_times");
+            tv_comm.setText(comment_texts.size()+"留言");
+        }
     }
 
     @Override

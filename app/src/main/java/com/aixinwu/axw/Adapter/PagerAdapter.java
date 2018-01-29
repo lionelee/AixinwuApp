@@ -29,9 +29,15 @@ public class PagerAdapter extends FragmentPagerAdapter {
         }
     }
 
+    public List<Fragment> getFragments() {
+        return fragments;
+    }
+
     public void addItem(Fragment frag) {
         fragments.add(frag);
     }
+
+    public void clear(){fragments.clear();}
 
     @Override
     public Fragment getItem(int position) {

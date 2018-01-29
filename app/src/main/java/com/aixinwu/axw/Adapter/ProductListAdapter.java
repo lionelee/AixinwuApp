@@ -16,18 +16,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.aixinwu.axw.model.Product;
-import com.marshalchen.ultimaterecyclerview.SwipeableUltimateViewAdapter;
-import com.marshalchen.ultimaterecyclerview.UltimateViewAdapter;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.ViewHolder> {
-//    extends UltimateViewAdapter<ProductListAdapter.ViewHolder>{
     LayoutInflater inflater;
     private List<Product> datas = null;
+    int mode = 0;
 
-    public ProductListAdapter(Context context) {
+    public ProductListAdapter(Context context, int mode) {
         inflater = LayoutInflater.from(context);
         datas = new ArrayList<>();
+        this.mode = mode;
     }
 
     public void addItem(Product product){
@@ -40,63 +39,24 @@ public class ProductListAdapter extends RecyclerView.Adapter<ProductListAdapter.
         datas.clear();
     }
 
-//    @Override
-//    public ViewHolder newFooterHolder(View view) {
-//        return new ViewHolder(view);
-//    }
-//
-//    @Override
-//    public ViewHolder newHeaderHolder(View view) {
-//        return new ViewHolder(view);
-//    }
-//
-//    @Override
-//    public ViewHolder onCreateViewHolder(ViewGroup parent) {
-//        View view = inflater.inflate(R.layout.activity_list_product, null);
-//        return new ViewHolder(view);
-//    }
-//
-//    @Override
-//    public int getAdapterItemCount() {
-//        return datas.size();
-//    }
-//
-//    @Override
-//    public long generateHeaderId(int position) {
-//        return -1;
-//    }
-//
-//    @Override
-//    public RecyclerView.ViewHolder onCreateHeaderViewHolder(ViewGroup parent) {
-//        View view = inflater.inflate(R.layout.activity_list_product, null);
-//        return new ViewHolder(view);
-//    }
-//
-//    @Override
-//    public void onBindHeaderViewHolder(RecyclerView.ViewHolder holder, int position) {
-//        ((ViewHolder)holder).mNameView.setText("");
-//        ((ViewHolder)holder).mPriceView.setText("");
-//        ((ViewHolder)holder).mImageView.setImageResource(R.drawable.icon);
-//    }
-
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = inflater.inflate(R.layout.activity_list_product, viewGroup, false);
+        View view;
+        if(viewType == 0) view = inflater.inflate(R.layout.item_product_listd, null);
+        else view = inflater.inflate(R.layout.item_product_lists, null);
         return new ViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-//        if(position >= getItemCount())return;
-//        if(customHeaderView == null){
-//            if(position >= datas.size())return;
-//        }else{
-//            if(position > datas.size() || position <= 0)return;
-//            position -= 1;
-//        }
         viewHolder.mNameView.setText(datas.get(position).getProduct_name());
         viewHolder.mPriceView.setText(datas.get(position).getPrice() + "");
         ImageLoader.getInstance().displayImage(datas.get(position).getImage_url(), viewHolder.mImageView);
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return mode;
     }
 
     @Override

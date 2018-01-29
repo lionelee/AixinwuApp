@@ -10,14 +10,81 @@
 
     <style name="AppStartTheme" parent="AppBaseTheme">
         <item name="android:windowBackground">@drawable/startbg</item>
-    </style>
-
-    <style name="AppTransTheme" parent="AppBaseTheme">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowFullscreen">true</item>
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <!-- Application theme. -->
-    <style name="AppTheme" parent="AppBaseTheme">
+    <style name="AppTheme" parent="AppBaseTheme"></style>
+    <style name="AppTheme.Aixinwu" parent="AppBaseTheme">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary</item>
+    </style>
+    <style name="AppTheme.Aixinwu.TransBar" parent="AppBaseTheme">
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="AppTheme.Seiee" parent="AppBaseTheme">
+        <item name="colorPrimary">@color/SeieeBlue</item>
+        <item name="colorPrimaryDark">@color/SeieeBlue</item>
+    </style>
+    <style name="AppTheme.Seiee.TransBar" parent="AppBaseTheme">
+        <item name="colorPrimary">@color/SeieeBlue</item>
+        <item name="colorPrimaryDark">@color/SeieeBlue</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="AppTheme.UltraViolet" parent="AppBaseTheme">
+        <item name="colorPrimary">@color/UltraViolet</item>
+        <item name="colorPrimaryDark">@color/UltraViolet</item>
+    </style>
+    <style name="AppTheme.UltraViolet.TransBar" parent="AppBaseTheme">
+        <item name="colorPrimary">@color/UltraViolet</item>
+        <item name="colorPrimaryDark">@color/UltraViolet</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="AppTheme.ChiliOil" parent="AppBaseTheme">
+        <item name="colorPrimary">@color/ChiliOil</item>
+        <item name="colorPrimaryDark">@color/ChiliOil</item>
+    </style>
+    <style name="AppTheme.ChiliOil.TransBar" parent="AppBaseTheme">
+        <item name="colorPrimary">@color/ChiliOil</item>
+        <item name="colorPrimaryDark">@color/ChiliOil</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="AppTheme.LittleBoyBlue" parent="AppBaseTheme">
+        <item name="colorPrimary">@color/LittleBoyBlue</item>
+        <item name="colorPrimaryDark">@color/LittleBoyBlue</item>
+    </style>
+    <style name="AppTheme.LittleBoyBlue.TransBar" parent="AppBaseTheme">
+        <item name="colorPrimary">@color/LittleBoyBlue</item>
+        <item name="colorPrimaryDark">@color/LittleBoyBlue</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="AppTheme.Arcadia" parent="AppBaseTheme">
+        <item name="colorPrimary">@color/Arcadia</item>
+        <item name="colorPrimaryDark">@color/Arcadia</item>
+    </style>
+    <style name="AppTheme.Arcadia.TransBar" parent="AppBaseTheme">
+        <item name="colorPrimary">@color/Arcadia</item>
+        <item name="colorPrimaryDark">@color/Arcadia</item>
+        <item name="android:windowTranslucentStatus">true</item>
+    </style>
+
+    <style name="AppTheme.Emperador" parent="AppBaseTheme">
+        <item name="colorPrimary">@color/Emperador</item>
+        <item name="colorPrimaryDark">@color/Emperador</item>
+    </style>
+    <style name="AppTheme.Emperador.TransBar" parent="AppBaseTheme">
+        <item name="colorPrimary">@color/Emperador</item>
+        <item name="colorPrimaryDark">@color/Emperador</item>
+        <item name="android:windowTranslucentStatus">true</item>
     </style>
 
     <style name="BtnTheme" parent="Base.Widget.AppCompat.Button.Borderless">
@@ -44,7 +111,7 @@
         <item name="android:background">@drawable/borderless_btn</item>
     </style>
 
-    <style name="AppTheme.Dark.Dialog" parent="Theme.AppCompat.Dialog">
+    <style name="AppTheme.Dark.Dialog" parent="@android:style/Theme.DeviceDefault.Dialog">
         <item name="colorAccent">@color/white</item>
         <item name="android:textColor">@color/white</item>
         <item name="android:background">?attr/colorPrimary</item>
@@ -54,4 +121,10 @@
         <item name="android:windowEnterAnimation">@anim/bottom_to_top</item>
         <item name="android:windowExitAnimation">@anim/top_to_bottom</item>
     </style>
+
+    <style name="ItemDialogStyle" parent="Theme.AppCompat.Dialog">
+        <item name="android:background">@color/transparent</item>
+        <item name="android:windowBackground">@color/transparent</item>
+    </style>
+
 </resources>

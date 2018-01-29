@@ -1,11 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:ptr="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
     <TextView
         android:id="@+id/product_list_title"
         android:layout_width="match_parent"
@@ -15,29 +12,6 @@
         android:text="置换专区"
         android:textColor="@color/white"
         android:background="?attr/colorPrimary"/>
-
-        <!--<com.marshalchen.ultimaterecyclerview.UltimateRecyclerView-->
-            <!--android:id="@+id/recyclerview"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent" />-->
-
-        <!--<com.cjj.MaterialRefreshLayout-->
-            <!--android:id="@+id/refreshLayout"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent"-->
-            <!--app:isLoadMore="true"-->
-            <!--app:wave_show="false">-->
-        <!--<android.support.v4.widget.SwipeRefreshLayout-->
-            <!--android:id="@+id/refreshLayout"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="match_parent">-->
-            <!--<com.kevin.ultimaterecyclerview.UltimateRecyclerView-->
-                <!--android:id="@+id/recyclerview"-->
-                <!--android:layout_width="match_parent"-->
-                <!--android:layout_height="match_parent"-->
-                <!--ptr:ptrMode="pullFromStart"/>-->
-        <!--</android.support.v4.widget.SwipeRefreshLayout>-->
-        <!--</com.cjj.MaterialRefreshLayout>-->
     <com.aixinwu.axw.view.MyRefreshLayout
         android:id="@+id/refreshLayout"
         android:layout_width="match_parent"

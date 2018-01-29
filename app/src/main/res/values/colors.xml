@@ -1,15 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="actionbar_background">#a10c0002</color>
-
     <color name="primary">#1E7C02</color>
-    <color name="primary_translucent">#901E7C02</color>
     <color name="accent">#ea5404</color>
     <color name="background">#f4f4f4</color>
     <color name="transparent">#00000000</color>
     <color name="translucent">#C0000000</color>
     <color name="translucent_lighter">#90000000</color>
 
+    <color name="SeieeBlue">#0000FF</color>
+    <!--color of 2018 with PANTONE-->
+    <color name="UltraViolet">#645394</color>
+    <!--Spring 2018 Top 12 Color Palette-->
+    <color name="LittleBoyBlue">#6ca0dc</color>
+    <color name="ChiliOil">#8E3C36</color>
+    <color name="Arcadia">#00a68c</color>
+    <color name="Emperador">#684832</color>
+    <color name="HarborMist">#AFB1B4</color>
+    <color name="WarmSand">#C5AE91</color>
+    
     <color name="white">#FFFFFF</color>
     <color name="blue">#0066FF</color>
     <color name="no_color">#00000000</color>
@@ -17,12 +25,11 @@
     <color name="bg_color_deep">#E5E5E5</color>
     <color name="black">#000000</color>
     <color name="text_color">#434343</color>
-    <color name="black_half">#50000000</color>
     <color name="red">#FFFF0000</color>
     <color name="gray">#FF888888</color>
 
-     <color name="myred">#eb4f38</color>
-    <color name="darkgray">#cccc</color>
+    <color name="darkgray">#cccccc</color>
+    <color name="mygray">#c6c6c6</color>
     <color name="color_white">#ffffff</color>
     <color name="btn_press_color">#5677fc</color>
     <color name="btn_pressed_color">#3ca0ec</color>

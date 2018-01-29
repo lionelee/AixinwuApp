@@ -2,30 +2,42 @@ package com.aixinwu.axw.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.media.Image;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.view.Window;
 import android.os.Handler;
 import android.util.Log;
 import android.os.CountDownTimer;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.aixinwu.axw.database.Sqlite;
 
 import com.aixinwu.axw.R;
+import com.aixinwu.axw.tools.DateUtil;
 import com.aixinwu.axw.tools.GlobalParameterApplication;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 /**
@@ -33,27 +45,33 @@ import java.util.HashMap;
  */
 public class WelcomeActivity extends Activity {
 
-    private final long SPLASH_LENGTH = 2000;
+    private long SPLASH_LENGTH;
     Handler handler = new Handler();
-    private TextView time;
-    private MyCountDownTimer mc;
-
-    private boolean judge = true;
+    private ImageView iv_welcome;
+    private SharedPreferences preferences;
 
     private Sqlite userDbHelper = new Sqlite(this);
 
-    private myRunnable my = new myRunnable();
-
     public void onCreate(Bundle savedInstanceState) {
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         super.onCreate(savedInstanceState);
+        if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
+            finish();
+            return;
+        }
+        preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        boolean flag = preferences.getBoolean(getString(R.string.pref_start_img_key),true);
         setContentView(R.layout.activity_welcome);
+        if(flag){
+            SPLASH_LENGTH = 2300;
+            iv_welcome = (ImageView) findViewById(R.id.iv_welcome);
+            new ShowImgTask().execute();
+        }
+        else SPLASH_LENGTH = 0;
 
         try {
             PackageManager manager = this.getPackageManager();
             PackageInfo info = manager.getPackageInfo(this.getPackageName(), 0);
             GlobalParameterApplication.versionName = info.versionName;
-            //Toast.makeText(WelcomeActivity.this,version,Toast.LENGTH_SHORT).show();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -89,58 +107,71 @@ public class WelcomeActivity extends Activity {
         cursor.close();
         db.close();
 
-        handler.postDelayed(my, SPLASH_LENGTH);
-
-    }
-
-    class myRunnable implements Runnable{
-
-        public void run() {
-            if (judge) {
-                Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
-                startActivityForResult(intent,0);
-                overridePendingTransition(R.anim.welcome_enter,R.anim.welcome_exit);
-                finish();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(WelcomeActivity.this, MainActivity.class);
+                        startActivityForResult(intent,0);
+                        finish();
+                        overridePendingTransition(R.anim.alpha_fade_in,R.anim.alpha_fade_out);
+                    }
+                });
             }
-        }
+        }, SPLASH_LENGTH);
+
     }
 
-    /**
-     * 继承 CountDownTimer 防范
-     *
-     * 重写 父类的方法 onTick() 、 onFinish()
-     */
+    class ShowImgTask extends AsyncTask<Void, Void, Void>{
 
-    class MyCountDownTimer extends CountDownTimer {
-        /**
-         *
-         * @param millisInFuture
-         *            表示以毫秒为单位 倒计时的总数
-         *
-         *            例如 millisInFuture=1000 表示1秒
-         *
-         * @param countDownInterval
-         *            表示 间隔 多少微秒 调用一次 onTick 方法
-         *
-         *            例如: countDownInterval =1000 ; 表示每1000毫秒调用一次onTick()
-         *
-         */
-        public MyCountDownTimer(long millisInFuture, long countDownInterval) {
-            super(millisInFuture, countDownInterval);
+        private String urlpath = "https://bing.ioliu.cn/v1?w=768&h=1280";
+        private File img;
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            img = new File(getExternalCacheDir(),"start");
+            if(img.exists()){
+                int d = preferences.getInt("start_date",0);
+                int date = Integer.parseInt(new SimpleDateFormat("yyyyMMdd").format(new Date()));
+                if(date > d){
+                    img.delete();
+                    preferences.edit().putInt("start_date",date).commit();
+                }else return null;
+            }
+            try {
+                FileOutputStream fos = new FileOutputStream(img);
+                URL url=new URL(urlpath);
+                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                conn.setRequestMethod("GET");
+                conn.setDoInput(true);
+                conn.connect();
+                if(conn.getResponseCode() == 200){
+                    byte[] buf = new byte[2048];
+                    int len = 0;
+                    InputStream is = conn.getInputStream();
+                    while ((len = is.read(buf)) != -1) {
+                        fos.write(buf, 0, len);
+                    }
+                    fos.flush();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
         }
 
         @Override
-        public void onFinish() {
-            time.setText("跳过\n0秒");
-        }
-
-        @Override
-        public void onTick(long millisUntilFinished) {
-            Log.i("MainActivity", millisUntilFinished + "");
-            time.setText("跳过\n"+millisUntilFinished / 1000 + "秒");
+        protected void onPostExecute(Void aVoid) {
+            if(img.exists()){
+                ImageLoader.getInstance().displayImage("file://"+img.getAbsolutePath(),iv_welcome);
+            }else{
+                ImageLoader.getInstance().displayImage(urlpath,iv_welcome);
+            }
+            super.onPostExecute(aVoid);
         }
     }
-
 
     class LoginThread extends Thread{
 
@@ -152,8 +183,6 @@ public class WelcomeActivity extends Activity {
 
         @Override
         public void run(){
-            //GlobalParameterApplication gpa = (GlobalParameterApplication) getApplicationContext();
-
             try {
                 String token = getToken(GlobalParameterApplication.getSurl(), email, password);
                 if (token.length() == 0) {
@@ -240,47 +269,22 @@ public class WelcomeActivity extends Activity {
     }
 
     public static HashMap<String , String> getVersionNumber(){
-        String versionNumber = "";
         HashMap<String ,String> version = new HashMap<>();
 
         try {
             URL url = new URL(GlobalParameterApplication.getSurl() + "/version_code");
-            Log.i("Find product", "1");
-            try {
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                conn.setRequestMethod("GET");
-                conn.setRequestProperty("Content-Type", "application/json");
-                java.lang.String ostr ;
-                org.json.JSONObject outjson = null;
-
-                if (conn.getResponseCode() == 200){
-
-                    ostr = IOUtils.toString(conn.getInputStream());
-                    /*
-                    InputStream is = conn.getInputStream();
-
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    int i;
-                    while ((i = is.read()) != -1) {
-                        baos.write(i);
-                    }
-                    ostr = baos.toString();*/
-                    try {
-                        org.json.JSONObject result = new org.json.JSONObject(ostr);
-                        version.put("versionCode",result.getString("version_code"));
-                        version.put("desp",result.getString("desp"));
-                    }catch (Exception e){
-                        e.printStackTrace();
-                    }
-
-                }
-
-
-
-            } catch (IOException e) {
-                e.printStackTrace();
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("GET");
+            conn.setRequestProperty("Content-Type", "application/json");
+            java.lang.String ostr ;
+            org.json.JSONObject outjson = null;
+            if (conn.getResponseCode() == 200){
+                ostr = IOUtils.toString(conn.getInputStream());
+                org.json.JSONObject result = new org.json.JSONObject(ostr);
+                version.put("versionCode",result.getString("version_code"));
+                version.put("desp",result.getString("desp"));
             }
-        } catch (MalformedURLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

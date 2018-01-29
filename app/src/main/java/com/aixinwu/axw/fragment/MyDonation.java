@@ -5,25 +5,19 @@ import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
-import android.widget.SimpleAdapter;
 import android.widget.TextView;
 
 import com.aixinwu.axw.R;
 import com.aixinwu.axw.model.Record;
 import com.aixinwu.axw.tools.GlobalParameterApplication;
 import com.aixinwu.axw.widget.RecyclerViewDivider;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.apache.commons.io.IOUtils;
 import org.json.JSONArray;
@@ -60,7 +54,7 @@ public class MyDonation extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_my_donation, null);
+        View view = inflater.inflate(R.layout.fragment_my_donation, null);
         donateListView = (RecyclerView) view.findViewById(R.id.myOwnDonation);
         donateListView.setLayoutManager(new LinearLayoutManager(getActivity()));
         donateListView.addItemDecoration(new RecyclerViewDivider(getActivity()));
@@ -140,7 +134,7 @@ public class MyDonation extends Fragment {
 
         @Override
         public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-            View view = mInflater.inflate(R.layout.donation_item, parent, false);
+            View view = mInflater.inflate(R.layout.item_donation, parent, false);
             return new ViewHolder(view);
         }
 

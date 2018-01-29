@@ -114,6 +114,7 @@ public class SendToPeople extends Activity{
 
                     final ProgressDialog progressDialog = new ProgressDialog(SendToPeople.this,
                             R.style.AppTheme_Dark_Dialog);
+                    progressDialog.setCancelable(false);
                     progressDialog.setIndeterminate(true);
                     progressDialog.setMessage("发布中...");
                     progressDialog.setCancelable(false);

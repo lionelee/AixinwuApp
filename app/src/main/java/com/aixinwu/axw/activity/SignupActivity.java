@@ -140,6 +140,7 @@ public class SignupActivity extends AppCompatActivity{
 
         final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,
                 R.style.AppTheme_Dark_Dialog);
+        progressDialog.setCancelable(false);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("创建账户中...");
         progressDialog.show();

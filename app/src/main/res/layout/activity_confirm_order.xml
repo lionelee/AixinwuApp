@@ -137,7 +137,7 @@
             android:layout_alignParentRight="true"
             android:visibility="visible">
             <ImageView
-                android:id="@+id/deletePic"
+                android:id="@+id/editInfo"
                 android:layout_width="20dp"
                 android:layout_height="20dp"
                 android:layout_centerVertical="true"
@@ -146,13 +146,11 @@
                 android:id="@+id/edit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/deletePic"
-                android:layout_toEndOf="@id/deletePic"
+                android:layout_toRightOf="@id/editInfo"
                 android:layout_marginLeft="4dp"
                 android:layout_centerVertical="true"
                 android:text="编辑"
-                android:textSize="14sp"
-                android:textColor="#595757"/>
+                android:textSize="14sp"/>
         </RelativeLayout>
 
         <RelativeLayout

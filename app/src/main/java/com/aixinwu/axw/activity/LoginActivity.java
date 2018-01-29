@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 
 import android.content.Intent;
 import android.view.MenuItem;
@@ -16,10 +15,8 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 import com.aixinwu.axw.R;
-
 
 import butterknife.ButterKnife;
 import butterknife.Bind;
@@ -107,6 +104,7 @@ public class LoginActivity extends AppCompatActivity{
 
         final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
                 R.style.AppTheme_Dark_Dialog);
+        progressDialog.setCancelable(false);
         progressDialog.setIndeterminate(true);
         progressDialog.setMessage("验证中...");
         progressDialog.show();
@@ -209,7 +207,6 @@ public class LoginActivity extends AppCompatActivity{
                     outjson = new org.json.JSONObject(ostr);
                     int result = outjson.getJSONObject("userinfo").getInt("ID");
                     String jc = outjson.getJSONObject("userinfo").getString("jaccount");
-                    Log.i("LIANGYUDING", jc);
                     if (jc.length() > 0)
                         GlobalParameterApplication.whtherBindJC = 1;
                     else

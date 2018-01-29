@@ -20,11 +20,14 @@ import com.aixinwu.axw.tools.DownloadTask;
 
 public class Settings extends AppCompatActivity {
 
+    public Toolbar toolbar;
+    public boolean flag = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_settings);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.settings_toolbar);
+        toolbar = (Toolbar) findViewById(R.id.settings_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("设置");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -42,6 +45,7 @@ public class Settings extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
+        if(flag) MainActivity.mActivity.recreate();
         finish();
         overridePendingTransition(R.anim.scale_fade_in,R.anim.slide_out_right);
     }

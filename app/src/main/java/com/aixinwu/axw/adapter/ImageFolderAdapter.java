@@ -3,6 +3,7 @@ package com.aixinwu.axw.adapter;
 import android.content.Context;
 import android.graphics.Color;
 import android.text.Layout;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,10 +27,15 @@ public class ImageFolderAdapter extends BaseAdapter{
     private LayoutInflater inflater;
     private List<FolderInfo> folders;
     private int selected = 0;
+    private int color;
 
     public ImageFolderAdapter(Context context, List<FolderInfo> list) {
         inflater = LayoutInflater.from(context);
         folders = new ArrayList<>(list);
+        TypedValue typedValue = new TypedValue();
+        context.getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+        color = context.getResources().getColor(typedValue.resourceId);
+        color = (color & 0x00000000)| (color & 0x90FFFFFF);
     }
 
     @Override
@@ -57,7 +63,7 @@ public class ImageFolderAdapter extends BaseAdapter{
         if (view == null) {
             holder = new VHolder();
             view = inflater.inflate(R.layout.item_photo_folder, null);
-            if(i == selected) view.setBackgroundColor(Color.parseColor("#901E7C02"));
+            if(i == selected) view.setBackgroundColor(color);
             holder.imageView = (ImageView) view.findViewById(R.id.folder_img);
             holder.name = (TextView) view.findViewById(R.id.folder_name);
             holder.num = (TextView) view.findViewById(R.id.folder_num);
@@ -67,7 +73,7 @@ public class ImageFolderAdapter extends BaseAdapter{
         holder.name.setText(folders.get(i).getName());
         if(folders.get(i).getPhotoInfoList() != null){
             int size = folders.get(i).getPhotoInfoList().size();
-            holder.num.setText(Integer.toString(size));
+            holder.num.setText(Integer.toString(size)+"张");
             String path = "file://"+ folders.get(i).getPhotoInfoList().get(0).getPath();
             ImageLoader.getInstance().displayImage(path, holder.imageView);
         }

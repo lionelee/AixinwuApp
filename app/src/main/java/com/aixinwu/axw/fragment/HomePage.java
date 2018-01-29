@@ -1,12 +1,14 @@
 package com.aixinwu.axw.fragment;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.AppCompatDelegate;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
@@ -16,7 +18,9 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.aixinwu.axw.activity.MainActivity;
 import com.aixinwu.axw.adapter.ProductAdapter;
 import com.aixinwu.axw.adapter.VolunteerAdapter;
 import com.aixinwu.axw.R;
@@ -72,12 +76,12 @@ public class HomePage extends CycleViewPager implements SharedPreferences.OnShar
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
-        view = inflater.inflate(R.layout.home_page, container, false);
         mActivity = getActivity();
+        view = inflater.inflate(R.layout.fragment_home_page, null);
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         preferences.registerOnSharedPreferenceChangeListener(this);
         //继承自父类
-        boolean flag = preferences.getBoolean(getString(R.string.pref_show_slider_key),
+        boolean flag = preferences.getBoolean(mActivity.getString(R.string.pref_show_slider_key),
                 getResources().getBoolean(R.bool.pref_show_slider_default));
         rollPictureLayout = (RelativeLayout)view.findViewById(R.id.rollPicture);
         viewPager = (BaseViewPager) view.findViewById(R.id.viewPager);
@@ -96,6 +100,13 @@ public class HomePage extends CycleViewPager implements SharedPreferences.OnShar
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
+                views.clear();
+                views.add(ViewFactory.getImageView(getActivity(), infos.get(infos.size() - 1).getUrl()));
+                for (int i = 0; i < infos.size(); i++) {
+                    views.add(ViewFactory.getImageView(getActivity(), infos.get(i).getUrl()));
+                }
+                views.add(ViewFactory.getImageView(getActivity(), infos.get(0).getUrl()));
+                setImageViews(views);
                 new GetDataTask().execute(0);
             }
         });
@@ -110,14 +121,34 @@ public class HomePage extends CycleViewPager implements SharedPreferences.OnShar
         volLayout = (RelativeLayout) view.findViewById(R.id.vol_more_more);
         adapter1 = new ProductAdapter(getActivity(), R.layout.product_item);
         adapter2 = new ProductAdapter(getActivity(), R.layout.product_item);
-        adapter3 = new VolunteerAdapter(getActivity(), R.layout.volunteer_item);
+        adapter3 = new VolunteerAdapter(getActivity(), R.layout.item_volunteer);
         gridView1.setAdapter (adapter1);
         gridView2.setAdapter (adapter2);
         gridView3.setAdapter (adapter3);
 
         initialize();
+        refreshLayout.setRefreshing(true);
         new GetDataTask().execute(0);
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if(!getUserVisibleHint())return;
+        if(NetInfo.checkNetwork(getActivity()))return;
+        Snackbar snackbar = Snackbar.make(view, "网络未连接或不可用,请检查设置", Snackbar.LENGTH_LONG)
+                .setAction("确定", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Intent intent = new Intent();
+                        intent.setAction(Settings.ACTION_SETTINGS);
+                        getActivity().startActivity(intent);
+                    }
+                });
+        View view = snackbar.getView();
+        ((TextView) view.findViewById(R.id.snackbar_text)).setTextColor(getResources().getColor(R.color.white));
+        snackbar.show();
     }
 
     private void initialize() {
@@ -127,7 +158,6 @@ public class HomePage extends CycleViewPager implements SharedPreferences.OnShar
             info.setContent("ͼƬ-->" + i );
             infos.add(info);
         }
-
         views.add(ViewFactory.getImageView(getActivity(), infos.get(infos.size() - 1).getUrl()));
         for (int i = 0; i < infos.size(); i++) {
             views.add(ViewFactory.getImageView(getActivity(), infos.get(i).getUrl()));
@@ -136,7 +166,6 @@ public class HomePage extends CycleViewPager implements SharedPreferences.OnShar
         setCycle(true);
         setData(views, infos, mAdCycleViewListener);
         setWheel(true);
-        setTime(2000);
         setIndicatorCenter();
 
         productLayout.setOnClickListener (new View.OnClickListener() {
@@ -144,7 +173,7 @@ public class HomePage extends CycleViewPager implements SharedPreferences.OnShar
             public void onClick(View view) {
                 Intent intent = new Intent(getActivity(), ProductListActivity.class);
                 intent.putExtra("type", "exchange");
-                getActivity().startActivityForResult(intent, 0);
+                getActivity().startActivityForResult(intent, 404);
                 getActivity().overridePendingTransition(R.anim.slide_in_bottom, R.anim.scale_fade_out);
 
             }
@@ -156,7 +185,7 @@ public class HomePage extends CycleViewPager implements SharedPreferences.OnShar
                 Intent intent = new Intent(getActivity(), ProductListActivity.class);
                 String s = "rent";
                 intent.putExtra("type", s);
-                getActivity().startActivityForResult(intent, 0);
+                getActivity().startActivityForResult(intent, 404);
                 getActivity().overridePendingTransition(R.anim.slide_in_bottom, R.anim.scale_fade_out);
             }
         });
@@ -176,7 +205,7 @@ public class HomePage extends CycleViewPager implements SharedPreferences.OnShar
                 Product product = productList.get(i);
                 Intent intent = new Intent(getActivity(), ProductDetailActivity.class);
                 intent.putExtra("productId", product.getId());
-                getActivity().startActivityForResult(intent, 0);
+                getActivity().startActivityForResult(intent, 404);
                 getActivity().overridePendingTransition(R.anim.slide_in_bottom, R.anim.scale_fade_out);
             }
         });
@@ -186,7 +215,7 @@ public class HomePage extends CycleViewPager implements SharedPreferences.OnShar
                 Product product = leaseList.get(i);
                 Intent intent = new Intent(getActivity(), ProductDetailActivity.class);
                 intent.putExtra("productId", product.getId());
-                getActivity().startActivityForResult(intent, 0);
+                getActivity().startActivityForResult(intent, 404);
                 getActivity().overridePendingTransition(R.anim.slide_in_bottom, R.anim.scale_fade_out);
             }
         });
@@ -217,17 +246,16 @@ public class HomePage extends CycleViewPager implements SharedPreferences.OnShar
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if(key.equals(getString(R.string.pref_show_slider_key))){
-            if(sharedPreferences.getBoolean(getString(R.string.pref_show_slider_key),
-                    getResources().getBoolean(R.bool.pref_show_slider_default))){
+        if(!isAdded())return;
+        if(key.equals(mActivity.getString(R.string.pref_show_slider_key))){
+            if(sharedPreferences.getBoolean(key, mActivity.getResources().getBoolean(R.bool.pref_show_slider_default))){
                 rollPictureLayout.setVisibility(View.VISIBLE);
             }else{
                 rollPictureLayout.setVisibility(View.GONE);
             }
         }
-        else if (key.equals(getString(R.string.pref_size_key))){
-            size = Integer.parseInt(sharedPreferences.getString(getString(R.string.pref_size_key),
-                    getResources().getString(R.string.pref_size_default)));
+        else if (key.equals(mActivity.getString(R.string.pref_size_key))){
+            size = Integer.parseInt(sharedPreferences.getString(key, mActivity.getString(R.string.pref_size_default)));
             new GetDataTask().execute(1);
         }
     }
@@ -242,9 +270,6 @@ public class HomePage extends CycleViewPager implements SharedPreferences.OnShar
                 return null;
             }
             flag = params[0];
-            if(flag == 0) {
-                refreshLayout.setRefreshing(true);
-            }
             productList.clear();
             productList = new ArrayList<> (getDbData("exchange"));
             int psize = productList.size();

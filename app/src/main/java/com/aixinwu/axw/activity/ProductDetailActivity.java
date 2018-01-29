@@ -23,6 +23,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -160,7 +162,7 @@ public class ProductDetailActivity extends AppCompatActivity
         cartBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent data = new Intent(ProductDetailActivity.this, MainActivity.class);
+                Intent data = new Intent();
                 data.putExtra("msg","cart");
                 setResult(RESULT_OK, data);
                 finish();
@@ -409,6 +411,10 @@ public class ProductDetailActivity extends AppCompatActivity
 
 
     private void initDatas() {
+        if(entity==null){
+            mTVDetails.loadUrl("file:///android_asset/error.html");
+            return;
+        }
         ImageLoader.getInstance().displayImage(entity.getImage_url(), mImgDetails);
         ImageLoader.getInstance().displayImage(entity.getImage_url(), mImgIcon);
 
@@ -420,10 +426,19 @@ public class ProductDetailActivity extends AppCompatActivity
 
         mProductCaption.setText(entity.getProduct_name());
         mTVDetails.setWebChromeClient(new WebChromeClient());
+        mTVDetails.setWebViewClient(new WebViewClient(){
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                view.loadUrl("file:///android_asset/error.html");
+            }
+        });
         WebSettings webSettings= mTVDetails.getSettings();
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setBuiltInZoomControls(false);
+        webSettings.setUseWideViewPort(true);
+        webSettings.setLoadWithOverviewMode(true);
         mTVDetails.loadUrl(entity.getDescriptionUrl());
 
         mTVTopPrice.setText("爱心币：" + entity.getPrice());

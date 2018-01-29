@@ -6,11 +6,7 @@
     <PreferenceCategory android:title="常见问题">
         <Preference
             android:key="@string/pref_rabj_key"
-            android:title="@string/pref_rabj_title">
-            <intent
-                android:targetPackage="com.aixinwu.axw"
-                android:targetClass="com.aixinwu.axw.activity.HelpBind"/>
-        </Preference>
+            android:title="@string/pref_rabj_title" />
     </PreferenceCategory>
     <PreferenceCategory/>
 </PreferenceScreen>

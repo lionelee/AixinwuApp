@@ -22,10 +22,12 @@ import java.util.List;
 public class VolunteerListAdapter extends RecyclerView.Adapter<VolunteerListAdapter.ViewHolder> {
     LayoutInflater inflater;
     private List<VolunteerActivity> datas = new ArrayList<>();
+    private int mode = 0;
 
-    public VolunteerListAdapter(Context context) {
+    public VolunteerListAdapter(Context context, int mode) {
         inflater = LayoutInflater.from(context);
         datas = new ArrayList<>();
+        this.mode = mode;
     }
 
     public void addItem(VolunteerActivity va){
@@ -34,7 +36,9 @@ public class VolunteerListAdapter extends RecyclerView.Adapter<VolunteerListAdap
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-        View view = inflater.inflate(R.layout.volunteer_list_item, viewGroup, false);
+        View view;
+        if(viewType == 0) view = inflater.inflate(R.layout.item_volunteer_listd, null);
+        else view = inflater.inflate(R.layout.item_volunteer_lists, null);
         return new ViewHolder(view);
     }
 
@@ -56,9 +60,14 @@ public class VolunteerListAdapter extends RecyclerView.Adapter<VolunteerListAdap
         if (!product.getImg_url().equals(""))
             ImageLoader.getInstance().displayImage(product.getImg_url(), viewHolder.imageView);
         viewHolder.name.setText(product.getName());
-        viewHolder.price.setText("爱心币：+"+String.valueOf(product.getPayback()));
+        viewHolder.price.setText("+"+String.valueOf(product.getPayback()));
         viewHolder.workDate.setText("时间："+product.getTime().substring(5,10)+" "+product.getTime().substring(11,16));
-     }
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        return mode;
+    }
 
     @Override
     public int getItemCount() {

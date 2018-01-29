@@ -8,12 +8,14 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -38,7 +40,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ConfirmOrder extends Activity {
+public class ConfirmOrder extends AppCompatActivity {
 
     private ArrayList<ShoppingCartEntity> mDatas = new ArrayList<>();
     public ArrayList<Integer> CheckedProductId = new ArrayList<>();

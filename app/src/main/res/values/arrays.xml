@@ -1,25 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <array name="pref_color_option_labels">
-        <item>@string/pref_color_label_red</item>
-        <item>@string/pref_color_label_blue</item>
-        <item>@string/pref_color_label_green</item>
-    </array>
-
-    <array name="pref_color_option_values">
-        <item>@string/pref_color_red_value</item>
-        <item>@string/pref_color_blue_value</item>
-        <item>@string/pref_color_green_value</item>
-    </array>
-
-
     <array name="pref_size_option_labels">
         <item>@string/pref_size_label_3</item>
         <item>@string/pref_size_label_6</item>
         <item>@string/pref_size_label_9</item>
         <item>@string/pref_size_label_12</item>
     </array>
-
     <array name="pref_size_option_values">
         <item>@string/pref_size_3_value</item>
         <item>@string/pref_size_6_value</item>
@@ -27,8 +13,36 @@
         <item>@string/pref_size_12_value</item>
     </array>
 
+    <array name="pref_display_option_labels">
+        <item>@string/pref_display_label_doubleColumn</item>
+        <item>@string/pref_display_label_singleColumn</item>
+    </array>
+    <array name="pref_display_option_values">
+        <item>@string/pref_display_doubleColumn_value</item>
+        <item>@string/pref_display_singleColumn_value</item>
+    </array>
+
     <array name="campus">
         <item>@string/minhang</item>
         <item>@string/xuhui</item>
+    </array>
+
+    <array name="pref_theme_option_labels">
+        <item>@string/pref_theme_label_ag</item>
+        <item>@string/pref_theme_label_sb</item>
+        <item>@string/pref_theme_label_uv</item>
+        <item>@string/pref_theme_label_co</item>
+        <item>@string/pref_theme_label_lb</item>
+        <item>@string/pref_theme_label_ar</item>
+        <item>@string/pref_theme_label_em</item>
+    </array>
+    <array name="pref_theme_option_values">
+        <item>@string/pref_theme_ag_value</item>
+        <item>@string/pref_theme_sb_value</item>
+        <item>@string/pref_theme_uv_value</item>
+        <item>@string/pref_theme_co_value</item>
+        <item>@string/pref_theme_lb_value</item>
+        <item>@string/pref_theme_ar_value</item>
+        <item>@string/pref_theme_em_value</item>
     </array>
 </resources>

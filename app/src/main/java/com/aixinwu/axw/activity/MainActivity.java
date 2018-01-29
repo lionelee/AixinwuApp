@@ -11,26 +11,29 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.pdf.PdfDocument;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.AppCompatButton;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -53,6 +56,9 @@ import org.json.simple.JSONObject;
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -78,6 +84,8 @@ public class MainActivity extends AppCompatActivity
     private AppCompatButton btn_login, btn_register, btn_sign;
     private ViewPager viewPager;
     private TabLayout tabLayout;
+    private PagerAdapter pagerAdapter;
+    private View redDot;
 
     @Override
     protected void onCreate(Bundle savedInstanceState){
@@ -86,6 +94,15 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                intent = new Intent(mActivity, SignupBind.class);
+                startActivityForResult(intent,0);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.scale_fade_out);
+                return true;
+            }
+        });
 
         initView();
         try{
@@ -95,12 +112,34 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+    @Override
+    public void recreate() {
+        try {
+            FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            for(Fragment fragment : pagerAdapter.getFragments())
+                fragmentTransaction.remove(fragment);
+            fragmentTransaction.commitAllowingStateLoss();
+            pagerAdapter.clear();
+            pagerAdapter.notifyDataSetChanged();
+        } catch (Exception e) {
+        }
+        super.recreate();
+    }
+
     private void initView(){
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+        SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
+        int d = preferences.getInt("date",0);
+        int date = Integer.parseInt(new SimpleDateFormat("yyyyMMdd").format(new Date()));
+        boolean flag_sign = preferences.getBoolean("sign",false);
+        if(date > d){
+            flag_sign = false;
+            preferences.edit().putBoolean("sign",false).commit();
+        }
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -115,33 +154,26 @@ public class MainActivity extends AppCompatActivity
         btn_register = (AppCompatButton) nav_view.findViewById(R.id.nav_register);
         btn_register.setOnClickListener(this);
         btn_sign = (AppCompatButton) nav_view.findViewById(R.id.nav_sign);
+        if(flag_sign) btn_sign.setText("已签到");
         btn_sign.setOnClickListener(this);
+        redDot = navigationView.getMenu().findItem(R.id.nav_settings).getActionView();
 
         tabLayout = (TabLayout) findViewById(R.id.tab_header);
         viewPager = (ViewPager) findViewById(R.id.main_viewpager);
         String[] strings = new String[]{getString(R.string.homepage),getString(R.string.usedDeal),getString(R.string.shopCart)};
-        PagerAdapter adapter = new PagerAdapter(MainActivity.this, getSupportFragmentManager(),strings);
-        adapter.addItem(new HomePage());
-        adapter.addItem(new UsedDeal());
-        adapter.addItem(new ShoppingCart());
-
-        viewPager.setAdapter(adapter);
+        pagerAdapter = new PagerAdapter(MainActivity.this, getSupportFragmentManager(),strings);
+        pagerAdapter.addItem(new HomePage());
+        pagerAdapter.addItem(new UsedDeal());
+        pagerAdapter.addItem(new ShoppingCart());
+        viewPager.setAdapter(pagerAdapter);
         viewPager.setOffscreenPageLimit(3);
         tabLayout.setupWithViewPager(viewPager);
-
     }
 
 
     @Override
     protected void onStart() {
         super.onStart();
-        Intent intent = getIntent();
-        if(intent != null){
-            String msg = intent.getStringExtra("msg");
-            if(msg != null && msg.equals("cart")){
-            }
-        }
-
         if (GlobalParameterApplication.getLogin_status() == 1) {
             tv_uname.setVisibility(View.VISIBLE);
             tv_coins.setVisibility(View.VISIBLE);
@@ -167,6 +199,15 @@ public class MainActivity extends AppCompatActivity
         else if (GlobalParameterApplication.getLogin_status() == 0) {
             setOffStatus();
         }
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        if (GlobalParameterApplication.wetherHaveNewVersion)
+            redDot.setVisibility(View.VISIBLE);
+        else
+            redDot.setVisibility(View.GONE);
     }
 
     private void setOffStatus(){
@@ -212,7 +253,6 @@ public class MainActivity extends AppCompatActivity
             outjson = new org.json.JSONObject(ostr);
             userinfo = outjson.getString("userinfo");
             userinfojson = new org.json.JSONObject(userinfo);
-            System.out.println("HEELO\n"+userinfojson.toString());
             coins = userinfojson.getString("coins");
             String myUserName = userinfojson.getString("username");
             String myNickName = userinfojson.getString("nickname");
@@ -220,6 +260,7 @@ public class MainActivity extends AppCompatActivity
                 username = myUserName;
             else username = myNickName;
             headProtrait = userinfojson.getString("image");
+            GlobalParameterApplication.setImgUrl(headProtrait);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -312,7 +353,7 @@ public class MainActivity extends AppCompatActivity
             return;
         }
         new  AlertDialog.Builder(MainActivity.this)
-                .setTitle("提示" )
+                .setTitle("注销" )
                 .setMessage("确定要退出当前账号？")
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {
                     @Override
@@ -371,6 +412,7 @@ public class MainActivity extends AppCompatActivity
                 startAct(SignupActivity.class);
                 break;
             case R.id.nav_sign:
+                startAct(Sign.class);
                 break;
             default:break;
         }
@@ -469,10 +511,7 @@ public class MainActivity extends AppCompatActivity
                                 .setNegativeButton("取消",null).show();
                     }
                     else{
-                        new  AlertDialog.Builder(MainActivity.this)
-                                .setTitle("爱心屋APP下载" )
-                                .setMessage("当前已经是最新版本" )
-                                .setPositiveButton("确定", null).show();
+                        Toast.makeText(MainActivity.this,"已是最新版本",Toast.LENGTH_SHORT).show();
                     }
                 default: break;
             }
@@ -508,6 +547,17 @@ public class MainActivity extends AppCompatActivity
                 Toast.makeText(MainActivity.this,getString(R.string.permission_denied_info),Toast.LENGTH_SHORT).show();
             }
             return;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(requestCode == 404 && resultCode == RESULT_OK){
+            viewPager.setCurrentItem(2);
+        }else if(requestCode == 0 && resultCode == RESULT_OK){
+            if(data != null && !data.getBooleanExtra("sign",false)){
+                btn_sign.setText("已签到");
+            }
         }
     }
 }

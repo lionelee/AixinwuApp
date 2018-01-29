@@ -60,10 +60,11 @@ public class SendToAXW extends Activity {
                    if (!ItemName.isEmpty() && itemnum != 0 && !JaccountID.isEmpty()){
                         final ProgressDialog progressDialog = new ProgressDialog(SendToAXW.this,
                                 R.style.AppTheme_Dark_Dialog);
-                                progressDialog.setIndeterminate(true);
-                                progressDialog.setMessage("发布中...");
-                                progressDialog.setCancelable(false);
-                                progressDialog.show();
+                        progressDialog.setCancelable(false);
+                        progressDialog.setIndeterminate(true);
+                        progressDialog.setMessage("发布中...");
+                        progressDialog.setCancelable(false);
+                        progressDialog.show();
 
                         new Thread(runnable1).start();
                     }

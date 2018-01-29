@@ -9,6 +9,13 @@
             android:summaryOff="@string/pref_show_slider_off"
             android:title="@string/pref_show_slider_title" />
 
+        <SwitchPreference
+            android:defaultValue="@bool/pref_start_img_default"
+            android:key="@string/pref_start_img_key"
+            android:summaryOn="@string/pref_start_img_on"
+            android:summaryOff="@string/pref_start_img_off"
+            android:title="@string/pref_start_img_title" />
+
         <ListPreference
             android:defaultValue="@string/pref_size_default"
             android:entries="@array/pref_size_option_labels"
@@ -17,11 +24,16 @@
             android:title="@string/pref_size_title" />
 
         <ListPreference
-            android:defaultValue="@string/pref_color_default"
-            android:entries="@array/pref_color_option_labels"
-            android:entryValues="@array/pref_color_option_values"
-            android:key="@string/pref_color_key"
-            android:title="@string/pref_color_title" />
+            android:defaultValue="@string/pref_display_default"
+            android:entries="@array/pref_display_option_labels"
+            android:entryValues="@array/pref_display_option_values"
+            android:key="@string/pref_display_key"
+            android:title="@string/pref_display_title"/>
+
+        <Preference
+            android:defaultValue="@string/pref_theme_default"
+            android:key="@string/pref_theme_key"
+            android:title="@string/pref_theme_title" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="通用">

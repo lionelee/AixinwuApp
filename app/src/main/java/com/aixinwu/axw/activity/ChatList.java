@@ -6,9 +6,10 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.TypedValue;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
@@ -45,18 +46,19 @@ public class ChatList extends AppCompatActivity{
         getSupportActionBar().setTitle("消息");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         layout = (SwipeRefreshLayout) findViewById(R.id.chatlist_layout);
-        chatlist = (ListView)findViewById(R.id.chatlist);
-
-        chatitem.clear();
-        layout.setColorSchemeResources(R.color.primary);
+        TypedValue typedValue = new TypedValue();
+        getTheme().resolveAttribute(R.attr.colorPrimary, typedValue, true);
+        layout.setColorSchemeResources(typedValue.resourceId);
         layout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 new GetChatlistTask().execute();
             }
         });
+        chatlist = (ListView)findViewById(R.id.chatlist);
+        chatitem.clear();
 
-        sim_adapter = new SimpleAdapter(this,chatitem,R.layout.chatlist_item,new String[]{"Name","Item","Doc","Time","Img"},new int[]{R.id.name,R.id.itemid,R.id.product,R.id.messageTime,R.id.img_activity_product});
+        sim_adapter = new SimpleAdapter(this,chatitem,R.layout.item_chatlist,new String[]{"Name","Item","Doc","Time","Img"},new int[]{R.id.name,R.id.itemid,R.id.product,R.id.messageTime,R.id.img_activity_product});
         sim_adapter.setViewBinder(new SimpleAdapter.ViewBinder(){
             @Override
             public boolean setViewValue(View view, Object o, String s) {
@@ -70,6 +72,7 @@ public class ChatList extends AppCompatActivity{
                     String imgUrl = (String) o;
                     if (!o.equals(""))
                         ImageLoader.getInstance().displayImage(GlobalParameterApplication.imgSurl+imgUrl,img);
+                    return true;
                 }
                 return false;
             }
@@ -82,23 +85,34 @@ public class ChatList extends AppCompatActivity{
                 intent.putExtra("To",Integer.parseInt(chatitem.get(i).get("usrId")));
                 intent.putExtra("itemID",Integer.parseInt(chatitem.get(i).get("Item")));
                 intent.putExtra("ToName",chatitem.get(i).get("Name"));
-                startActivity(intent);
+                intent.putExtra("imgUrl",chatitem.get(i).get("Img"));
+                startActivityForResult(intent,0);
+                overridePendingTransition(R.anim.slide_in_right, R.anim.scale_fade_out);
             }
         });
+        layout.setRefreshing(true);
         new GetChatlistTask().execute();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case android.R.id.home:
+                onBackPressed();
+            default:break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onBackPressed() {
         finish();
         overridePendingTransition(R.anim.scale_fade_in,R.anim.slide_out_right);
-        super.onBackPressed();
     }
 
     class GetChatlistTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
-            layout.setRefreshing(true);
             getChatlist();
             return null;
         }
@@ -142,8 +156,6 @@ public class ChatList extends AppCompatActivity{
 
         return output;
     }
-
-
 
     public void getChatlist(){
         List<talkmessage> result = new ArrayList<>();
