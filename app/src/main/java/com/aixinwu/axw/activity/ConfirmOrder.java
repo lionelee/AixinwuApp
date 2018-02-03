@@ -69,6 +69,8 @@ public class ConfirmOrder extends AppCompatActivity {
     private EditText editStuId;
     private EditText editPhone;
 
+    private ProgressDialog progressDialog;
+
     private Handler dHandler = new Handler() {
         @Override
         public void handleMessage(Message msg){
@@ -78,9 +80,17 @@ public class ConfirmOrder extends AppCompatActivity {
                     Toast.makeText(ConfirmOrder.this,"请检查输入信息是否正确",Toast.LENGTH_SHORT).show();
                     break;
                 case 234567:
-                    consigneeName.setText(commonConsigne.getName());
-                    stuId.setText(commonConsigne.getStuId());
-                    phone.setText(commonConsigne.getPhoneNumber());
+                    if (commonConsigne == null){
+                        stuId.setText(commonConsigne.getStuId());
+                        consigneeName.setText("");
+                        phone.setText(commonConsigne.getPhoneNumber());
+                        stuId.setText("");
+                        phone.setText("");
+                    }else {
+                        consigneeName.setText(commonConsigne.getName());
+                        stuId.setText(commonConsigne.getStuId());
+                        phone.setText(commonConsigne.getPhoneNumber());
+                    }
                     break;
                 case 234242 :
                     Toast.makeText(ConfirmOrder.this,"修改成功",Toast.LENGTH_SHORT).show();
@@ -182,6 +192,11 @@ public class ConfirmOrder extends AppCompatActivity {
             }
         });
 
+        progressDialog = new ProgressDialog(ConfirmOrder.this, R.style.AppTheme_Dark_Dialog);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("结算中...");
+        progressDialog.setCancelable(false);
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -204,11 +219,6 @@ public class ConfirmOrder extends AppCompatActivity {
                 for (int i = 0; i < CheckedProductId.size(); ++i) {
                     deleteFromDatabase(CheckedProductId.get(i));
                 }
-                final ProgressDialog progressDialog = new ProgressDialog(ConfirmOrder.this,
-                        R.style.AppTheme_Dark_Dialog);
-                progressDialog.setIndeterminate(true);
-                progressDialog.setMessage("结算中...");
-                progressDialog.setCancelable(false);
                 progressDialog.show();
                 oThread.start();
             }
@@ -306,7 +316,6 @@ public class ConfirmOrder extends AppCompatActivity {
     public Thread oThread = new Thread() {
         @Override
         public void run() {
-            super.run();
             order();
             Message msg = new Message();
             msg.what = 1994;
@@ -320,15 +329,23 @@ public class ConfirmOrder extends AppCompatActivity {
             super.handleMessage(msg);
             switch (msg.what){
                 case 1994:
-                    String dialogContent = "";
-                    if (orderid == 0)
-                        dialogContent = "商品购买成功";
-                    else if(orderid == 5)
-                        dialogContent = "爱心币余额不足";
-                    else if (orderid == 10)
-                        dialogContent = "商品购买数量已达到限购上限，无法购买";
-                    else
-                        dialogContent = "商品购买失败";
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            progressDialog.dismiss();
+                            String dialogContent = "";
+                            if (orderid == 0)
+                                dialogContent = "商品购买成功";
+                            else if(orderid == 5)
+                                dialogContent = "爱心币余额不足";
+                            else if (orderid == 10)
+                                dialogContent = "商品购买数量已达到限购上限，无法购买";
+                            else
+                                dialogContent = "商品购买失败";
+                            Toast.makeText(ConfirmOrder.this,dialogContent,Toast.LENGTH_LONG).show();
+                            onBackPressed();
+                        }
+                    });
             }
         }
     };

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.PointF;
 import android.graphics.Matrix;
+import android.os.Build;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.util.FloatMath;
@@ -18,7 +19,7 @@ import com.aixinwu.axw.R;
 
 public class RawPictureActivity extends Activity {
 
-    ImageView imageView ;
+    ImageView imageView;
 
     int count;
     long firClick, secClick;
@@ -29,6 +30,8 @@ public class RawPictureActivity extends Activity {
         setContentView(R.layout.activity_raw_picture);
 
         imageView = (ImageView) findViewById(R.id.qrImg);
+        if(Build.VERSION.SDK_INT >= 21)
+            imageView.setTransitionName("imgView");
 
         Intent intent = this.getIntent();
         String imgString = intent.getStringExtra("img");
@@ -146,7 +149,7 @@ public class RawPictureActivity extends Activity {
                     /** 计算两个手指间的距离 */
                     startDis = distance(event);
                     /** 计算两个手指间的中间点 */
-                    if (startDis > 10f) { // 两个手指并拢在一起的时候像素大于10
+                    if (startDis > 100f) { // 两个手指并拢在一起的时候像素大于10
                         midPoint = mid(event);
                         //记录当前ImageView的缩放倍数
                         currentMatrix.set(imageView.getImageMatrix());

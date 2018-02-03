@@ -114,9 +114,15 @@ public class Comment extends AppCompatActivity {
         iv_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(TextUtils.isEmpty(et_comment.getText().toString()))return;
-                commentwords = et_comment.getText().toString();
-                new AddCommTask().execute();
+                if (GlobalParameterApplication.getLogin_status()==0){
+                    Intent intent = new Intent(Comment.this, LoginActivity.class);
+                    startActivityForResult(intent,0);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.scale_fade_out);
+                }else{
+                    if(TextUtils.isEmpty(et_comment.getText().toString()))return;
+                    commentwords = et_comment.getText().toString();
+                    new AddCommTask().execute();
+                }
             }
         });
         adapter = new CommentAdapter(Comment.this, comment_list);

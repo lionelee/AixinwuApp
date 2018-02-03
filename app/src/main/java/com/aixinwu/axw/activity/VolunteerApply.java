@@ -61,9 +61,7 @@ public class VolunteerApply extends AppCompatActivity{
             switch (msg.what) {
                 case 341234:
                     Toast.makeText(VolunteerApply.this,"报名成功",Toast.LENGTH_SHORT).show();
-                    Intent intent = new Intent(getApplication(), MainActivity.class);
-                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                    startActivity(intent);
+                    onBackPressed();
                     break;
                 case 422323:
                     Toast.makeText(VolunteerApply.this,"报名失败",Toast.LENGTH_SHORT).show();
@@ -119,7 +117,6 @@ public class VolunteerApply extends AppCompatActivity{
         }
 
 
-
         thisTime = volunteerActivity.getTime();
 
         love_coin.setText("爱心币： +"+volunteerActivity.getPayback());
@@ -128,7 +125,7 @@ public class VolunteerApply extends AppCompatActivity{
         site.setText("地址："+volunteerActivity.getSite());
 
         if (need <= signed && need != 0){
-            submit.setEnabled(false);
+//            submit.setEnabled(false);
             numberOfPeople.setText("人数已满："+signed+"/"+need);
             numberOfPeople.setTextColor(getResources().getColor(R.color.accent));
         }
@@ -151,7 +148,6 @@ public class VolunteerApply extends AppCompatActivity{
                         public void run() {
                             int status = signUpActivity();
                             Message msg = new Message();
-
                             if (status == 0)
                                 msg.what = 341234;
                             else

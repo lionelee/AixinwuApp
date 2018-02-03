@@ -2,6 +2,8 @@ package com.aixinwu.axw.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -34,7 +36,16 @@ public class AXWInfo extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplication(), RawPictureActivity.class);
                 intent.putExtra("img","APP");
-                startActivity(intent);
+                if(Build.VERSION.SDK_INT >= 21) {
+                    qrApp.setTransitionName("imgView");
+                    ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                            AXWInfo.this, qrApp, "imgView");
+                    startActivity(intent,optionsCompat.toBundle());
+                    overridePendingTransition(0,0);
+                }else{
+                    startActivityForResult(intent,0);
+                    overridePendingTransition(R.anim.alpha_fade_in,R.anim.alpha_fade_out);
+                }
             }
         });
 
@@ -43,7 +54,16 @@ public class AXWInfo extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getApplication(), RawPictureActivity.class);
                 intent.putExtra("img","wechat");
-                startActivity(intent);
+                if(Build.VERSION.SDK_INT >= 21) {
+                    qrWechat.setTransitionName("imgView");
+                    ActivityOptionsCompat optionsCompat = ActivityOptionsCompat.makeSceneTransitionAnimation(
+                            AXWInfo.this, qrWechat, "imgView");
+                    startActivity(intent,optionsCompat.toBundle());
+                    overridePendingTransition(0,0);
+                }else{
+                    startActivityForResult(intent,0);
+                    overridePendingTransition(R.anim.alpha_fade_in,R.anim.alpha_fade_out);
+                }
             }
         });
     }

@@ -1,5 +1,6 @@
 package com.aixinwu.axw.fragment;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
@@ -21,6 +22,8 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.RotateAnimation;
 import android.widget.TextView;
 
 import com.aixinwu.axw.activity.MainActivity;
@@ -63,14 +66,14 @@ public class UsedDeal extends Fragment implements SharedPreferences.OnSharedPref
 
     private static DealListAdapter mAdapter;
     private int mode = 0;
+    private RotateAnimation rotateLeft, rotateBack;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         view = inflater.inflate(R.layout.fragment_used_deal,null);
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         preferences.registerOnSharedPreferenceChangeListener(this);
-        int mode = Integer.parseInt(preferences.getString(getString(R.string.pref_display_key),
-                getActivity().getString(R.string.pref_display_default)));
+        int mode = Integer.parseInt(preferences.getString(getString(R.string.pref_display_key), getActivity().getString(R.string.pref_display_default)));
 
         mRefreshLayout = (MyRefreshLayout) view.findViewById(R.id.homepageScroll2);
         mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -109,12 +112,26 @@ public class UsedDeal extends Fragment implements SharedPreferences.OnSharedPref
             }
         });
 
+        rotateLeft = new RotateAnimation(0.0f,-45.0f,Animation.RELATIVE_TO_SELF, 0.5f,Animation.RELATIVE_TO_SELF,0.5f);
+        rotateLeft.setDuration(100);
+        rotateLeft.setFillAfter(true);
+        rotateBack = new RotateAnimation(-45.0f,0.0f,Animation.RELATIVE_TO_SELF, 0.5f,Animation.RELATIVE_TO_SELF,0.5f);
+        rotateBack.setDuration(100);
+        rotateBack.setFillAfter(true);
+
         dialog = new LaunchDialog(getActivity());
+        dialog.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                fab.startAnimation(rotateBack);
+            }
+        });
         fab = (FloatingActionButton) view.findViewById(R.id.fab);
         fab.setImageResource(R.drawable.ic_tool_add);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                fab.startAnimation(rotateLeft);
                 dialog.show();
             }
         });
@@ -209,10 +226,8 @@ public class UsedDeal extends Fragment implements SharedPreferences.OnSharedPref
         data.put("startAt",start);
         data.put("length",20);
 
-        Log.i("UsedDeal", "get");
         try {
             URL url = new URL(surl + "/item_get_all");
-            Log.i("UsedDeal","getconnection");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");

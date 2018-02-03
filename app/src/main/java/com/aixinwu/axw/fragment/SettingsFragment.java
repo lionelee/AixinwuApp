@@ -65,8 +65,7 @@ public class SettingsFragment extends PreferenceFragment implements
         addPreferencesFromResource(R.xml.pref_settings);
 
         sharedPreferences = getPreferenceScreen().getSharedPreferences();
-        dialog = new StyleDialog(getActivity());
-        dialog.setSharedPreferences(sharedPreferences);
+        dialog = new StyleDialog(getActivity(), sharedPreferences);
         PreferenceCategory pc = (PreferenceCategory)getPreferenceScreen().getPreference(0);
         int count = pc.getPreferenceCount();
         for(int i = 0; i < count; ++i){
@@ -104,8 +103,10 @@ public class SettingsFragment extends PreferenceFragment implements
         bindJA.setOnPreferenceClickListener(this);
         Preference checkUP = findPreference(getString(R.string.pref_check_update_key));
         checkUP.setOnPreferenceClickListener(this);
-        if(GlobalParameterApplication.wetherHaveNewVersion)
+        if(GlobalParameterApplication.wetherHaveNewVersion){
             checkUP.setWidgetLayoutResource(R.layout.badge);
+            checkUP.setSummary("有新版本");
+        }
     }
 
     @Override
@@ -235,9 +236,7 @@ public class SettingsFragment extends PreferenceFragment implements
     };
 
     private void checkUpdate(){
-        if(!NetInfo.checkNetwork(getActivity())){
-            return;
-        }
+        if(!NetInfo.checkNetwork(getActivity()))return;
         new Thread(new Runnable() {
             @Override
             public void run() {

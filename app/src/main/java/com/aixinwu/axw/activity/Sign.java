@@ -9,6 +9,7 @@ import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MenuItem;
 import android.view.View;
@@ -38,10 +39,12 @@ public class Sign extends AppCompatActivity {
     ValueCallback<String> callback = new ValueCallback<String>() {
         @Override
         public void onReceiveValue(String s) {
+            if(s == null || s.equals(""))return;
             final String str = s.replace("&nbsp;","").replace(" ","")
                     .replace("\"","").replace("\\n","")
                     .replace("--","\n\n").replace("ღ","\nღ")
                     .replace("登陆","签到");
+            if(str == null || str.equals("null"))return;
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
@@ -103,20 +106,14 @@ public class Sign extends AppCompatActivity {
             @Override
             public void onPageStarted(WebView view, String url, Bitmap favicon) {
                 if(url.equals("http://aixinwu.sjtu.edu.cn/index.php/home")){
-                    runOnUiThread(new Runnable() {
+                    runOnUiThread(new Runnable(){
                         @Override
-                        public void run() {
+                        public void run(){
                             webView.setVisibility(View.GONE);
                             tv_msg.setVisibility(View.VISIBLE);
                             layout.setEnabled(false);
                         }
                     });
-                    if(!preferences.getBoolean("sign",false)){
-                        String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
-                        int d = Integer.parseInt(date);
-                        preferences.edit().putInt("date",d).putBoolean("sign",true).commit();
-                        flag = true;
-                    }
                 }else{
                     super.onPageStarted(view, url, favicon);
                 }
@@ -127,12 +124,23 @@ public class Sign extends AppCompatActivity {
                 super.onPageFinished(view, url);
                 if(url.equals("http://aixinwu.sjtu.edu.cn/index.php/home")){
                     webView.evaluateJavascript(js,callback);
+                    flag = preferences.getBoolean("sign",false);
+                    if(!flag){
+                        String date = new SimpleDateFormat("yyyyMMdd").format(new Date());
+                        int d = Integer.parseInt(date);
+                        preferences.edit().putInt("date",d).putBoolean("sign",true).commit();
+                        flag = true;
+                    }
                 }
             }
 
             @Override
             public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
-                super.shouldOverrideUrlLoading(view, request);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    view.loadUrl(request.getUrl().toString());
+                } else {
+                    view.loadUrl(request.toString());
+                }
                 return true;
             }
 
@@ -140,12 +148,13 @@ public class Sign extends AppCompatActivity {
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
                 webView.setVisibility(View.VISIBLE);
+                layout.setEnabled(true);
                 webView.loadUrl("file:///android_asset/error.html");
             }
         });
 
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl(Url);
+        webView.loadUrl("http://aixinwu.sjtu.edu.cn/index.php/login");
     }
 
     @Override

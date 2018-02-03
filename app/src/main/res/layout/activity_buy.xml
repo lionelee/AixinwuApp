@@ -85,9 +85,10 @@
         </LinearLayout>
     </android.support.v4.widget.NestedScrollView>
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#f6f6f6"
         android:layout_gravity="bottom">
         <LinearLayout
             android:id="@+id/bottom"
@@ -154,9 +155,5 @@
                 android:textSize="16sp"
                 android:text="联系卖家"/>
         </LinearLayout>
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/darkgray"/>
-    </RelativeLayout>
+    </LinearLayout>
 </android.support.design.widget.CoordinatorLayout>

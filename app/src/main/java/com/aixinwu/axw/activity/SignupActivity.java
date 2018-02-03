@@ -49,6 +49,8 @@ public class SignupActivity extends AppCompatActivity{
     @Bind(R.id.confirm_password)
     EditText _confirm_password;
 
+    private ProgressDialog progressDialog;
+
     private int signUpStatus = -1;
 
     public Handler nHandler = new Handler(){
@@ -111,6 +113,12 @@ public class SignupActivity extends AppCompatActivity{
 
             }
         });
+
+        progressDialog = new ProgressDialog(SignupActivity.this,
+                R.style.AppTheme_Dark_Dialog);
+        progressDialog.setCancelable(false);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("创建账户中...");
     }
 
     @Override
@@ -138,13 +146,7 @@ public class SignupActivity extends AppCompatActivity{
 
         _signupButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(SignupActivity.this,
-                R.style.AppTheme_Dark_Dialog);
-        progressDialog.setCancelable(false);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("创建账户中...");
         progressDialog.show();
-
 
         String phoneNumber = _nameText.getText().toString();
         String password = _passwordText.getText().toString();
@@ -186,6 +188,7 @@ public class SignupActivity extends AppCompatActivity{
 
 
     public void onSignupSuccess() {
+        progressDialog.dismiss();
         _signupButton.setEnabled(true);
         Toast.makeText(getBaseContext(), "注册成功", Toast.LENGTH_LONG).show();
         setResult(RESULT_OK, null);/*here is gona to be changed.*/

@@ -44,6 +44,7 @@ public class OnSailAdapter extends RecyclerView.Adapter<OnSailAdapter.ViewHolder
     }
 
     public void setList(List<Bean> data){
+        datas.clear();
         datas.addAll(data);
     }
 
@@ -55,7 +56,7 @@ public class OnSailAdapter extends RecyclerView.Adapter<OnSailAdapter.ViewHolder
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.bindData(datas.get(position));
+        holder.bindData(position);
     }
 
     @Override
@@ -72,20 +73,22 @@ public class OnSailAdapter extends RecyclerView.Adapter<OnSailAdapter.ViewHolder
             super(view);
             img = (ImageView) view.findViewById(R.id.item_search_iv_icon);
             title = (TextView) view.findViewById(R.id.item_search_tv_title);
+            content = (TextView) view.findViewById(R.id.item_search_tv_content);
             sail = (TextView) view.findViewById(R.id.whether_on_sail);
             onShelf = (TextView) view.findViewById(R.id.onShelf);
             offShelf = (TextView) view.findViewById(R.id.offShelf);
         }
 
-        public void bindData(final Bean item){
+        public void bindData(final int position){
+            Bean item = datas.get(position);
             title.setText(item.getType());
             content.setText(item.getDoc());
             sail.setText(item.getWhetherOnSail());
             ImageLoader.getInstance().displayImage(item.getPicId(),img);
-            if(item.getOnOrNot() == 1){
+            if(item.getOnOrNot() == 1) {
                 onShelf.setVisibility(View.GONE);
                 offShelf.setVisibility(View.VISIBLE);
-            }else if(item.getOnOrNot() == 0){
+            }else{
                 onShelf.setVisibility(View.VISIBLE);
                 offShelf.setVisibility(View.GONE);
             }
@@ -103,7 +106,7 @@ public class OnSailAdapter extends RecyclerView.Adapter<OnSailAdapter.ViewHolder
                                         public void run(){
                                             Message msg = new Message();
                                             Bundle bundle = new Bundle();
-//                                            bundle.putString("position",""+position);  //往Bundle中存放数据
+                                            bundle.putString("position",""+position);  //往Bundle中存放数据
                                             bundle.putString("whetherOn",""+2);
                                             msg.setData(bundle);//mes利用Bundle传递数据
                                             msg.what = 1322;
@@ -133,7 +136,7 @@ public class OnSailAdapter extends RecyclerView.Adapter<OnSailAdapter.ViewHolder
                                         public void run(){
                                             Message msg = new Message();
                                             Bundle bundle = new Bundle();
-//                                            bundle.putString("position",""+position);  //往Bundle中存放数据
+                                            bundle.putString("position",""+position);  //往Bundle中存放数据
                                             bundle.putString("whetherOn",""+0);
                                             msg.setData(bundle);//mes利用Bundle传递数据
                                             msg.what = 1322;

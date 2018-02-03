@@ -109,7 +109,7 @@ public class Buy extends AppCompatActivity{
                 if (GlobalParameterApplication.getLogin_status()==0){
                     Intent intent3 = new Intent(Buy.this, LoginActivity.class);
                     startActivityForResult(intent3,0);
-                    overridePendingTransition(R.anim.slide_in_bottom, R.anim.scale_fade_out);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.scale_fade_out);
                 } else {
                     Intent intent2 = new Intent(Buy.this,Chattoother.class);
                     intent2.putExtra("itemID",itemID);

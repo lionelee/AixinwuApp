@@ -29,25 +29,29 @@
             android:scaleType="fitXY"/>
 
         <RelativeLayout
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:gravity="center_vertical"
-            android:layout_margin="10dp"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
             android:layout_weight="1">
             <TextView
                 android:id="@+id/tv_item_shopping_cart_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:singleLine="true"
                 android:textSize="16sp"
-                android:textColor="#3e3a39"/>
+                android:textColor="#3e3a39"
+                android:layout_marginRight="16dp"/>
+
             <ImageView
                 android:id="@+id/iv_more"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentRight="true"
-                android:layout_marginTop="-16dp"
                 app:srcCompat="@drawable/ic_more"/>
+
             <TextView
                 android:layout_below="@+id/tv_item_shopping_cart_name"
                 android:id="@+id/tv_item_shopping_cart_category"

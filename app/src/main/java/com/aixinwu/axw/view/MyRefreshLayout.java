@@ -13,8 +13,11 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import com.aixinwu.axw.R;
+
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
 
 /**
  * Created by lionel on 2018/1/22.
@@ -26,7 +29,6 @@ public class MyRefreshLayout extends SwipeRefreshLayout {
     private MyFooterView footerView;
     private boolean mLoading = false;
     private float mTouchY;
-    private float mCurrentY;
     private float mFootHeight;
     private float mPullHeight;
 
@@ -53,7 +55,7 @@ public class MyRefreshLayout extends SwipeRefreshLayout {
             }
         }
         if (mChildView == null) {
-            return;
+            throw new RuntimeException("ChildView is not RecyclerView");
         }
         Context context = getContext();
         TypedValue tv = new TypedValue();
@@ -72,11 +74,9 @@ public class MyRefreshLayout extends SwipeRefreshLayout {
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mTouchY = ev.getY();
-                mCurrentY = mTouchY;
                 break;
             case MotionEvent.ACTION_MOVE:
-                float currentY = ev.getY();
-                float dy = currentY - mTouchY;
+                float dy = ev.getY() - mTouchY;
                 if (dy < 0 && !canChildScrollDown()) {
                     if (footerView != null) {
                         footerView.onBegin();
@@ -91,8 +91,7 @@ public class MyRefreshLayout extends SwipeRefreshLayout {
     @Override
     public boolean onTouchEvent(MotionEvent e) {
         if (mLoading) return super.onTouchEvent(e);
-        mCurrentY = e.getY();
-        float dy = mCurrentY - mTouchY;
+        float dy = e.getY() - mTouchY;
         switch (e.getAction()) {
             case MotionEvent.ACTION_MOVE:
                 if(dy < 0){
@@ -100,19 +99,18 @@ public class MyRefreshLayout extends SwipeRefreshLayout {
                     dy = Math.min(mPullHeight, dy);
                     if (mChildView != null) {
                         float offsetY = decelerateInterpolator.getInterpolation(dy / mPullHeight) * dy;
+                        ViewCompat.setTranslationY(mChildView, -offsetY);
                         if (footerView != null) {
                             footerView.getLayoutParams().height = (int) offsetY;
                             footerView.requestLayout();
                         }
-                        ViewCompat.setTranslationY(mChildView, -offsetY);
                     }
                 }
                 return true;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
                 if (mChildView != null) {
-                    mCurrentY = e.getY();
-                    if (dy < 0 && footerView != null) {
+                    if (dy < 0) {
                         if (ViewCompat.getTranslationY(mChildView) <= -mFootHeight) {
                             mLoading = true;
                             createAnimatorTranslationY(mChildView, -mFootHeight, footerView);
@@ -137,7 +135,7 @@ public class MyRefreshLayout extends SwipeRefreshLayout {
 
     public void createAnimatorTranslationY(final View v, final float h, final View fl) {
         ViewPropertyAnimatorCompat viewPropertyAnimatorCompat = ViewCompat.animate(v);
-        viewPropertyAnimatorCompat.setDuration(250);
+        viewPropertyAnimatorCompat.setDuration(200);
         viewPropertyAnimatorCompat.setInterpolator(new DecelerateInterpolator());
         viewPropertyAnimatorCompat.translationY(h);
         viewPropertyAnimatorCompat.start();

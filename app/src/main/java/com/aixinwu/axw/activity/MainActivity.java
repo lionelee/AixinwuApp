@@ -22,6 +22,7 @@ import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
@@ -166,7 +167,7 @@ public class MainActivity extends AppCompatActivity
         pagerAdapter.addItem(new UsedDeal());
         pagerAdapter.addItem(new ShoppingCart());
         viewPager.setAdapter(pagerAdapter);
-        viewPager.setOffscreenPageLimit(3);
+        viewPager.setOffscreenPageLimit(2);
         tabLayout.setupWithViewPager(viewPager);
     }
 
@@ -489,30 +490,6 @@ public class MainActivity extends AppCompatActivity
                     if (headProtrait!=null && headProtrait.length() != 0)
                         ImageLoader.getInstance().displayImage(GlobalParameterApplication.imgSurl+headProtrait, iv_avatar);
                     break;
-                case 395923:
-                    if (GlobalParameterApplication.wetherHaveNewVersion){
-                        new  AlertDialog.Builder(MainActivity.this)
-                                .setTitle("爱心屋APP下载" )
-                                .setMessage("搜索到有新版本，是否下载？\n"+updateDesp)
-                                .setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int ii) {
-                                        if (PackageManager.PERMISSION_GRANTED ==
-                                                ContextCompat.checkSelfPermission(MainActivity.this, WRITE_EXTERNAL_STORAGE)){
-                                            DownloadTask downloadTask = new DownloadTask(MainActivity.this);
-                                            downloadTask.execute("http://salary.aixinwu.info/apk/axw.apk");
-                                        } else {
-                                            if(Build.VERSION.SDK_INT >= 23) {
-                                                ActivityCompat.requestPermissions(MainActivity.this,new String[]{WRITE_EXTERNAL_STORAGE}, 5698);
-                                            }
-                                        }
-                                    }
-                                })
-                                .setNegativeButton("取消",null).show();
-                    }
-                    else{
-                        Toast.makeText(MainActivity.this,"已是最新版本",Toast.LENGTH_SHORT).show();
-                    }
                 default: break;
             }
         }
@@ -555,7 +532,7 @@ public class MainActivity extends AppCompatActivity
         if(requestCode == 404 && resultCode == RESULT_OK){
             viewPager.setCurrentItem(2);
         }else if(requestCode == 0 && resultCode == RESULT_OK){
-            if(data != null && !data.getBooleanExtra("sign",false)){
+            if(data != null && data.getBooleanExtra("sign",false)){
                 btn_sign.setText("已签到");
             }
         }

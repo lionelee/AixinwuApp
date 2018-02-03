@@ -29,6 +29,7 @@ import org.apache.commons.io.IOUtils;
 import org.json.simple.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -124,13 +125,13 @@ public class WelcomeActivity extends Activity {
 
     }
 
-    class ShowImgTask extends AsyncTask<Void, Void, Void>{
+    class ShowImgTask extends AsyncTask<Void, Void, Integer>{
 
         private String urlpath = "https://bing.ioliu.cn/v1?w=768&h=1280";
         private File img;
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Integer doInBackground(Void... voids) {
             img = new File(getExternalCacheDir(),"start");
             if(img.exists()){
                 int d = preferences.getInt("start_date",0);
@@ -138,7 +139,13 @@ public class WelcomeActivity extends Activity {
                 if(date > d){
                     img.delete();
                     preferences.edit().putInt("start_date",date).commit();
-                }else return null;
+                }
+                try {
+                    FileInputStream fis = new FileInputStream(img);
+                    if (fis.available() > 0) return 1;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
             try {
                 FileOutputStream fos = new FileOutputStream(img);
@@ -155,21 +162,22 @@ public class WelcomeActivity extends Activity {
                         fos.write(buf, 0, len);
                     }
                     fos.flush();
+                    return 1;
                 }
+                return -1;
             } catch (Exception e) {
                 e.printStackTrace();
             }
-            return null;
+            return -1;
         }
 
         @Override
-        protected void onPostExecute(Void aVoid) {
-            if(img.exists()){
+        protected void onPostExecute(Integer integer) {
+            if(integer > 0 && img.exists()){
                 ImageLoader.getInstance().displayImage("file://"+img.getAbsolutePath(),iv_welcome);
             }else{
                 ImageLoader.getInstance().displayImage(urlpath,iv_welcome);
             }
-            super.onPostExecute(aVoid);
         }
     }
 
@@ -206,7 +214,6 @@ public class WelcomeActivity extends Activity {
                     outjson = new org.json.JSONObject(ostr);
                     int result = outjson.getJSONObject("userinfo").getInt("ID");
                     String jc = outjson.getJSONObject("userinfo").getString("jaccount");
-                    Log.i("LIANGYUDING",jc);
                     if (jc.length() > 0)
                         GlobalParameterApplication.whtherBindJC = 1;
                     else
@@ -252,8 +259,6 @@ public class WelcomeActivity extends Activity {
         conn.getOutputStream().write(jsonstr.getBytes());
 
         String ostr = IOUtils.toString(conn.getInputStream());
-        System.out.println(ostr);
-
         org.json.JSONObject outjson = null;
         String result = null;
         try {

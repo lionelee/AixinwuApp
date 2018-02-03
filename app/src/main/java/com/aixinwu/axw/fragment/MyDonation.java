@@ -66,7 +66,6 @@ public class MyDonation extends Fragment {
                 Message msg = new Message();
                 msg.what = 395932;
                 dHandler.sendMessage(msg);
-                //getDbItemData();
             }
         }).start();
         return view;

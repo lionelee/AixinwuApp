@@ -112,10 +112,13 @@ public class GlobalParameterApplication extends Application{
                 .tasksProcessingOrder(QueueProcessingType.LIFO)
                 .build();
         ImageLoader.getInstance().init(config);
+
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(this);
         themeId = Integer.parseInt(preferences.getString(getString(R.string.pref_theme_key),getString(R.string.pref_theme_default)));
         setTheme(theme[themeId]);
         listenActivity();
+        CrashHandler crashHandler = CrashHandler.getInstance();
+        crashHandler.init(this);
     }
 
     private void listenActivity(){

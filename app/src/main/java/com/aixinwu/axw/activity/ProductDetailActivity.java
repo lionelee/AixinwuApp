@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
@@ -231,23 +232,31 @@ public class ProductDetailActivity extends AppCompatActivity
 
             @Override
             public void onClick(View v) {
-                String num = mTVNumber.getText().toString();
-                number = Integer.valueOf(num);
-                if (number < entity.getStock()) {
-                    ++number;
+                if (GlobalParameterApplication.getLogin_status() != 1){
+                    Toast.makeText(ProductDetailActivity.this,"请先登录",Toast.LENGTH_SHORT).show();
+                }else{
+                    String num = mTVNumber.getText().toString();
+                    number = Integer.parseInt(num);
+                    if (number < entity.getStock()) {
+                        ++number;
+                    }
+                    mTVNumber.setText(number + "");
                 }
-                mTVNumber.setText(number + "");
             }
         });
 
         mBtnMinute.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String num = mTVNumber.getText().toString();
-                number = Integer.valueOf(num);
-                if (number > 1) {
-                    --number;
-                    mTVNumber.setText(number + "");
+                if (GlobalParameterApplication.getLogin_status() != 1){
+                    Toast.makeText(ProductDetailActivity.this,"请先登录",Toast.LENGTH_SHORT).show();
+                }else{
+                    String num = mTVNumber.getText().toString();
+                    number = Integer.valueOf(num);
+                    if (number > 1) {
+                        --number;
+                        mTVNumber.setText(number + "");
+                    }
                 }
             }
         });
@@ -256,6 +265,9 @@ public class ProductDetailActivity extends AppCompatActivity
 
 
     private void insert2Sqlite() {
+        if(entity==null){
+            return;
+        }
         double price = entity.getPrice();
         String id = entity.getId() + "";
         String category = "种类";
@@ -282,8 +294,8 @@ public class ProductDetailActivity extends AppCompatActivity
     }
 
     private void queryDatabase() {
+        if(entity==null)return;
         ISQUERYED = false;
-
         ProductReadDbHelper mDbHelper = new ProductReadDbHelper(getApplicationContext());
         db = mDbHelper.getWritableDatabase();
 
@@ -332,7 +344,7 @@ public class ProductDetailActivity extends AppCompatActivity
     }
 
     private void updateDatabase(int sqlNumber) {
-
+        if(entity==null)return;
         if (sqlNumber + number <= numOfCouldBuy){
             sqlNumber += number;
 
@@ -411,10 +423,7 @@ public class ProductDetailActivity extends AppCompatActivity
 
 
     private void initDatas() {
-        if(entity==null){
-            mTVDetails.loadUrl("file:///android_asset/error.html");
-            return;
-        }
+        if(entity==null)return;
         ImageLoader.getInstance().displayImage(entity.getImage_url(), mImgDetails);
         ImageLoader.getInstance().displayImage(entity.getImage_url(), mImgIcon);
 
@@ -425,8 +434,17 @@ public class ProductDetailActivity extends AppCompatActivity
             limitTextView.setText("限购：无");
 
         mProductCaption.setText(entity.getProduct_name());
-        mTVDetails.setWebChromeClient(new WebChromeClient());
         mTVDetails.setWebViewClient(new WebViewClient(){
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                    view.loadUrl(request.getUrl().toString());
+                } else {
+                    view.loadUrl(request.toString());
+                }
+                return true;
+            }
+
             @Override
             public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
                 super.onReceivedError(view, request, error);
@@ -437,8 +455,6 @@ public class ProductDetailActivity extends AppCompatActivity
         webSettings.setLayoutAlgorithm(WebSettings.LayoutAlgorithm.NARROW_COLUMNS);
         webSettings.setJavaScriptEnabled(true);
         webSettings.setBuiltInZoomControls(false);
-        webSettings.setUseWideViewPort(true);
-        webSettings.setLoadWithOverviewMode(true);
         mTVDetails.loadUrl(entity.getDescriptionUrl());
 
         mTVTopPrice.setText("爱心币：" + entity.getPrice());

@@ -1,13 +1,14 @@
 package com.aixinwu.axw.fragment;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.util.TypedValue;
@@ -20,7 +21,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.aixinwu.axw.activity.MainActivity;
 import com.aixinwu.axw.adapter.ProductAdapter;
 import com.aixinwu.axw.adapter.VolunteerAdapter;
 import com.aixinwu.axw.R;
@@ -119,8 +119,8 @@ public class HomePage extends CycleViewPager implements SharedPreferences.OnShar
         productLayout = (RelativeLayout) view.findViewById(R.id.exchange_more);
         leaseLayout = (RelativeLayout) view.findViewById(R.id.lend_more_more);
         volLayout = (RelativeLayout) view.findViewById(R.id.vol_more_more);
-        adapter1 = new ProductAdapter(getActivity(), R.layout.product_item);
-        adapter2 = new ProductAdapter(getActivity(), R.layout.product_item);
+        adapter1 = new ProductAdapter(getActivity(), R.layout.item_product);
+        adapter2 = new ProductAdapter(getActivity(), R.layout.item_product);
         adapter3 = new VolunteerAdapter(getActivity(), R.layout.item_volunteer);
         gridView1.setAdapter (adapter1);
         gridView2.setAdapter (adapter2);
@@ -205,7 +205,7 @@ public class HomePage extends CycleViewPager implements SharedPreferences.OnShar
                 Product product = productList.get(i);
                 Intent intent = new Intent(getActivity(), ProductDetailActivity.class);
                 intent.putExtra("productId", product.getId());
-                getActivity().startActivityForResult(intent, 404);
+                getActivity().startActivityForResult(intent,404);
                 getActivity().overridePendingTransition(R.anim.slide_in_bottom, R.anim.scale_fade_out);
             }
         });
@@ -335,7 +335,6 @@ public class HomePage extends CycleViewPager implements SharedPreferences.OnShar
 
         try {
             URL url = new URL(surl + "/item_aixinwu_item_get_list");
-            Log.i("HomePage","getconnection");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
@@ -345,37 +344,37 @@ public class HomePage extends CycleViewPager implements SharedPreferences.OnShar
             java.lang.String ostr = IOUtils.toString(conn.getInputStream());
             org.json.JSONObject outjson = null;
 
-                JSONArray result = null;
-                outjson = new org.json.JSONObject(ostr);
-                result = outjson.getJSONArray("items");
-                start += result.length();
-                for (int i = 0; i < result.length(); i++){
-                    String [] imageurl = result.getJSONObject(i).getString("image").split(",");
-                    String descdetail = result.getJSONObject(i).getString("desc");
-                    String shortdesc = result.getJSONObject(i).getString("short_desc");
-                    String despUrl   = result.getJSONObject(i).getString("desp_url");
-                    int stock = result.getJSONObject(i).getInt("stock");
-                    if ( imageurl[0].equals("") ) {
-                        dbData.add(new Product(result.getJSONObject(i).getInt("id"),
-                                result.getJSONObject(i).getString("name"),
-                                result.getJSONObject(i).getDouble("price"),
-                                stock,
-                                GlobalParameterApplication.imgSurl+"121000239217360a3d2.jpg",
-                                descdetail,
-                                shortdesc,
-                                despUrl
-                        ));
-                    } else
-                        dbData.add(new Product(result.getJSONObject(i).getInt("id"),
-                                result.getJSONObject(i).getString("name"),
-                                result.getJSONObject(i).getDouble("price"),
-                                stock,
-                                GlobalParameterApplication.axwUrl+imageurl[0],
-                                descdetail,
-                                shortdesc,
-                                despUrl
-                        ));
-                }
+            JSONArray result = null;
+            outjson = new org.json.JSONObject(ostr);
+            result = outjson.getJSONArray("items");
+            start += result.length();
+            for (int i = 0; i < result.length(); i++){
+                String [] imageurl = result.getJSONObject(i).getString("image").split(",");
+                String descdetail = result.getJSONObject(i).getString("desc");
+                String shortdesc = result.getJSONObject(i).getString("short_desc");
+                String despUrl   = result.getJSONObject(i).getString("desp_url");
+                int stock = result.getJSONObject(i).getInt("stock");
+                if ( imageurl[0].equals("") ) {
+                    dbData.add(new Product(result.getJSONObject(i).getInt("id"),
+                            result.getJSONObject(i).getString("name"),
+                            result.getJSONObject(i).getDouble("price"),
+                            stock,
+                            GlobalParameterApplication.imgSurl+"121000239217360a3d2.jpg",
+                            descdetail,
+                            shortdesc,
+                            despUrl
+                    ));
+                } else
+                    dbData.add(new Product(result.getJSONObject(i).getInt("id"),
+                            result.getJSONObject(i).getString("name"),
+                            result.getJSONObject(i).getDouble("price"),
+                            stock,
+                            GlobalParameterApplication.axwUrl+imageurl[0],
+                            descdetail,
+                            shortdesc,
+                            despUrl
+                    ));
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

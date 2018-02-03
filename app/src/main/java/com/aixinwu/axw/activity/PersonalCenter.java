@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.TabLayout;
 import android.os.Bundle;
@@ -20,8 +21,8 @@ import android.widget.ImageView;
 import com.aixinwu.axw.adapter.PagerAdapter;
 import com.aixinwu.axw.R;
 import com.aixinwu.axw.database.Sqlite;
-import com.aixinwu.axw.fragment.ItemList;
-import com.aixinwu.axw.fragment.ItemRecord;
+import com.aixinwu.axw.fragment.MyIssue;
+import com.aixinwu.axw.fragment.MyBought;
 import com.aixinwu.axw.fragment.MyCollection;
 import com.aixinwu.axw.fragment.MyDonation;
 import com.aixinwu.axw.tools.GlobalParameterApplication;
@@ -57,22 +58,21 @@ public class PersonalCenter extends AppCompatActivity {
         if(!TextUtils.isEmpty(headProtrait))
             ImageLoader.getInstance().displayImage(GlobalParameterApplication.imgSurl+headProtrait, iv_avatar);
 
-        String[] strings = new String[]{getString(R.string.tab0),getString(R.string.tab1),
-                getString(R.string.tab2),getString(R.string.tab3)};
+        String[] strings = new String[]{getString(R.string.tab0),getString(R.string.tab1), getString(R.string.tab2),getString(R.string.tab3)};
         PagerAdapter adapter = new PagerAdapter(PersonalCenter.this, getSupportFragmentManager(),strings);
-        adapter.addItem(new ItemRecord());
+        adapter.addItem(new MyBought());
         adapter.addItem(new MyDonation());
-        adapter.addItem(new ItemList());
+        adapter.addItem(new MyIssue());
         adapter.addItem(new MyCollection());
 
         viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(4);
+        viewPager.setOffscreenPageLimit(3);
         tabLayout.setupWithViewPager(viewPager);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_personal, menu);
+        getMenuInflater().inflate(R.menu.menu_personal, menu);
         return true;
     }
 
@@ -136,8 +136,8 @@ public class PersonalCenter extends AppCompatActivity {
                                 try{
                                     SQLiteDatabase db = new Sqlite(PersonalCenter.this).getWritableDatabase();
                                     db.execSQL("delete from AXWuser where userId = 1");
-                                    db.close();}
-                                catch(Throwable e){
+                                    db.close();
+                                } catch(Throwable e){
                                     e.printStackTrace();
                                 }
                             }

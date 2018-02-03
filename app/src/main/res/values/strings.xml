@@ -61,7 +61,7 @@
     <string name="pref_show_slider_off">已关闭</string>
 
     <string name="pref_start_img_key" translatable="false">startImg</string>
-    <string name="pref_start_img_title">显示启动页bing图片</string>
+    <string name="pref_start_img_title">显示启动页必应图片</string>
     <string name="pref_start_img_on">已开启</string>
     <string name="pref_start_img_off">已关闭</string>
 

@@ -36,14 +36,15 @@
             <com.aixinwu.axw.view.MyWebView
                 android:id="@+id/sign_website"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
+                android:layout_height="match_parent"
+                android:visibility="gone"/>
             <TextView
                 android:id="@+id/tv_msg"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:gravity="center"
                 android:paddingBottom="180dp"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:text="正在加载..."
                 android:textSize="24sp"
                 android:textColor="?attr/colorPrimary"/>

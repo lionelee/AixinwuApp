@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
@@ -66,7 +67,6 @@ public class ShoppingCart extends Fragment {
     private SwipeRefreshLayout refreshLayout;
     private ListPopupWindow popupWindow;
     private int idx = 0;
-    private int tsize = 0;
 
     /* 结算 */
     private Button mBtnChecking;
@@ -109,18 +109,7 @@ public class ShoppingCart extends Fragment {
 
                     mAdapter.notifyDataSetChanged();
                     break;
-                case MSG_TOTAL:
-                    mTVTotal.setText("合计：" + mTotalMoney + "爱心币");
-                    break;
             }
-        }
-    };
-
-    private Thread totalThread = new Thread() {
-        @Override
-        public void run() {
-            super.run();
-            updateTotal();
         }
     };
 
@@ -157,11 +146,49 @@ public class ShoppingCart extends Fragment {
                     default: break;
                 }
                 popupWindow.dismiss();
-                totalThread.run();
+                new CalTotalTask().execute();
             }
         });
 
         return view;
+    }
+
+    //从数据库中获取商品总数和总价并更新
+    class CalTotalTask extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            ProductReadDbHelper mDbHelper = new ProductReadDbHelper(getActivity());
+            SQLiteDatabase db = mDbHelper.getWritableDatabase();
+            double totalprice = 0;
+            for (int i = 0; i < CheckedProductId.size(); ++i){
+                String checkedid = CheckedProductId.get(i);
+                Cursor cursor = db.query(ProductReaderContract.ProductEntry.TABLE_NAME,
+                        new String[]{ProductReaderContract.ProductEntry.COLUMN_NAME_PRICE, ProductReaderContract.ProductEntry.COLUMN_NAME_NUMBER},
+                        ProductReaderContract.ProductEntry.COLUMN_NAME_ENTRY_ID + "=?", new String[]{checkedid},
+                        null, null, null);
+                if (cursor != null) {
+                    cursor.moveToFirst();
+                    double price = Double.parseDouble(cursor.getString(cursor.getColumnIndex
+                            (ProductReaderContract.ProductEntry.COLUMN_NAME_PRICE)));
+
+                    int number = Integer.parseInt(cursor.getString(cursor.getColumnIndex
+                            (ProductReaderContract.ProductEntry.COLUMN_NAME_NUMBER)));
+
+                    totalprice += price * number;
+                }
+                if(cursor!=null)
+                    cursor.close();
+            }
+            mTotalChecked = CheckedProductId.size();
+            mTotalMoney = totalprice;
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            mTVTotal.setText("合计：" + mTotalMoney + "爱心币");
+        }
     }
 
     @Override
@@ -185,38 +212,6 @@ public class ShoppingCart extends Fragment {
         ProductReadDbHelper mDbHelper = new ProductReadDbHelper(getActivity());
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
         db.execSQL("DELETE FROM " + ProductReaderContract.ProductEntry.TABLE_NAME);
-    }
-
-    //从数据库中获取商品总数和总价并更新
-    private void updateTotal() {
-        ProductReadDbHelper mDbHelper = new ProductReadDbHelper(getActivity());
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        double totalprice = 0;
-        for (int i = 0; i < CheckedProductId.size(); ++i){
-            String checkedid = CheckedProductId.get(i);
-            Cursor cursor = db.query(ProductReaderContract.ProductEntry.TABLE_NAME,
-                    new String[]{ProductReaderContract.ProductEntry.COLUMN_NAME_PRICE, ProductReaderContract.ProductEntry.COLUMN_NAME_NUMBER},
-                    ProductReaderContract.ProductEntry.COLUMN_NAME_ENTRY_ID + "=?", new String[]{checkedid},
-                    null, null, null);
-            if (cursor != null) {
-                cursor.moveToFirst();
-                double price = Double.parseDouble(cursor.getString(cursor.getColumnIndex
-                        (ProductReaderContract.ProductEntry.COLUMN_NAME_PRICE)));
-
-                int number = Integer.parseInt(cursor.getString(cursor.getColumnIndex
-                        (ProductReaderContract.ProductEntry.COLUMN_NAME_NUMBER)));
-
-                totalprice += price * number;
-            }
-            //tableName, tableColumns, whereClause, whereArgs, groupBy, having, orderBy);
-            if(cursor!=null)
-                cursor.close();
-        }
-        mTotalChecked = CheckedProductId.size();
-        mTotalMoney = totalprice;
-        Message msg = new Message();
-        msg.what=MSG_TOTAL;
-        mHandler.sendMessage(msg);
     }
 
     //结算listerner
@@ -248,7 +243,9 @@ public class ShoppingCart extends Fragment {
             if(CheckedProductId.get(i).equals(id)){
                 CheckedProductId.remove(i);
                 orderedDatas.remove(i);
-                break;
+                if(CheckedProductId.size() == 0)
+                    mCheckBox.setChecked(false);
+                return;
             }
         }
     }
@@ -267,18 +264,12 @@ public class ShoppingCart extends Fragment {
         mListView = (SwipeMenuRecyclerView)view.findViewById(R.id.lv_shopping_cart_activity);
         mListView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mListView.addItemDecoration(new RecyclerViewDivider(getActivity()));
-        if(Build.VERSION.SDK_INT <= 19)
-            tsize = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,16,getResources().getDisplayMetrics());
-        else
-            tsize = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,6,getResources().getDisplayMetrics());
         mListView.setSwipeMenuCreator(new SwipeMenuCreator() {
             @Override
             public void onCreateMenu(SwipeMenu swipeLeftMenu, SwipeMenu swipeRightMenu, int viewType) {
                 SwipeMenuItem deleteItem = new SwipeMenuItem(getContext())
                         .setBackground(R.color.accent)
-                        .setText("删除")
-                        .setTextSize(tsize)
-                        .setTextColor(getResources().getColor(R.color.white))
+                        .setImage(R.drawable.ic_delete)
                         .setHeight(ViewGroup.LayoutParams.MATCH_PARENT)
                         .setWidth(getResources().getDimensionPixelSize(R.dimen.swipemenu_width));
                 swipeRightMenu.addMenuItem(deleteItem);
@@ -288,12 +279,15 @@ public class ShoppingCart extends Fragment {
             @Override
             public void onItemClick(SwipeMenuBridge menuBridge) {
                 menuBridge.closeMenu();
-                int idx = menuBridge.getAdapterPosition();
+                idx = menuBridge.getAdapterPosition();
+                Log.e(">>>>>","swipepress pos:"+idx);
                 if (menuBridge.getDirection() == SwipeMenuRecyclerView.RIGHT_DIRECTION) {
                     String id = mDatas.get(idx).getId();
                     deleteFromDatabase(id);
+                    removeCheck(id);
                     mDatas.remove(idx);
                     mAdapter.notifyItemRemoved(idx);
+                    new CalTotalTask().execute();
                 }
             }
         });
@@ -301,6 +295,7 @@ public class ShoppingCart extends Fragment {
             @Override
             public void onItemLongClick(View itemView, int position) {
                 idx = position;
+                Log.e(">>>>>","longpress pos:"+position);
                 View v = itemView.findViewById(R.id.love_coin);
                 popupWindow.setAnchorView(v);
                 popupWindow.setDropDownGravity(Gravity.TOP|Gravity.LEFT);
@@ -327,6 +322,9 @@ public class ShoppingCart extends Fragment {
                                 bundle.putSerializable("OrderedData" + i1, orderedDatas.get(i1));
                                 bundle.putSerializable("CheckedProductId" + i1, CheckedProductId.get(i1));
                             }
+                            orderedDatas.clear();
+                            CheckedProductId.clear();
+                            mCheckBox.setChecked(false);
                             intent.putExtras(bundle);
                             startActivityForResult(intent,0);
                             getActivity().overridePendingTransition(R.anim.slide_in_bottom,R.anim.scale_fade_out);
@@ -460,9 +458,12 @@ public class ShoppingCart extends Fragment {
                 price.setText(String.valueOf(entity.getPrice()));
                 number.setText(String.valueOf(entity.getNumber()));
                 ImageLoader.getInstance().displayImage(entity.getImgUrl(), img);
+
                 iv_more.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        idx = getAdapterPosition();
+                        Log.e(">>>>>","moreclick pos:"+pos);
                         popupWindow.setAnchorView(view);
                         popupWindow.setDropDownGravity(Gravity.TOP|Gravity.RIGHT);
                         popupWindow.show();
@@ -494,7 +495,7 @@ public class ShoppingCart extends Fragment {
                                              bundle.putInt("op", 1);
                                              msg.setData(bundle);
                                              mHandler.sendMessage(msg);
-                                             totalThread.run();
+                                             new CalTotalTask().execute();
                                          }else{
                                              getActivity().runOnUiThread(new Runnable() {
                                                  @Override
@@ -534,7 +535,7 @@ public class ShoppingCart extends Fragment {
                                             bundle.putInt("op", 2);
                                             msg.setData(bundle);
                                             mHandler.sendMessage(msg);
-                                            totalThread.run();
+                                            new CalTotalTask().execute();
                                         }
                                     }
                                 }.start();
@@ -564,7 +565,7 @@ public class ShoppingCart extends Fragment {
                             }
 
                         }
-                        totalThread.run();
+                        new CalTotalTask().execute();
                     }
                 });
 

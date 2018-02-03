@@ -67,7 +67,6 @@ public class MyCollection extends Fragment {
                 SQLiteDatabase db = userDbHelper.getWritableDatabase();
                 Cursor cursor = db.rawQuery("select itemId,picUrl,type,price from AXWcollect where userName = '" + GlobalParameterApplication.getUser_name() + "'", null);
                 while (cursor.moveToNext()) {
-
                     collectList.add(new Bean(cursor.getInt(0), cursor.getString(1), cursor.getString(2), "价格：" + (cursor.getInt(3))));
 
                 }
@@ -101,7 +100,7 @@ public class MyCollection extends Fragment {
 
         @Override
         public void onBindViewHolder(ViewHolder holder, int position) {
-            holder.bindData(mDatas.get(position), position);
+            holder.bindData(position);
         }
 
         @Override
@@ -128,7 +127,8 @@ public class MyCollection extends Fragment {
                 delCollection = (RelativeLayout) view.findViewById(R.id.collectComodity);
             }
 
-            public void bindData(final Bean entity, final int position){
+            public void bindData(final int position){
+                final Bean entity = mDatas.get(position);
                 name.setText(entity.getType());
                 price.setText(entity.getDoc() + "");
                 ImageLoader.getInstance().displayImage(entity.getPicId().trim(), img);
@@ -140,7 +140,8 @@ public class MyCollection extends Fragment {
                         intent.putExtra("itemId", entity.getItemId());
                         intent.putExtra("caption", entity.getType());
                         intent.setClass(MyCollection.this.getActivity(), Buy.class);
-                        startActivity(intent);
+                        startActivityForResult(intent,0);
+                        getActivity().overridePendingTransition(R.anim.slide_in_bottom,R.anim.scale_fade_out);
                     }
                 });
 

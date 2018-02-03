@@ -43,6 +43,8 @@ public class LoginActivity extends AppCompatActivity{
     @Bind(R.id.btn_login) AppCompatButton _loginButton;
     @Bind(R.id.forgetPWD) Button _forgetPWD;
 
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,6 +76,11 @@ public class LoginActivity extends AppCompatActivity{
                 login();
             }
         });
+
+        progressDialog = new ProgressDialog(LoginActivity.this, R.style.AppTheme_Dark_Dialog);
+        progressDialog.setCancelable(false);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("验证中...");
     }
 
     @Override
@@ -102,11 +109,6 @@ public class LoginActivity extends AppCompatActivity{
 
         _loginButton.setEnabled(false);
 
-        final ProgressDialog progressDialog = new ProgressDialog(LoginActivity.this,
-                R.style.AppTheme_Dark_Dialog);
-        progressDialog.setCancelable(false);
-        progressDialog.setIndeterminate(true);
-        progressDialog.setMessage("验证中...");
         progressDialog.show();
 
         String email = _emailText.getText().toString();
@@ -137,6 +139,7 @@ public class LoginActivity extends AppCompatActivity{
     }
 
     public void onLoginSuccess() {
+        progressDialog.dismiss();
         _loginButton.setEnabled(true);
         finish();
         overridePendingTransition(R.anim.scale_fade_in, R.anim.slide_out_bottom);
