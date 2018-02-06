@@ -8,18 +8,8 @@ android {
         abortOnError false
     }
 
-    signingConfigs {
-        release {
-            keyAlias 'release'
-            keyPassword '123456'
-            storeFile file('C:\\Users\\10911\\Documents\\github\\AixinwuApp\\release.jks')
-            storePassword '123456'
-        }
-    }
-
     compileSdkVersion 25
     buildToolsVersion '26.0.2'
-    //buildToolsVersion "22.0.1"
     compileOptions.encoding = "UTF-8"
 
     defaultConfig {

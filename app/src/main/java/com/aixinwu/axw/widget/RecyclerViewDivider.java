@@ -10,15 +10,15 @@ import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.View;
 
+import com.aixinwu.axw.R;
+
 /**
  * Created by lionel on 2017/11/8.
  */
 
 public class RecyclerViewDivider extends RecyclerView.ItemDecoration {
-    private static final int[] ATTRS = new int[]{
-            android.R.attr.listDivider
-    };
 
+    private static final int[] ATTRS = new int[]{android.R.attr.listDivider};
     private Drawable mDivider;
 
     public RecyclerViewDivider(Context context) {
@@ -27,6 +27,9 @@ public class RecyclerViewDivider extends RecyclerView.ItemDecoration {
         a.recycle();
     }
 
+    public RecyclerViewDivider(Context context, int resId){
+        mDivider = context.getResources().getDrawable(resId);
+    }
 
     @Override
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {

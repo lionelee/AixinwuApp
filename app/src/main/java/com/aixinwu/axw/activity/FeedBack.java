@@ -1,5 +1,6 @@
 package com.aixinwu.axw.activity;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -34,15 +35,21 @@ public class FeedBack extends AppCompatActivity {
         btn_send.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String phone = et_phone.getText().toString();
-                String suggestion = et_suggest.getText().toString();
-                if(TextUtils.isEmpty(suggestion)){
-                    Toast.makeText(FeedBack.this,"请输入内容",Toast.LENGTH_SHORT).show();
-                    return;
+                if (GlobalParameterApplication.getLogin_status()==0){
+                    Intent intent = new Intent(FeedBack.this, LoginActivity.class);
+                    startActivityForResult(intent,0);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.scale_fade_out);
+                }else{
+                    String phone = et_phone.getText().toString();
+                    String suggestion = et_suggest.getText().toString();
+                    if(TextUtils.isEmpty(suggestion)){
+                        Toast.makeText(FeedBack.this,"请输入内容",Toast.LENGTH_SHORT).show();
+                        return;
+                    }
+                    String str = "联系方式:"+phone+"\n意见:"+suggestion;
+                    GlobalParameterApplication.publish(str,1525);
+                    onBackPressed();
                 }
-                String str = "联系方式:"+phone+"\n意见:"+suggestion;
-                GlobalParameterApplication.publish(str,1525);
-                onBackPressed();
             }
         });
     }

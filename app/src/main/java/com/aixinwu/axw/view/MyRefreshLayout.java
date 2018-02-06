@@ -113,7 +113,8 @@ public class MyRefreshLayout extends SwipeRefreshLayout {
                     if (dy < 0) {
                         if (ViewCompat.getTranslationY(mChildView) <= -mFootHeight) {
                             mLoading = true;
-                            createAnimatorTranslationY(mChildView, -mFootHeight, footerView);
+                            createAnimatorTranslationY(mChildView, 0, footerView);
+//                            createAnimatorTranslationY(mChildView, -mFootHeight, footerView);
                             mLoadingListener.onLoad();
                         } else {
                             mLoading = false;

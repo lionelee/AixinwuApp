@@ -52,9 +52,6 @@ public class MyFooterView extends FrameLayout {
         LayoutParams layoutParams = new LayoutParams(size, size, Gravity.CENTER);
         mProgressBar.setLayoutParams(layoutParams);
         addView(mProgressBar);
-        mTextView = new TextView(getContext());
-        mTextView.setText("正在加载...");
-        addView(mTextView);
     }
 
     public void onBegin(){

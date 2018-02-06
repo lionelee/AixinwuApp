@@ -18,15 +18,15 @@
     <application
         android:name=".tools.GlobalParameterApplication"
         android:allowBackup="true"
-        android:persistent="true"
         android:icon="@mipmap/applogo"
         android:label="@string/app_name"
+        android:persistent="true"
         android:theme="@style/AppBaseTheme">
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="com.aixinwu.axw.fileProvider"
-            android:grantUriPermissions="true"
-            android:exported="false">
+            android:exported="false"
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
@@ -45,7 +45,7 @@
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
             android:launchMode="standard"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
+            android:windowSoftInputMode="adjustPan|stateAlwaysHidden" />
         <activity android:name=".activity.Search" />
         <activity android:name=".activity.LoginActivity" />
         <activity android:name=".activity.SignupActivity" />
@@ -72,8 +72,9 @@
 
         <activity android:name=".activity.AXWInfo" />
         <activity android:name=".activity.ConfirmOrder" />
-        <activity android:name=".activity.VolunteerApply"
-            android:windowSoftInputMode="adjustResize"/>
+        <activity
+            android:name=".activity.VolunteerApply"
+            android:windowSoftInputMode="adjustNothing|stateAlwaysHidden" />
         <activity android:name=".activity.VolActivityList" />
         <activity android:name=".activity.ResetPWD" />
         <activity android:name=".activity.RawPictureActivity" />
@@ -84,7 +85,8 @@
         <activity android:name=".activity.PhotoPicker" />
         <activity android:name=".activity.ModifyUname" />
         <activity android:name=".activity.FeedBack" />
-        <activity android:name=".activity.Sign"></activity>
+        <activity android:name=".activity.Sign" />
+        <activity android:name=".activity.PhotoViewer"></activity>
     </application>
 
 </manifest>

@@ -27,7 +27,7 @@
                 android:src="@color/gray"/>
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="78dp"
+                android:layout_height="82dp"
                 android:background="@drawable/translucent_bgt"/>
             <android.support.v7.widget.Toolbar
                 android:id="@+id/product_toolbar"
@@ -53,7 +53,7 @@
                 android:layout_gravity="bottom"
                 app:layout_collapseMode="parallax"
                 android:background="@drawable/product_desc"
-                android:paddingTop="28dp"
+                android:paddingTop="32dp"
                 android:paddingBottom="16dp"
                 android:paddingRight="16dp">
                 <RelativeLayout

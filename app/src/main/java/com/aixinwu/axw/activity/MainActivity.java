@@ -353,7 +353,7 @@ public class MainActivity extends AppCompatActivity
             Toast.makeText(this,"请先登录",Toast.LENGTH_SHORT).show();
             return;
         }
-        new  AlertDialog.Builder(MainActivity.this)
+        new AlertDialog.Builder(MainActivity.this)
                 .setTitle("注销" )
                 .setMessage("确定要退出当前账号？")
                 .setPositiveButton("确定", new DialogInterface.OnClickListener() {

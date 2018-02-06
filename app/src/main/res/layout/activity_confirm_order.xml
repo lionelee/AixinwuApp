@@ -198,8 +198,9 @@
         android:layout_below="@id/sep_line"
         android:layout_above="@+id/sep_line_bottom"
         android:scrollbars="none"
-        android:dividerHeight="8dp"
-        android:divider="@color/white"/>
+        android:dividerHeight="4dp"
+        android:divider="@color/background"
+        android:background="@color/background"/>
     <View
         android:id="@+id/sep_line_bottom"
         android:layout_width="match_parent"

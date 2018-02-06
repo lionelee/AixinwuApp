@@ -39,5 +39,5 @@
         android:layout_height="1dp"
         android:layout_below="@+id/ll_content"
         android:layout_marginLeft="64dp"
-        android:background="@color/backColor"/>
+        android:background="@color/darkgray"/>
 </RelativeLayout>

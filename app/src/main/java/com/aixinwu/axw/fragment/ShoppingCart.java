@@ -1,9 +1,12 @@
 package com.aixinwu.axw.fragment;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -11,9 +14,9 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.ListPopupWindow;
 import android.support.v7.widget.RecyclerView;
@@ -64,7 +67,6 @@ public class ShoppingCart extends Fragment {
     public static ArrayList<String> CheckedProductId = new ArrayList<>();
     public ArrayList<ShoppingCartEntity> orderedDatas = new ArrayList<>();
 
-    private SwipeRefreshLayout refreshLayout;
     private ListPopupWindow popupWindow;
     private int idx = 0;
 
@@ -72,6 +74,7 @@ public class ShoppingCart extends Fragment {
     private Button mBtnChecking;
     private static TextView mTVTotal;
     private static CheckBox mCheckBox;
+    private TextView mTVCheck;
 
     /**
      * 合计
@@ -112,6 +115,24 @@ public class ShoppingCart extends Fragment {
             }
         }
     };
+
+    @Override
+    public void setUserVisibleHint(boolean isVisibleToUser) {
+        super.setUserVisibleHint(isVisibleToUser);
+        if(isVisibleToUser){
+            final SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            if(preferences.getBoolean("first",true) && mDatas.size()>0){
+                new AlertDialog.Builder(getActivity()).setTitle("提示").setMessage("左滑或长按删除购物车中物品")
+                        .setPositiveButton("知道了", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                dialogInterface.dismiss();
+                                preferences.edit().putBoolean("first",false).commit();
+                            }
+                        }).setCancelable(false).show();
+            }
+        }
+    }
 
     @Nullable
     @Override
@@ -197,73 +218,14 @@ public class ShoppingCart extends Fragment {
         initDatas();
     }
 
-    //在数据库中删除物品id 为id的操作
-    private static void deleteFromDatabase (String id) {
-        ProductReadDbHelper mDbHelper = new ProductReadDbHelper(mContext);
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        db.delete(ProductReaderContract.ProductEntry.TABLE_NAME,
-                ProductReaderContract.ProductEntry.COLUMN_NAME_ENTRY_ID + "=?",
-                new String[]{id}
-        );
-    }
-
-    //清空购物车的数据库操作
-    private void deleteAllFromDatabase () {
-        ProductReadDbHelper mDbHelper = new ProductReadDbHelper(getActivity());
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();
-        db.execSQL("DELETE FROM " + ProductReaderContract.ProductEntry.TABLE_NAME);
-    }
-
-    //结算listerner
-    private void addListeners() {
-        mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    mTotalChecked = 0;
-                    mTotalMoney = 0;
-                    orderedDatas.clear();
-                    CheckedProductId.clear();
-                    for (int i = 0; i < mDatas.size(); ++i) {
-                        CheckedProductId.add(mDatas.get(i).getId());
-                        orderedDatas.add(mDatas.get(i));
-                    }
-                } else {
-                    CheckedProductId.clear();
-                    orderedDatas.clear();
-                }
-                mAdapter.notifyDataSetChanged();
-            }
-        });
-    }
-
-    private void removeCheck(String id){
-        int size = CheckedProductId.size();
-        for(int i = 0; i < size; ++i){
-            if(CheckedProductId.get(i).equals(id)){
-                CheckedProductId.remove(i);
-                orderedDatas.remove(i);
-                if(CheckedProductId.size() == 0)
-                    mCheckBox.setChecked(false);
-                return;
-            }
-        }
-    }
-
     private void initViews(View view) {
-//        refreshLayout = (SwipeRefreshLayout) view.findViewById(R.id.shopping_cart_refresh_layout);
-//        refreshLayout.setColorSchemeResources(R.color.primary);
-//        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                initDatas();
-//                refreshLayout.setRefreshing(false);
-//            }
-//        });
-
         mListView = (SwipeMenuRecyclerView)view.findViewById(R.id.lv_shopping_cart_activity);
         mListView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        mListView.addItemDecoration(new RecyclerViewDivider(getActivity()));
+        if(Build.VERSION.SDK_INT >= 23){
+            mListView.addItemDecoration(new RecyclerViewDivider(getActivity(),R.drawable.list_divider));
+        }else{
+            mListView.addItemDecoration(new RecyclerViewDivider(getActivity()));
+        }
         mListView.setSwipeMenuCreator(new SwipeMenuCreator() {
             @Override
             public void onCreateMenu(SwipeMenu swipeLeftMenu, SwipeMenu swipeRightMenu, int viewType) {
@@ -306,6 +268,7 @@ public class ShoppingCart extends Fragment {
         mBtnChecking = (Button) view.findViewById(R.id.btn_activity_shopping_cart_clearing);
         mTVTotal = (TextView) view.findViewById(R.id.tv_activity_shopping_cart_total);
         mCheckBox = (CheckBox) view.findViewById(R.id.cb_activity_shopping_cart);
+        mTVCheck = (TextView) view.findViewById(R.id.tv_activity_shopping_cart);
 
         // 最终结算
         mBtnChecking.setOnClickListener(new View.OnClickListener() {
@@ -400,7 +363,67 @@ public class ShoppingCart extends Fragment {
             }
         }.start();
 
-        mTVTotal.setText("合计：0.0 爱心币");
+        mTVTotal.setText("合计：0.0爱心币");
+    }
+
+    //在数据库中删除物品id 为id的操作
+    private static void deleteFromDatabase (String id) {
+        ProductReadDbHelper mDbHelper = new ProductReadDbHelper(mContext);
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.delete(ProductReaderContract.ProductEntry.TABLE_NAME,
+                ProductReaderContract.ProductEntry.COLUMN_NAME_ENTRY_ID + "=?",
+                new String[]{id}
+        );
+    }
+
+    //清空购物车的数据库操作
+    private void deleteAllFromDatabase () {
+        ProductReadDbHelper mDbHelper = new ProductReadDbHelper(getActivity());
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+        db.execSQL("DELETE FROM " + ProductReaderContract.ProductEntry.TABLE_NAME);
+    }
+
+    //结算listerner
+    private void addListeners() {
+        mCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    mTotalChecked = 0;
+                    mTotalMoney = 0;
+                    orderedDatas.clear();
+                    CheckedProductId.clear();
+                    for (int i = 0; i < mDatas.size(); ++i) {
+                        CheckedProductId.add(mDatas.get(i).getId());
+                        orderedDatas.add(mDatas.get(i));
+                    }
+                } else {
+                    CheckedProductId.clear();
+                    orderedDatas.clear();
+                }
+                mAdapter.notifyDataSetChanged();
+            }
+        });
+        mTVCheck.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(mCheckBox.isChecked()) mCheckBox.setChecked(false);
+                else mCheckBox.setChecked(true);
+            }
+        });
+    }
+
+    private void removeCheck(String id){
+        int size = CheckedProductId.size();
+        for(int i = 0; i < size; ++i){
+            if(CheckedProductId.get(i).equals(id)){
+                CheckedProductId.remove(i);
+                orderedDatas.remove(i);
+                if(CheckedProductId.size() == 0)
+                    mCheckBox.setChecked(false);
+                return;
+            }
+        }
     }
 
     //购物车列表adapter

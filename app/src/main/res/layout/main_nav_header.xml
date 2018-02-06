@@ -80,7 +80,6 @@
                 android:layout_height="wrap_content"
                 android:maxLength="18"
                 android:text="Lionel Lee"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
                 android:visibility="invisible"/>
             <TextView
                 android:id="@+id/nav_type"

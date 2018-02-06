@@ -36,6 +36,7 @@ import java.net.URL;
 public class VolunteerApply extends AppCompatActivity{
 
     private VolunteerActivity volunteerActivity;
+    private AppBarLayout appBarLayout;
     private String telNumber;
     private TextView love_coin;
     private TextView duration;
@@ -75,6 +76,7 @@ public class VolunteerApply extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_volunteer_apply);
         volunteerActivity = (VolunteerActivity) getIntent().getSerializableExtra("volActivityId");
+        appBarLayout = (AppBarLayout) findViewById(R.id.volunteer_appbar);
         Toolbar toolbar = (Toolbar) findViewById(R.id.volunteer_toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -95,6 +97,12 @@ public class VolunteerApply extends AppCompatActivity{
         volAbout = (TextView) findViewById(R.id.volAbout);
         volContent = (TextView) findViewById(R.id.volContent);
 //        content = (RelativeLayout) findViewById(R.id.content);
+        getPhoneNumber.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                appBarLayout.setExpanded(false,true);
+            }
+        });
 
         if (volunteerActivity.getAbout().length() != 0) {
             volAbout.setText(volunteerActivity.getAbout());

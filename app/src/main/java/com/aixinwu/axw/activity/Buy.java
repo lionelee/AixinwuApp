@@ -70,6 +70,7 @@ public class Buy extends AppCompatActivity{
     private ImageView iv_collect;
     private TextView tv_collect;
     private boolean flag = false;
+    private int paddingBottom = 0;
 
     private Sqlite userDbHelper = new Sqlite(this);
 
@@ -203,6 +204,7 @@ public class Buy extends AppCompatActivity{
             super.handleMessage(msg);
             switch (msg.what) {
                 case 2310231:
+                    paddingBottom = (int)TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,8,getResources().getDisplayMetrics());
                     if(flag){
                         iv_collect.setImageResource(R.drawable.ic_stared);
                         tv_collect.setTextColor(getResources().getColor(typedValue.resourceId));
@@ -217,6 +219,7 @@ public class Buy extends AppCompatActivity{
                     if(Picset != null && !Picset.equals("")){
                         for (int i = 0; i < pic_list.size(); ++i){
                             ImageView img = new ImageView(Buy.this);
+                            img.setPadding(0,0,0,paddingBottom);
                             img.setScaleType(ImageView.ScaleType.CENTER_INSIDE);
                             LinearLayout.LayoutParams imgLayoutParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT,LinearLayout.LayoutParams.WRAP_CONTENT);
                             ImageLoader.getInstance().displayImage(pic_list.get(i),img);
