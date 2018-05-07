@@ -1,5 +1,6 @@
 package com.aixinwu.axw.activity;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
@@ -41,11 +42,13 @@ public class ModifyProfile extends AppCompatActivity {
     CircleImageView iv_avatar;
     String avatar="", uname = "";
     String imgUrl;
+    ProgressDialog progressDialog;
 
     private Handler dHandler = new Handler() {
         @Override
         public void handleMessage(Message msg){
             super.handleMessage(msg);
+            progressDialog.dismiss();
             switch (msg.what){
                 case 843023:
                     avatar = imgUrl;
@@ -67,6 +70,11 @@ public class ModifyProfile extends AppCompatActivity {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("个人资料");
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+        progressDialog = new ProgressDialog(ModifyProfile.this, R.style.AppTheme_Dark_Dialog);
+        progressDialog.setCancelable(false);
+        progressDialog.setIndeterminate(true);
+        progressDialog.setMessage("上传图片...");
 
         iv_avatar = (CircleImageView)findViewById(R.id.iv_avatar);
         avatar = getIntent().getStringExtra("headProtrait");
@@ -168,6 +176,7 @@ public class ModifyProfile extends AppCompatActivity {
         switch (requestCode){
         case 1001:
             if(resultCode == RESULT_OK){
+                progressDialog.show();
                 final String path = data.getStringExtra("path");
                 new Thread(new Runnable() {
                     @Override
